@@ -18,6 +18,7 @@
 - ✅ حفظ محلي (Hive) مع قائمة "سيري الذاتية"
 - ✅ مولّد خطاب تقديم من قالب نصي
 - ✅ الوضع الفاتح والداكن (Material 3)
+- 🔎 **البحث عن وظائف بالذكاء الاصطناعي**: يبحث في مواقع التوظيف مباشرة ويعرض وظائف حقيقية بروابطها مع سبب مطابقتها لسيرتك
 - 🤖 **مساعد ذكاء اصطناعي**: تحسين الملخص المهني، صياغة الخبرات كنقاط احترافية، وخطاب تقديم مخصص من إعلان الوظيفة
 - 🔒 تشفير البيانات المحلية (AES-256) بمفتاح في Android Keystore
 
@@ -86,6 +87,7 @@ A free, fully offline bilingual (Arabic/English) **resume** and **cover letter**
 - ✅ Local storage (Hive) with a "My Resumes" list
 - ✅ Cover letter generator from a text template
 - ✅ Material 3 light & dark themes
+- 🔎 **AI job search**: live web searches across job boards, returning real openings with links and why each matches your resume
 - 🤖 **AI assistant**: improve your summary, rewrite experience as resume bullets, and generate a cover letter tailored to a job ad
 - 🔒 Local data encrypted with AES-256, key held in the Android Keystore
 

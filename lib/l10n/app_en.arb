@@ -127,5 +127,14 @@
   "jobAd": "Job ad text",
   "jobAdHint": "Paste the job ad here…",
   "generateWithAi": "Generate with AI",
-  "aiSectionTitle": "AI Assistant"
+  "aiSectionTitle": "AI Assistant",
+  "jobSearch": "Job search",
+  "jobSearchSubtitle": "Find openings that match your resume",
+  "desiredRole": "Desired role",
+  "remoteOk": "Remote work is fine",
+  "searchJobs": "Search",
+  "noJobsFound": "No matching openings found. Try a broader role or city.",
+  "openJobPost": "Open the posting",
+  "jobsCached": "Recent results",
+  "couldNotOpenLink": "Couldn't open the link"
 }

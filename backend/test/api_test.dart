@@ -129,6 +129,44 @@ void main() {
     }
   });
 
+  test('job search drops entries without a usable url and caches hits',
+      () async {
+    // Mock mode echoes the prompt, so no JSON array survives parsing.
+    final r = await _post(handler, '/v1/ai/jobs',
+        {'device_id': 'j1', 'job_title': 'Flutter', 'city': 'الرياض'});
+    expect(r.statusCode, 200);
+    expect((await _json(r))['jobs'], isEmpty);
+
+    // A real payload round-trips through the cache; the second call must not
+    // spend quota again.
+    db.cacheJobs(
+      'ar|flutter|الرياض|false',
+      jsonEncode([
+        {
+          'title': 'Flutter Developer',
+          'company': 'Acme',
+          'location': 'الرياض',
+          'url': 'https://example.com/job/1',
+          'why_match': 'مطابق لخبرتك',
+        }
+      ]),
+    );
+    final hit = await _post(handler, '/v1/ai/jobs',
+        {'device_id': 'j2', 'job_title': 'Flutter', 'city': 'الرياض'});
+    final body = await _json(hit);
+    expect(body['cached'], true);
+    expect((body['jobs'] as List).single['url'], 'https://example.com/job/1');
+  });
+
+  test('a job search costs more than one credit', () async {
+    // Quota is 3; one search costs 3, so the next plain call must be blocked.
+    db.cacheJobs('x', '[]');
+    expect(db.tryConsumeQuota('j3', 3, cost: 3), true);
+    expect(db.tryConsumeQuota('j3', 3), false);
+    db.refundQuota('j3', cost: 3);
+    expect(db.tryConsumeQuota('j3', 3), true);
+  });
+
   test('malformed and oversized input is rejected', () async {
     final noDevice = await _post(handler, '/v1/ai/summary', {'job_title': 'x'});
     expect(noDevice.statusCode, 400);

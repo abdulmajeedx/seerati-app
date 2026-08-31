@@ -398,4 +398,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiSectionTitle => 'AI Assistant';
+
+  @override
+  String get jobSearch => 'Job search';
+
+  @override
+  String get jobSearchSubtitle => 'Find openings that match your resume';
+
+  @override
+  String get desiredRole => 'Desired role';
+
+  @override
+  String get remoteOk => 'Remote work is fine';
+
+  @override
+  String get searchJobs => 'Search';
+
+  @override
+  String get noJobsFound =>
+      'No matching openings found. Try a broader role or city.';
+
+  @override
+  String get openJobPost => 'Open the posting';
+
+  @override
+  String get jobsCached => 'Recent results';
+
+  @override
+  String get couldNotOpenLink => 'Couldn\'t open the link';
 }

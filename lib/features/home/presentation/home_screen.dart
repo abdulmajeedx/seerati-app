@@ -12,6 +12,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../core/services/api_client.dart';
 import '../../cover_letter/presentation/ai_cover_letter_screen.dart';
 import '../../cover_letter/presentation/cover_letter_list_screen.dart';
+import '../../jobs/presentation/job_search_screen.dart';
 import '../../resume/data/models/resume.dart';
 import '../../resume/presentation/resume_form_screen.dart';
 import '../../resume/presentation/resume_preview_screen.dart';
@@ -96,6 +97,16 @@ class HomeScreen extends ConsumerWidget {
             ),
           ),
           if (ApiClient.isConfigured) ...[
+            const SizedBox(height: 12),
+            _ActionCard(
+              icon: Icons.work_outline,
+              title: l10n.jobSearch,
+              subtitle: l10n.jobSearchSubtitle,
+              highlight: true,
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const JobSearchScreen()),
+              ),
+            ),
             const SizedBox(height: 12),
             _ActionCard(
               icon: Icons.auto_awesome_outlined,

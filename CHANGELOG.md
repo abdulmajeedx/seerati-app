@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.1.0] - 2026-08-31
+
+### Added
+- **AI job search**: enter a role and city, and the assistant runs live web searches across job boards, returning real openings with a link and a one-line explanation of why each fits your resume. Results are matched against your most recent resume's skills and summary.
+- Identical searches are cached server-side for 6 hours, so repeated queries cost nothing and return instantly.
+
+### Notes
+- A job search consumes 3 AI credits (it runs several web searches and costs roughly 15x a text generation); the free daily allowance is 6 credits, Premium 60.
+- Hallucinated links are impossible to surface: every result without a real http(s) URL from the search output is dropped server-side.
+
 ## [2.0.1] - 2026-08-31
 
 ### Changed

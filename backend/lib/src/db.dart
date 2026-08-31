@@ -44,6 +44,11 @@ class Db {
         redeemed_by TEXT,
         redeemed_at TEXT
       );
+      CREATE TABLE IF NOT EXISTS job_cache (
+        key TEXT PRIMARY KEY,
+        payload TEXT NOT NULL,
+        created_at INTEGER NOT NULL
+      );
     ''');
   }
 
@@ -62,9 +67,30 @@ class Db {
     return rows.isNotEmpty && rows.first['premium'] == 1;
   }
 
-  /// Atomically consumes one AI-call credit for today (UTC).
+  /// Job searches are expensive, so identical queries are served from cache
+  /// for [maxAge]. Returns null on a miss.
+  String? cachedJobs(String key, Duration maxAge) {
+    final cutoff =
+        DateTime.now().millisecondsSinceEpoch - maxAge.inMilliseconds;
+    final rows = _db.select(
+      'SELECT payload FROM job_cache WHERE key = ? AND created_at > ?',
+      [key, cutoff],
+    );
+    return rows.isEmpty ? null : rows.first['payload'] as String;
+  }
+
+  void cacheJobs(String key, String payload) {
+    _db.execute(
+      'INSERT INTO job_cache (key, payload, created_at) VALUES (?, ?, ?) '
+      'ON CONFLICT(key) DO UPDATE SET payload = excluded.payload, '
+      'created_at = excluded.created_at',
+      [key, payload, DateTime.now().millisecondsSinceEpoch],
+    );
+  }
+
+  /// Atomically consumes [cost] AI credits for today (UTC).
   /// Returns false when the daily quota is exhausted.
-  bool tryConsumeQuota(String deviceId, int dailyLimit) {
+  bool tryConsumeQuota(String deviceId, int dailyLimit, {int cost = 1}) {
     final day = DateTime.now().toUtc().toIso8601String().substring(0, 10);
     bool ok = false;
     _db.execute('BEGIN IMMEDIATE');
@@ -77,10 +103,10 @@ class Db {
         'SELECT count FROM usage WHERE device_id = ? AND day = ?',
         [deviceId, day],
       ).first;
-      if ((row['count'] as int) < dailyLimit) {
+      if ((row['count'] as int) + cost <= dailyLimit) {
         _db.execute(
-          'UPDATE usage SET count = count + 1 WHERE device_id = ? AND day = ?',
-          [deviceId, day],
+          'UPDATE usage SET count = count + ? WHERE device_id = ? AND day = ?',
+          [cost, deviceId, day],
         );
         ok = true;
       }
@@ -92,13 +118,13 @@ class Db {
     return ok;
   }
 
-  /// Gives back a credit consumed by a call that never produced text.
-  void refundQuota(String deviceId) {
+  /// Gives back credits consumed by a call that never produced text.
+  void refundQuota(String deviceId, {int cost = 1}) {
     final day = DateTime.now().toUtc().toIso8601String().substring(0, 10);
     _db.execute(
-      'UPDATE usage SET count = count - 1 '
-      'WHERE device_id = ? AND day = ? AND count > 0',
-      [deviceId, day],
+      'UPDATE usage SET count = MAX(0, count - ?) '
+      'WHERE device_id = ? AND day = ?',
+      [cost, deviceId, day],
     );
   }
 

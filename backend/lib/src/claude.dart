@@ -27,12 +27,22 @@ class ClaudeClient {
   static const _endpoint = 'https://api.anthropic.com/v1/messages';
   static const _model = 'claude-opus-5';
 
+  /// Job search runs a web-search tool loop, which costs ~15x a text call.
+  /// Override with SEERATI_JOBS_MODEL to trade quality for reach.
+  static String jobsModel(Map<String, String> env) =>
+      env['SEERATI_JOBS_MODEL'] ?? _model;
+
   /// Returns the generated text. When [apiKey] is empty, runs in mock mode
   /// (dev/test without credentials).
   Future<String> generate({
     required String system,
     required String prompt,
     int maxTokens = 2048,
+    String? model,
+    // The basic web-search variant returns results as plain content blocks the
+    // model can read; the 2026 variant routes them through code execution with
+    // encrypted stdout, which yields empty answers for this use case.
+    int webSearchUses = 0,
   }) async {
     if (mock) return '[MOCK] $system\n---\n$prompt';
     if (apiKey.isEmpty) throw ClaudeException(503, 'ai_unavailable');
@@ -50,16 +60,26 @@ class ClaudeClient {
               'anthropic-beta': 'server-side-fallback-2026-07-01',
             },
             body: jsonEncode({
-              'model': _model,
+              'model': model ?? _model,
               'max_tokens': maxTokens,
               'fallbacks': 'default',
               'system': system,
+              if (webSearchUses > 0)
+                'output_config': {'effort': 'low'},
+              if (webSearchUses > 0)
+                'tools': [
+                  {
+                    'type': 'web_search_20250305',
+                    'name': 'web_search',
+                    'max_uses': webSearchUses,
+                  }
+                ],
               'messages': [
                 {'role': 'user', 'content': prompt},
               ],
             }),
           )
-          .timeout(const Duration(seconds: 150));
+          .timeout(const Duration(seconds: 240));
     } on Exception {
       throw ClaudeException(503, 'upstream_unreachable');
     }

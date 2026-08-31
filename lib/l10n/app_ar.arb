@@ -127,5 +127,14 @@
   "jobAd": "نص إعلان الوظيفة",
   "jobAdHint": "الصق إعلان الوظيفة هنا…",
   "generateWithAi": "إنشاء بالذكاء الاصطناعي",
-  "aiSectionTitle": "مساعد الذكاء الاصطناعي"
+  "aiSectionTitle": "مساعد الذكاء الاصطناعي",
+  "jobSearch": "البحث عن وظائف",
+  "jobSearchSubtitle": "اعثر على وظائف تناسب سيرتك الذاتية",
+  "desiredRole": "الوظيفة المطلوبة",
+  "remoteOk": "أقبل العمل عن بُعد",
+  "searchJobs": "بحث",
+  "noJobsFound": "لم نجد وظائف مطابقة. جرّب مسمى وظيفي أوسع أو مدينة أخرى.",
+  "openJobPost": "فتح الإعلان",
+  "jobsCached": "نتائج حديثة",
+  "couldNotOpenLink": "تعذّر فتح الرابط"
 }

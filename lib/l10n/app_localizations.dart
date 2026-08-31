@@ -865,6 +865,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'AI Assistant'**
   String get aiSectionTitle;
+
+  /// No description provided for @jobSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Job search'**
+  String get jobSearch;
+
+  /// No description provided for @jobSearchSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Find openings that match your resume'**
+  String get jobSearchSubtitle;
+
+  /// No description provided for @desiredRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Desired role'**
+  String get desiredRole;
+
+  /// No description provided for @remoteOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote work is fine'**
+  String get remoteOk;
+
+  /// No description provided for @searchJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get searchJobs;
+
+  /// No description provided for @noJobsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching openings found. Try a broader role or city.'**
+  String get noJobsFound;
+
+  /// No description provided for @openJobPost.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the posting'**
+  String get openJobPost;
+
+  /// No description provided for @jobsCached.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent results'**
+  String get jobsCached;
+
+  /// No description provided for @couldNotOpenLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the link'**
+  String get couldNotOpenLink;
 }
 
 class _AppLocalizationsDelegate

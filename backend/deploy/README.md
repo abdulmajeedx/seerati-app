@@ -19,6 +19,20 @@ Config lives in `~/seerati-keys/backend.env` (chmod 600, never committed):
 | `SEERATI_DB` | SQLite path (devices, daily usage, activation codes) |
 | `PORT` | Listen port, default 8787 |
 | `SEERATI_BIND` | `any` to bind all interfaces; default is loopback only |
+| `SEERATI_JOBS_MODEL` | Model for job search only. Unset ⇒ `claude-opus-5` |
+
+## Cost per call (measured, Claude Opus 5)
+
+| Endpoint | Tokens in/out | Cost | Latency |
+|---|---|---|---|
+| `/v1/ai/summary` | ~0.5k / 0.2k | ~$0.007 | ~6 s |
+| `/v1/ai/cover-letter` | ~1.5k / 0.4k | ~$0.018 | ~15 s |
+| `/v1/ai/jobs` | ~19k / 1.1k | ~$0.124 | ~17 s |
+
+Job search dominates the bill because each call runs several web searches whose
+results re-enter the context. Identical queries are cached for 6 hours, and a
+search costs 3 quota credits instead of 1. To stretch credit further, set
+`SEERATI_JOBS_MODEL=claude-sonnet-5` (≈2.5x cheaper) and restart.
 
 The server binds `127.0.0.1` by design — nginx is its only client, so the
 `X-Forwarded-For` used for per-IP limiting cannot be spoofed from the internet.

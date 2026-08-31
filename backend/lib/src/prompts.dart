@@ -34,6 +34,31 @@ String experiencePrompt({
     'What they did, in their own words: $rawDescription\n'
     'Write the bullet points.';
 
+const jobsSystem =
+    'You find REAL, currently posted job openings using web search. Run 3–5 '
+    'searches (mix Arabic and English queries, include local job boards), then '
+    'output ONLY a JSON array — no prose, no markdown fence — of up to 8 '
+    'objects with keys: title, company, location, url, why_match. '
+    '"why_match" is one short sentence in the requested language explaining the '
+    'fit with the candidate. Use ONLY urls that appeared in search results; '
+    'never invent or guess a url. Output [] if nothing real was found.';
+
+String jobsPrompt({
+  required String language,
+  required String jobTitle,
+  required String city,
+  required bool remote,
+  required List<String> skills,
+  required String summary,
+}) =>
+    'Answer "why_match" in ${_lang(language)}.\n'
+    'Wanted role: $jobTitle\n'
+    '${city.isEmpty ? '' : 'Location: $city\n'}'
+    '${remote ? 'Remote work is acceptable.\n' : ''}'
+    '${skills.isEmpty ? '' : 'Candidate skills: ${skills.join(', ')}\n'}'
+    '${summary.isEmpty ? '' : 'Candidate background: $summary\n'}'
+    'Find matching openings.';
+
 String coverLetterSystem(String language) =>
     '$_shared Write in ${_lang(language)}. Produce a complete cover letter '
     'body (greeting through sign-off) of 150–250 words, tailored to the job '

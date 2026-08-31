@@ -392,4 +392,32 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get aiSectionTitle => 'مساعد الذكاء الاصطناعي';
+
+  @override
+  String get jobSearch => 'البحث عن وظائف';
+
+  @override
+  String get jobSearchSubtitle => 'اعثر على وظائف تناسب سيرتك الذاتية';
+
+  @override
+  String get desiredRole => 'الوظيفة المطلوبة';
+
+  @override
+  String get remoteOk => 'أقبل العمل عن بُعد';
+
+  @override
+  String get searchJobs => 'بحث';
+
+  @override
+  String get noJobsFound =>
+      'لم نجد وظائف مطابقة. جرّب مسمى وظيفي أوسع أو مدينة أخرى.';
+
+  @override
+  String get openJobPost => 'فتح الإعلان';
+
+  @override
+  String get jobsCached => 'نتائج حديثة';
+
+  @override
+  String get couldNotOpenLink => 'تعذّر فتح الرابط';
 }

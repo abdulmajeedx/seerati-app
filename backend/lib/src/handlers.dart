@@ -10,13 +10,21 @@ import 'prompts.dart' as prompts;
 class ApiConfig {
   const ApiConfig({
     required this.appKey,
-    this.freeDailyQuota = 5,
-    this.premiumDailyQuota = 50,
+    this.freeDailyQuota = 6,
+    this.premiumDailyQuota = 60,
+    this.jobsModel,
   });
 
   final String appKey;
   final int freeDailyQuota;
   final int premiumDailyQuota;
+
+  /// null ⇒ the ClaudeClient default.
+  final String? jobsModel;
+
+  /// A job search runs several web searches; it bills roughly 15x a text call.
+  static const jobsQuotaCost = 3;
+  static const jobsCacheTtl = Duration(hours: 6);
 }
 
 class Api {
@@ -36,7 +44,8 @@ class Api {
       ..post('/v1/redeem', _redeem)
       ..post('/v1/ai/summary', _aiSummary)
       ..post('/v1/ai/experience', _aiExperience)
-      ..post('/v1/ai/cover-letter', _aiCoverLetter);
+      ..post('/v1/ai/cover-letter', _aiCoverLetter)
+      ..post('/v1/ai/jobs', _aiJobs);
     return const Pipeline().addMiddleware(_guard).addHandler(router.call);
   }
 
@@ -116,6 +125,98 @@ class Api {
           ),
         );
       });
+
+  Future<Response> _aiJobs(Request request) async {
+    final body = await _body(request);
+    if (body == null) return _json(400, {'error': 'bad_request'});
+    final deviceId = _str(body, 'device_id', 64);
+    final jobTitle = _str(body, 'job_title', 120);
+    if (deviceId.isEmpty || jobTitle.isEmpty) {
+      return _json(400, {'error': 'bad_request'});
+    }
+    final language = _language(body);
+    final city = _str(body, 'city', 80);
+    final remote = body['remote'] == true;
+    final cacheKey =
+        '$language|${jobTitle.toLowerCase()}|${city.toLowerCase()}|$remote';
+    final cached = db.cachedJobs(cacheKey, ApiConfig.jobsCacheTtl);
+    if (cached != null) {
+      return Response(200,
+          body: '{"jobs":$cached,"cached":true}',
+          headers: {'content-type': 'application/json; charset=utf-8'});
+    }
+
+    db.ensureDevice(deviceId);
+    final premium = db.isPremium(deviceId);
+    final limit = premium ? config.premiumDailyQuota : config.freeDailyQuota;
+    if (!db.tryConsumeQuota(deviceId, limit,
+        cost: ApiConfig.jobsQuotaCost)) {
+      return _json(429, {'error': 'quota_exhausted', 'premium': premium});
+    }
+
+    try {
+      final raw = await claude.generate(
+        system: prompts.jobsSystem,
+        prompt: prompts.jobsPrompt(
+          language: language,
+          jobTitle: jobTitle,
+          city: city,
+          remote: remote,
+          skills: _strList(body, 'skills', 30, 60),
+          summary: _str(body, 'resume_summary', 1200),
+        ),
+        maxTokens: 3000,
+        model: config.jobsModel,
+        webSearchUses: 5,
+      );
+      final jobs = _parseJobs(raw);
+      final payload = jsonEncode(jobs);
+      if (jobs.isNotEmpty) db.cacheJobs(cacheKey, payload);
+      return Response(200,
+          body: '{"jobs":$payload,"cached":false}',
+          headers: {'content-type': 'application/json; charset=utf-8'});
+    } on ClaudeException catch (e) {
+      db.refundQuota(deviceId, cost: ApiConfig.jobsQuotaCost);
+      return _json(e.statusCode >= 500 || e.statusCode == 429 ? 503 : 422,
+          {'error': e.message});
+    }
+  }
+
+  /// The model is told to emit a bare JSON array, but a stray sentence before
+  /// it is cheap to tolerate; anything without a usable http(s) url is dropped
+  /// so a hallucinated link never reaches a user.
+  static List<Map<String, String>> _parseJobs(String raw) {
+    final start = raw.indexOf('[');
+    final end = raw.lastIndexOf(']');
+    if (start < 0 || end <= start) return const [];
+    final Object? decoded;
+    try {
+      decoded = jsonDecode(raw.substring(start, end + 1));
+    } catch (_) {
+      return const [];
+    }
+    if (decoded is! List) return const [];
+    final jobs = <Map<String, String>>[];
+    for (final item in decoded) {
+      if (item is! Map) continue;
+      final url = (item['url'] ?? '').toString().trim();
+      final uri = Uri.tryParse(url);
+      if (uri == null || (uri.scheme != 'https' && uri.scheme != 'http')) {
+        continue;
+      }
+      final title = (item['title'] ?? '').toString().trim();
+      if (title.isEmpty) continue;
+      jobs.add({
+        'title': title,
+        'company': (item['company'] ?? '').toString().trim(),
+        'location': (item['location'] ?? '').toString().trim(),
+        'url': url,
+        'why_match': (item['why_match'] ?? '').toString().trim(),
+      });
+      if (jobs.length == 8) break;
+    }
+    return jobs;
+  }
 
   Future<Response> _aiCall(Request request,
       (String, String) Function(Map<String, dynamic>) build) async {

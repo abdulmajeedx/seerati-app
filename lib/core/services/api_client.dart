@@ -15,6 +15,30 @@ class ApiException implements Exception {
 
 final apiClientProvider = Provider<ApiClient>((ref) => ApiClient());
 
+class JobResult {
+  const JobResult({
+    required this.title,
+    required this.company,
+    required this.location,
+    required this.url,
+    required this.whyMatch,
+  });
+
+  factory JobResult.fromJson(Map<String, dynamic> json) => JobResult(
+        title: json['title'] as String? ?? '',
+        company: json['company'] as String? ?? '',
+        location: json['location'] as String? ?? '',
+        url: json['url'] as String? ?? '',
+        whyMatch: json['why_match'] as String? ?? '',
+      );
+
+  final String title;
+  final String company;
+  final String location;
+  final String url;
+  final String whyMatch;
+}
+
 /// Talks to the Seerati backend, which holds the Claude API key. Configured at
 /// build time: --dart-define=SEERATI_API_BASE=... --dart-define=SEERATI_APP_KEY=...
 class ApiClient {
@@ -93,6 +117,30 @@ class ApiClient {
         'job_ad': jobAd,
         'resume_summary': resumeSummary,
       });
+
+  Future<List<JobResult>> searchJobs({
+    required String language,
+    required String jobTitle,
+    required String city,
+    required bool remote,
+    required List<String> skills,
+    required String resumeSummary,
+  }) async {
+    final body = await _post('/v1/ai/jobs', {
+      'language': language,
+      'job_title': jobTitle,
+      'city': city,
+      'remote': remote,
+      'skills': skills,
+      'resume_summary': resumeSummary,
+    });
+    final jobs = body['jobs'];
+    if (jobs is! List) throw const ApiException(ApiErrorKind.server);
+    return jobs
+        .whereType<Map<String, dynamic>>()
+        .map(JobResult.fromJson)
+        .toList();
+  }
 
   /// Server-side single-use redemption. Returns true when premium is granted.
   Future<bool> redeem(String code) async {
