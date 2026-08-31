@@ -11,10 +11,17 @@ class ClaudeException implements Exception {
 
 /// Minimal Claude Messages API client (raw HTTP — no official Dart SDK).
 class ClaudeClient {
-  ClaudeClient({required this.apiKey, http.Client? httpClient})
-      : _http = httpClient ?? http.Client();
+  ClaudeClient({
+    required this.apiKey,
+    this.mock = false,
+    http.Client? httpClient,
+  }) : _http = httpClient ?? http.Client();
 
   final String apiKey;
+
+  /// Echoes the prompt instead of calling the API. Tests and local dev only —
+  /// a keyless production server must fail loudly, not serve fake text.
+  final bool mock;
   final http.Client _http;
 
   static const _endpoint = 'https://api.anthropic.com/v1/messages';
@@ -27,9 +34,8 @@ class ClaudeClient {
     required String prompt,
     int maxTokens = 2048,
   }) async {
-    if (apiKey.isEmpty) {
-      return '[MOCK] $system\n---\n$prompt';
-    }
+    if (mock) return '[MOCK] $system\n---\n$prompt';
+    if (apiKey.isEmpty) throw ClaudeException(503, 'ai_unavailable');
     final http.Response response;
     try {
       response = await _http

@@ -14,15 +14,17 @@ Future<void> main() async {
     exit(1);
   }
   final apiKey = env['ANTHROPIC_API_KEY'] ?? '';
-  if (apiKey.isEmpty) {
-    stderr.writeln('WARNING: ANTHROPIC_API_KEY unset — running in MOCK mode');
+  final mock = env['SEERATI_MOCK'] == '1';
+  if (apiKey.isEmpty && !mock) {
+    stderr.writeln('WARNING: ANTHROPIC_API_KEY unset — AI endpoints will '
+        'return 503 until it is set (SEERATI_MOCK=1 for fake responses)');
   }
   final dbPath = env['SEERATI_DB'] ?? 'data/seerati.db';
   Directory(File(dbPath).parent.path).createSync(recursive: true);
 
   final api = Api(
     db: Db(dbPath),
-    claude: ClaudeClient(apiKey: apiKey),
+    claude: ClaudeClient(apiKey: apiKey, mock: mock),
     config: ApiConfig(appKey: appKey),
   );
   final handler =
@@ -35,5 +37,5 @@ Future<void> main() async {
       : InternetAddress.loopbackIPv4;
   final server = await shelf_io.serve(handler, address, port);
   stdout.writeln('seerati-backend listening on :${server.port}'
-      '${apiKey.isEmpty ? ' (MOCK mode)' : ''}');
+      '${mock ? ' (MOCK mode)' : (apiKey.isEmpty ? ' (AI disabled)' : '')}');
 }

@@ -92,6 +92,16 @@ class Db {
     return ok;
   }
 
+  /// Gives back a credit consumed by a call that never produced text.
+  void refundQuota(String deviceId) {
+    final day = DateTime.now().toUtc().toIso8601String().substring(0, 10);
+    _db.execute(
+      'UPDATE usage SET count = count - 1 '
+      'WHERE device_id = ? AND day = ? AND count > 0',
+      [deviceId, day],
+    );
+  }
+
   /// Single-use redemption: marks the code as used by [deviceId] and grants
   /// premium, atomically. Returns false for unknown or already-used codes
   /// (idempotent success when the same device redeems the same code again).

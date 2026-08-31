@@ -35,7 +35,7 @@ void main() {
     db = Db('${tmp.path}/test.db');
     handler = Api(
       db: db,
-      claude: ClaudeClient(apiKey: ''), // mock mode
+      claude: ClaudeClient(apiKey: '', mock: true),
       config: const ApiConfig(appKey: _appKey, freeDailyQuota: 3),
     ).handler;
   });
@@ -107,6 +107,25 @@ void main() {
       final r = await _post(handler, '/v1/ai/summary',
           {'device_id': 'd1', 'job_title': 'x'});
       expect(r.statusCode, 200, reason: 'call $i');
+    }
+  });
+
+  test('a keyless server refuses AI calls and refunds the credit', () async {
+    final noKey = Api(
+      db: db,
+      claude: ClaudeClient(apiKey: ''), // no key, no mock: production-like
+      config: const ApiConfig(appKey: _appKey, freeDailyQuota: 2),
+    ).handler;
+    final r = await _post(
+        noKey, '/v1/ai/summary', {'device_id': 'nk', 'job_title': 'x'});
+    expect(r.statusCode, 503);
+    expect((await _json(r))['error'], 'ai_unavailable');
+    // The failed call must not have cost the user a credit: two calls still
+    // available on a quota of 2.
+    for (var i = 0; i < 2; i++) {
+      final ok = await _post(
+          handler, '/v1/ai/summary', {'device_id': 'nk', 'job_title': 'x'});
+      expect(ok.statusCode, 200, reason: 'call $i');
     }
   });
 

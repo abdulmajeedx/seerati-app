@@ -134,6 +134,8 @@ class Api {
       final text = await claude.generate(system: system, prompt: prompt);
       return _json(200, {'text': text});
     } on ClaudeException catch (e) {
+      // The user got no text, so the credit goes back.
+      db.refundQuota(deviceId);
       return _json(e.statusCode >= 500 || e.statusCode == 429 ? 503 : 422,
           {'error': e.message});
     }
