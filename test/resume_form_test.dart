@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:seerati/core/services/storage_service.dart';
@@ -10,6 +11,11 @@ import 'package:seerati/features/resume/presentation/resume_form_screen.dart';
 import 'package:seerati/l10n/app_localizations.dart';
 
 Widget _wrap(Widget child, {Locale locale = const Locale('en')}) {
+  return ProviderScope(
+      child: _app(child, locale));
+}
+
+Widget _app(Widget child, Locale locale) {
   return MaterialApp(
     locale: locale,
     supportedLocales: AppLocalizations.supportedLocales,

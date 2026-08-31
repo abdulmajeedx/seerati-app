@@ -10,6 +10,7 @@ import 'steps/extras_step.dart';
 import 'steps/personal_info_step.dart';
 import 'steps/skills_step.dart';
 import 'steps/summary_step.dart';
+import 'template_picker_screen.dart';
 
 class ResumeFormScreen extends StatefulWidget {
   const ResumeFormScreen({super.key, this.existing});
@@ -73,7 +74,9 @@ class _ResumeFormScreenState extends State<ResumeFormScreen> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(l10n.resumeSaved)));
-    Navigator.of(context).pop(_draft);
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => TemplatePickerScreen(resume: _draft)),
+    );
   }
 
   StepState _stateFor(int index) {
