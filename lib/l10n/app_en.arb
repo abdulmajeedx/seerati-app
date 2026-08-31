@@ -108,5 +108,10 @@
   "storeUnavailable": "The store is not available on this device.",
   "purchaseSuccess": "Purchase successful — enjoy!",
   "alreadyPremium": "You already own Premium.",
-  "retry": "Retry"
+  "retry": "Retry",
+  "haveActivationCode": "Have an activation code?",
+  "activationCode": "Activation Code",
+  "activate": "Activate",
+  "invalidCode": "Invalid code",
+  "tooManyAttempts": "Too many attempts. Try again in a minute."
 }

@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.0] - 2026-08-31
+
+### Added
+- Local data encryption: Hive boxes now AES-256 encrypted, key stored in Android Keystore (flutter_secure_storage); existing v1.0.0 data migrates automatically with an on-disk backup.
+- Offline activation codes: "Have an activation code?" on the paywall unlocks Premium; admin generates codes with `dart run tool/generate_codes.dart [count]`. Rate-limited to 5 attempts/minute.
+
 ## [1.0.0] - 2026-08-31
 
 ### Added

@@ -108,5 +108,10 @@
   "storeUnavailable": "المتجر غير متاح على هذا الجهاز.",
   "purchaseSuccess": "تم الشراء بنجاح — استمتع!",
   "alreadyPremium": "أنت تملك النسخة الكاملة بالفعل.",
-  "retry": "إعادة المحاولة"
+  "retry": "إعادة المحاولة",
+  "haveActivationCode": "لديك كود تفعيل؟",
+  "activationCode": "كود التفعيل",
+  "activate": "تفعيل",
+  "invalidCode": "كود غير صالح",
+  "tooManyAttempts": "محاولات كثيرة. حاول بعد دقيقة."
 }

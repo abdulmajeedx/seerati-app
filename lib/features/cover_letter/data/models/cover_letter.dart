@@ -43,4 +43,16 @@ class CoverLetter extends HiveObject {
 
   @HiveField(8)
   DateTime updatedAt;
+
+  CoverLetter copy() => CoverLetter(
+        id: id,
+        language: language,
+        senderName: senderName,
+        recipientName: recipientName,
+        companyName: companyName,
+        jobTitle: jobTitle,
+        body: body,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+      );
 }

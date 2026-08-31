@@ -337,4 +337,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retry => 'Retry';
+
+  @override
+  String get haveActivationCode => 'Have an activation code?';
+
+  @override
+  String get activationCode => 'Activation Code';
+
+  @override
+  String get activate => 'Activate';
+
+  @override
+  String get invalidCode => 'Invalid code';
+
+  @override
+  String get tooManyAttempts => 'Too many attempts. Try again in a minute.';
 }

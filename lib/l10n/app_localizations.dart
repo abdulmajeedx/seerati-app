@@ -751,6 +751,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retry'**
   String get retry;
+
+  /// No description provided for @haveActivationCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Have an activation code?'**
+  String get haveActivationCode;
+
+  /// No description provided for @activationCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Activation Code'**
+  String get activationCode;
+
+  /// No description provided for @activate.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate'**
+  String get activate;
+
+  /// No description provided for @invalidCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid code'**
+  String get invalidCode;
+
+  /// No description provided for @tooManyAttempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Try again in a minute.'**
+  String get tooManyAttempts;
 }
 
 class _AppLocalizationsDelegate

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/providers/premium_provider.dart';
+import '../../../core/services/activation_service.dart';
 import '../../../core/services/purchase_service.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -123,6 +124,85 @@ class _PaywallBody extends ConsumerWidget {
             child: Text(l10n.restorePurchases),
           ),
         ],
+        TextButton(
+          onPressed: () => showDialog<void>(
+            context: context,
+            builder: (_) => const _ActivationDialog(),
+          ),
+          child: Text(l10n.haveActivationCode),
+        ),
+      ],
+    );
+  }
+}
+
+class _ActivationDialog extends ConsumerStatefulWidget {
+  const _ActivationDialog();
+
+  @override
+  ConsumerState<_ActivationDialog> createState() => _ActivationDialogState();
+}
+
+class _ActivationDialogState extends ConsumerState<_ActivationDialog> {
+  final _controller = TextEditingController();
+  String? _errorText;
+  bool _busy = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _activate() async {
+    final l10n = AppLocalizations.of(context);
+    if (ActivationService.isRateLimited()) {
+      setState(() => _errorText = l10n.tooManyAttempts);
+      return;
+    }
+    setState(() => _busy = true);
+    final ok = await ActivationService.redeem(_controller.text);
+    if (!mounted) return;
+    if (!ok) {
+      setState(() {
+        _busy = false;
+        _errorText = l10n.invalidCode;
+      });
+      return;
+    }
+    await ref.read(premiumProvider.notifier).setPremium(true);
+    if (!mounted) return;
+    Navigator.of(context).pop();
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(l10n.purchaseSuccess)));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return AlertDialog(
+      title: Text(l10n.activationCode),
+      content: TextField(
+        controller: _controller,
+        autofocus: true,
+        maxLength: 24,
+        textCapitalization: TextCapitalization.characters,
+        textDirection: TextDirection.ltr,
+        decoration: InputDecoration(
+          hintText: 'SEER-XXXX-XXXX-XXXX',
+          hintTextDirection: TextDirection.ltr,
+          errorText: _errorText,
+          counterText: '',
+        ),
+        onSubmitted: (_) => _activate(),
+      ),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.cancel)),
+        FilledButton(
+            onPressed: _busy ? null : _activate, child: Text(l10n.activate)),
       ],
     );
   }

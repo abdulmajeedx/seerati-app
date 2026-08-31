@@ -335,4 +335,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get retry => 'إعادة المحاولة';
+
+  @override
+  String get haveActivationCode => 'لديك كود تفعيل؟';
+
+  @override
+  String get activationCode => 'كود التفعيل';
+
+  @override
+  String get activate => 'تفعيل';
+
+  @override
+  String get invalidCode => 'كود غير صالح';
+
+  @override
+  String get tooManyAttempts => 'محاولات كثيرة. حاول بعد دقيقة.';
 }
