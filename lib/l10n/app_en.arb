@@ -98,5 +98,15 @@
   "letterBody": "Letter Text",
   "coverLetterSaved": "Cover letter saved",
   "senderName": "Your Name",
-  "untitledLetter": "Untitled Letter"
+  "untitledLetter": "Untitled Letter",
+  "premiumTitle": "Seerati Premium",
+  "premiumBenefit1": "All 4 templates unlocked",
+  "premiumBenefit2": "No watermark on exported PDFs",
+  "premiumBenefit3": "One-time payment — yours forever",
+  "buyNow": "Buy now",
+  "restorePurchases": "Restore purchases",
+  "storeUnavailable": "The store is not available on this device.",
+  "purchaseSuccess": "Purchase successful — enjoy!",
+  "alreadyPremium": "You already own Premium.",
+  "retry": "Retry"
 }

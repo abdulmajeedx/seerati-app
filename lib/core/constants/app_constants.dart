@@ -9,6 +9,8 @@ abstract final class AppConstants {
 
   static const supportedResumeLanguages = ['ar', 'en'];
 
+  static const premiumProductId = 'seerati_premium';
+
   static const templateClassic = 'classic';
   static const templateModern = 'modern';
   static const templateMinimal = 'minimal';

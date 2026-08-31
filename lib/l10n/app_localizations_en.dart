@@ -307,4 +307,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get untitledLetter => 'Untitled Letter';
+
+  @override
+  String get premiumTitle => 'Seerati Premium';
+
+  @override
+  String get premiumBenefit1 => 'All 4 templates unlocked';
+
+  @override
+  String get premiumBenefit2 => 'No watermark on exported PDFs';
+
+  @override
+  String get premiumBenefit3 => 'One-time payment — yours forever';
+
+  @override
+  String get buyNow => 'Buy now';
+
+  @override
+  String get restorePurchases => 'Restore purchases';
+
+  @override
+  String get storeUnavailable => 'The store is not available on this device.';
+
+  @override
+  String get purchaseSuccess => 'Purchase successful — enjoy!';
+
+  @override
+  String get alreadyPremium => 'You already own Premium.';
+
+  @override
+  String get retry => 'Retry';
 }

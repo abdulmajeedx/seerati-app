@@ -5,6 +5,7 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/providers/premium_provider.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../paywall/presentation/paywall_screen.dart';
 import '../data/models/resume.dart';
 import '../templates/templates.dart';
 import 'resume_preview_screen.dart';
@@ -24,12 +25,11 @@ class TemplatePickerScreen extends ConsumerWidget {
 
   Future<void> _select(
       BuildContext context, WidgetRef ref, TemplateSpec spec) async {
-    final l10n = AppLocalizations.of(context);
     final premium = ref.read(premiumProvider);
     if (!spec.free && !premium) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(l10n.comingSoon)));
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const PaywallScreen()),
+      );
       return;
     }
     resume.templateId = spec.id;

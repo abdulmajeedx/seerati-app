@@ -98,5 +98,15 @@
   "letterBody": "نص الخطاب",
   "coverLetterSaved": "تم حفظ الخطاب",
   "senderName": "اسمك",
-  "untitledLetter": "خطاب بدون عنوان"
+  "untitledLetter": "خطاب بدون عنوان",
+  "premiumTitle": "سيرتي المميز",
+  "premiumBenefit1": "فتح جميع القوالب الأربعة",
+  "premiumBenefit2": "إزالة العلامة المائية من ملفات PDF",
+  "premiumBenefit3": "دفعة واحدة — ملكك للأبد",
+  "buyNow": "اشترِ الآن",
+  "restorePurchases": "استعادة المشتريات",
+  "storeUnavailable": "المتجر غير متاح على هذا الجهاز.",
+  "purchaseSuccess": "تم الشراء بنجاح — استمتع!",
+  "alreadyPremium": "أنت تملك النسخة الكاملة بالفعل.",
+  "retry": "إعادة المحاولة"
 }

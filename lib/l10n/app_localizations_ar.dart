@@ -305,4 +305,34 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get untitledLetter => 'خطاب بدون عنوان';
+
+  @override
+  String get premiumTitle => 'سيرتي المميز';
+
+  @override
+  String get premiumBenefit1 => 'فتح جميع القوالب الأربعة';
+
+  @override
+  String get premiumBenefit2 => 'إزالة العلامة المائية من ملفات PDF';
+
+  @override
+  String get premiumBenefit3 => 'دفعة واحدة — ملكك للأبد';
+
+  @override
+  String get buyNow => 'اشترِ الآن';
+
+  @override
+  String get restorePurchases => 'استعادة المشتريات';
+
+  @override
+  String get storeUnavailable => 'المتجر غير متاح على هذا الجهاز.';
+
+  @override
+  String get purchaseSuccess => 'تم الشراء بنجاح — استمتع!';
+
+  @override
+  String get alreadyPremium => 'أنت تملك النسخة الكاملة بالفعل.';
+
+  @override
+  String get retry => 'إعادة المحاولة';
 }
