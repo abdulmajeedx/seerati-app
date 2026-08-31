@@ -1,0 +1,54 @@
+# api.istx.io — Seerati AI backend (Dart shelf on 127.0.0.1:8787).
+# Deploy target: /etc/nginx/sites-available/api.istx.io
+# Cloudflare fronts this hostname; origin cert is self-signed, so keep the
+# Cloudflare SSL mode on "Full" (or install a Cloudflare Origin CA cert and
+# switch to "Full (strict)", which is preferable for API traffic).
+
+# Per-IP throttle at the edge; the app itself enforces per-device quotas.
+limit_req_zone $binary_remote_addr zone=seerati_api:10m rate=60r/m;
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name api.istx.io;
+
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/html;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name api.istx.io;
+
+    ssl_certificate     /etc/ssl/cloudflare/api.istx.io.pem;
+    ssl_certificate_key /etc/ssl/cloudflare/api.istx.io.key;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+    ssl_session_cache   shared:SSLseerati:10m;
+
+    # AI generation can take a while; keep the client connection open for it.
+    proxy_read_timeout 180s;
+    client_max_body_size 64k;
+
+    add_header X-Content-Type-Options nosniff always;
+    add_header Referrer-Policy no-referrer always;
+
+    location / {
+        limit_req zone=seerati_api burst=20 nodelay;
+        proxy_pass http://127.0.0.1:8787;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        # CF-Connecting-IP is the real client; $remote_addr here is Cloudflare.
+        proxy_set_header X-Forwarded-For $http_cf_connecting_ip;
+        proxy_set_header X-Forwarded-Proto https;
+    }
+
+    access_log /var/log/nginx/seerati-api.access.log;
+    error_log  /var/log/nginx/seerati-api.error.log;
+}

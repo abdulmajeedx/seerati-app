@@ -28,7 +28,12 @@ Future<void> main() async {
   final handler =
       const Pipeline().addMiddleware(logRequests()).addHandler(api.handler);
   final port = int.parse(env['PORT'] ?? '8787');
-  final server = await shelf_io.serve(handler, InternetAddress.anyIPv4, port);
+  // Loopback only: nginx terminates TLS and is the sole client, so the
+  // X-Forwarded-For the rate limiter trusts cannot be spoofed from outside.
+  final address = env['SEERATI_BIND'] == 'any'
+      ? InternetAddress.anyIPv4
+      : InternetAddress.loopbackIPv4;
+  final server = await shelf_io.serve(handler, address, port);
   stdout.writeln('seerati-backend listening on :${server.port}'
       '${apiKey.isEmpty ? ' (MOCK mode)' : ''}');
 }
