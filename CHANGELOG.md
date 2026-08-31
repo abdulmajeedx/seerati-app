@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.0.1] - 2026-08-31
+
+### Changed
+- The AI cover-letter generator now has its own card on the home screen; previously every AI feature was buried inside a flow and the release looked unchanged on launch.
+
 ## [2.0.0] - 2026-08-31
 
 ### Added

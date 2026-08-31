@@ -9,6 +9,8 @@ import '../../../core/providers/locale_provider.dart';
 import '../../../core/providers/theme_provider.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../core/services/api_client.dart';
+import '../../cover_letter/presentation/ai_cover_letter_screen.dart';
 import '../../cover_letter/presentation/cover_letter_list_screen.dart';
 import '../../resume/data/models/resume.dart';
 import '../../resume/presentation/resume_form_screen.dart';
@@ -93,6 +95,18 @@ class HomeScreen extends ConsumerWidget {
               MaterialPageRoute(builder: (_) => const CoverLetterListScreen()),
             ),
           ),
+          if (ApiClient.isConfigured) ...[
+            const SizedBox(height: 12),
+            _ActionCard(
+              icon: Icons.auto_awesome_outlined,
+              title: l10n.coverLetterFromAd,
+              subtitle: l10n.coverLetterFromAdSubtitle,
+              highlight: true,
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const AiCoverLetterScreen()),
+              ),
+            ),
+          ],
           const SizedBox(height: 24),
           Text(
             l10n.myResumes,
@@ -187,19 +201,23 @@ class _ActionCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.onTap,
+    this.highlight = false,
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
   final VoidCallback onTap;
+  final bool highlight;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final isRtl = Directionality.of(context) == TextDirection.rtl;
     return Card(
-      color: scheme.surfaceContainerHighest,
+      color: highlight
+          ? scheme.primaryContainer
+          : scheme.surfaceContainerHighest,
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
@@ -210,10 +228,13 @@ class _ActionCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: scheme.primaryContainer,
+                  color: highlight ? scheme.primary : scheme.primaryContainer,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(icon, color: scheme.onPrimaryContainer, size: 28),
+                child: Icon(icon,
+                    color:
+                        highlight ? scheme.onPrimary : scheme.onPrimaryContainer,
+                    size: 28),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -228,7 +249,9 @@ class _ActionCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(subtitle,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: scheme.onSurfaceVariant,
+                              color: highlight
+                                  ? scheme.onPrimaryContainer
+                                  : scheme.onSurfaceVariant,
                             )),
                   ],
                 ),
