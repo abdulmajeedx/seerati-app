@@ -279,4 +279,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get endBeforeStart => 'End date must be after start date';
+
+  @override
+  String get confirmDelete => 'Confirm deletion';
+
+  @override
+  String get confirmDeleteMsg => 'This action cannot be undone.';
+
+  @override
+  String get myCoverLetters => 'My Cover Letters';
+
+  @override
+  String get noCoverLettersYet =>
+      'No cover letters yet. Create your first one!';
+
+  @override
+  String get newCoverLetter => 'New Cover Letter';
+
+  @override
+  String get letterBody => 'Letter Text';
+
+  @override
+  String get coverLetterSaved => 'Cover letter saved';
+
+  @override
+  String get senderName => 'Your Name';
+
+  @override
+  String get untitledLetter => 'Untitled Letter';
 }

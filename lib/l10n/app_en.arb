@@ -89,5 +89,14 @@
   "selectDate": "Select date",
   "summaryHint": "Write a short professional summary about yourself…",
   "optionalHint": "Optional",
-  "endBeforeStart": "End date must be after start date"
+  "endBeforeStart": "End date must be after start date",
+  "confirmDelete": "Confirm deletion",
+  "confirmDeleteMsg": "This action cannot be undone.",
+  "myCoverLetters": "My Cover Letters",
+  "noCoverLettersYet": "No cover letters yet. Create your first one!",
+  "newCoverLetter": "New Cover Letter",
+  "letterBody": "Letter Text",
+  "coverLetterSaved": "Cover letter saved",
+  "senderName": "Your Name",
+  "untitledLetter": "Untitled Letter"
 }

@@ -278,4 +278,31 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get endBeforeStart => 'تاريخ النهاية يجب أن يكون بعد تاريخ البداية';
+
+  @override
+  String get confirmDelete => 'تأكيد الحذف';
+
+  @override
+  String get confirmDeleteMsg => 'لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String get myCoverLetters => 'خطاباتي';
+
+  @override
+  String get noCoverLettersYet => 'لا توجد خطابات بعد. أنشئ خطابك الأول!';
+
+  @override
+  String get newCoverLetter => 'خطاب تقديم جديد';
+
+  @override
+  String get letterBody => 'نص الخطاب';
+
+  @override
+  String get coverLetterSaved => 'تم حفظ الخطاب';
+
+  @override
+  String get senderName => 'اسمك';
+
+  @override
+  String get untitledLetter => 'خطاب بدون عنوان';
 }

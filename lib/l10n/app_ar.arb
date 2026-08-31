@@ -89,5 +89,14 @@
   "selectDate": "اختر التاريخ",
   "summaryHint": "اكتب ملخصاً مهنياً قصيراً عن نفسك…",
   "optionalHint": "اختياري",
-  "endBeforeStart": "تاريخ النهاية يجب أن يكون بعد تاريخ البداية"
+  "endBeforeStart": "تاريخ النهاية يجب أن يكون بعد تاريخ البداية",
+  "confirmDelete": "تأكيد الحذف",
+  "confirmDeleteMsg": "لا يمكن التراجع عن هذا الإجراء.",
+  "myCoverLetters": "خطاباتي",
+  "noCoverLettersYet": "لا توجد خطابات بعد. أنشئ خطابك الأول!",
+  "newCoverLetter": "خطاب تقديم جديد",
+  "letterBody": "نص الخطاب",
+  "coverLetterSaved": "تم حفظ الخطاب",
+  "senderName": "اسمك",
+  "untitledLetter": "خطاب بدون عنوان"
 }

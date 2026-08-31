@@ -637,6 +637,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'End date must be after start date'**
   String get endBeforeStart;
+
+  /// No description provided for @confirmDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm deletion'**
+  String get confirmDelete;
+
+  /// No description provided for @confirmDeleteMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone.'**
+  String get confirmDeleteMsg;
+
+  /// No description provided for @myCoverLetters.
+  ///
+  /// In en, this message translates to:
+  /// **'My Cover Letters'**
+  String get myCoverLetters;
+
+  /// No description provided for @noCoverLettersYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No cover letters yet. Create your first one!'**
+  String get noCoverLettersYet;
+
+  /// No description provided for @newCoverLetter.
+  ///
+  /// In en, this message translates to:
+  /// **'New Cover Letter'**
+  String get newCoverLetter;
+
+  /// No description provided for @letterBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Letter Text'**
+  String get letterBody;
+
+  /// No description provided for @coverLetterSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Cover letter saved'**
+  String get coverLetterSaved;
+
+  /// No description provided for @senderName.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Name'**
+  String get senderName;
+
+  /// No description provided for @untitledLetter.
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled Letter'**
+  String get untitledLetter;
 }
 
 class _AppLocalizationsDelegate
