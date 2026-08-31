@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0] - 2026-08-31
+
+### Added
+- AI assistant (Claude, via the Seerati backend): improve the professional summary, rewrite experience descriptions as resume bullets, and generate a cover letter tailored to a pasted job ad — in Arabic or English.
+- Backend service (`backend/`): Dart + shelf proxy holding the Claude API key, per-device daily quotas, single-use activation codes, and per-IP rate limiting behind nginx + Cloudflare.
+- Activation codes are now verified server-side, so each code unlocks Premium on exactly one device.
+
+### Changed
+- Builds without `SEERATI_API_BASE`/`SEERATI_APP_KEY` hide every AI feature and stay fully offline.
+- Failed AI generations refund the user's daily quota.
+
 ## [1.1.0] - 2026-08-31
 
 ### Added
