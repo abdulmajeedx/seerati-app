@@ -1,0 +1,50 @@
+name: Build Android
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      - run: dart run build_runner build --delete-conflicting-outputs
+
+      - run: flutter analyze
+
+      - run: flutter test
+
+      # Without android/key.properties the build falls back to debug signing,
+      # which is fine for sideloading. To ship store-signed builds from CI,
+      # add KEYSTORE_BASE64 / KEY_PROPERTIES secrets and decode them here.
+      - run: flutter build apk --release
+
+      - run: cp build/app/outputs/flutter-apk/app-release.apk seerati.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: seerati-apk
+          path: seerati.apk
+
+      - name: Publish GitHub Release (tags only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: seerati.apk
+          generate_release_notes: true

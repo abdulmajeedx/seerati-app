@@ -2,7 +2,7 @@
 
 # سيرتي (Seerati) 📄
 
-> **⬇️ تحميل مباشر لأندرويد:** [أحدث إصدار APK](https://github.com/abdulmajeedx/seerati-app/releases/latest)
+> **⬇️ تحميل مباشر لأندرويد:** [seerati.apk — أحدث إصدار](https://github.com/abdulmajeedx/seerati-app/releases/latest/download/seerati.apk)
 >
 > ملاحظة: عند التثبيت قد يطلب أندرويد تفعيل **"التثبيت من مصادر غير معروفة"** — فعّلها مؤقتاً من الإعدادات ثم ثبّت التطبيق.
 
@@ -55,11 +55,11 @@ lib/
 ## خارطة الطريق
 
 - [x] هيكل المشروع + النماذج + الترجمة
-- [ ] نماذج الإدخال (RTL/LTR)
-- [ ] القوالب والمعاينة وتصدير PDF
-- [ ] الحفظ المحلي + خطاب التقديم
-- [ ] الشراء داخل التطبيق
-- [ ] نشر أول إصدار أندرويد
+- [x] نماذج الإدخال (RTL/LTR)
+- [x] القوالب والمعاينة وتصدير PDF
+- [x] الحفظ المحلي + خطاب التقديم
+- [x] الشراء داخل التطبيق
+- [x] نشر أول إصدار أندرويد
 - [ ] إصدار iOS
 
 </div>
@@ -68,7 +68,7 @@ lib/
 
 # Seerati (سيرتي) 📄 — English
 
-> **⬇️ Direct Android download:** [Latest APK release](https://github.com/abdulmajeedx/seerati-app/releases/latest)
+> **⬇️ Direct Android download:** [seerati.apk — latest release](https://github.com/abdulmajeedx/seerati-app/releases/latest/download/seerati.apk)
 >
 > Note: Android may ask you to enable **"Install from unknown sources"** — enable it temporarily in Settings, then install.
 
@@ -98,11 +98,11 @@ flutter run
 ## Roadmap
 
 - [x] Project structure + models + localization
-- [ ] Forms with RTL/LTR
-- [ ] Templates, live preview, PDF export (AR+EN)
-- [ ] Local storage + cover letter
-- [ ] In-app purchase
-- [ ] First Android release
+- [x] Forms with RTL/LTR
+- [x] Templates, live preview, PDF export (AR+EN)
+- [x] Local storage + cover letter
+- [x] In-app purchase
+- [x] First Android release
 - [ ] iOS release
 
 ## License

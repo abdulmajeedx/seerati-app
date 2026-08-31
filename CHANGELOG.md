@@ -1,10 +1,14 @@
 # Changelog
 
-## [Unreleased]
+## [1.0.0] - 2026-08-31
 
 ### Added
 - Project structure (features/ core/ shared/), Material 3 light/dark theme.
-- Hive data models: Resume, PersonalInfo, ExperienceItem, EducationItem, LanguageItem, CourseItem, CoverLetter.
 - Full Arabic/English localization (ARB) with persisted language switcher and RTL/LTR support.
-- Welcome and Home screens.
-- Bundled Cairo (Arabic) and Roboto (English) fonts.
+- Stepper resume form: personal info + photo, summary, experience, education, skills, languages & courses, with validation.
+- 4 PDF templates (Classic free; Modern, Minimal, Colorful premium) rendering Arabic (Cairo, RTL) and English (Roboto, LTR).
+- Live PDF preview with share/print; watermark for free users.
+- Local storage (Hive): "My Resumes" list with edit/preview/delete.
+- Cover letter generator from a bilingual text template, with editor and PDF export.
+- One-time in-app purchase unlocking all templates and removing the watermark.
+- CI: GitHub Actions Android build workflow; disabled iOS workflow with enablement notes.

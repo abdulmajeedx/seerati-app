@@ -1,0 +1,30 @@
+# iOS build — DISABLED for now.
+#
+# How to enable:
+# 1. You need an Apple Developer account ($99/year) and signing certificates.
+# 2. Change `runs-on` to `macos-latest` (iOS builds require a macOS runner).
+# 3. Remove the `if: false` guard on the job below.
+# 4. Add signing: either upload certificates/profiles as GitHub secrets and
+#    configure them (e.g. with fastlane match), or build unsigned with
+#    `flutter build ios --no-codesign` for CI validation only.
+# 5. Distribution to devices requires TestFlight or the App Store.
+
+name: Build iOS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    if: ${{ false }}  # disabled — see instructions above
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: dart run build_runner build --delete-conflicting-outputs
+      - run: flutter test
+      - run: flutter build ios --release --no-codesign
