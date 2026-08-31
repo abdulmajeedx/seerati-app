@@ -529,6 +529,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Something went wrong. Please try again.'**
   String get errorGeneric;
+
+  /// No description provided for @extrasStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Languages & Courses'**
+  String get extrasStep;
+
+  /// No description provided for @resumeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume Title'**
+  String get resumeTitle;
+
+  /// No description provided for @untitledResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled Resume'**
+  String get untitledResume;
+
+  /// No description provided for @addPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Photo'**
+  String get addPhoto;
+
+  /// No description provided for @removePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Photo'**
+  String get removePhoto;
+
+  /// No description provided for @levelBeginner.
+  ///
+  /// In en, this message translates to:
+  /// **'Beginner'**
+  String get levelBeginner;
+
+  /// No description provided for @levelIntermediate.
+  ///
+  /// In en, this message translates to:
+  /// **'Intermediate'**
+  String get levelIntermediate;
+
+  /// No description provided for @levelAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get levelAdvanced;
+
+  /// No description provided for @levelNative.
+  ///
+  /// In en, this message translates to:
+  /// **'Native'**
+  String get levelNative;
+
+  /// No description provided for @noExperienceYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No experience added yet'**
+  String get noExperienceYet;
+
+  /// No description provided for @noEducationYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No education added yet'**
+  String get noEducationYet;
+
+  /// No description provided for @skillsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a skill and press Enter'**
+  String get skillsHint;
+
+  /// No description provided for @present.
+  ///
+  /// In en, this message translates to:
+  /// **'Present'**
+  String get present;
+
+  /// No description provided for @resumeSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume saved successfully'**
+  String get resumeSaved;
+
+  /// No description provided for @selectDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select date'**
+  String get selectDate;
+
+  /// No description provided for @summaryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a short professional summary about yourself…'**
+  String get summaryHint;
+
+  /// No description provided for @optionalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get optionalHint;
+
+  /// No description provided for @endBeforeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'End date must be after start date'**
+  String get endBeforeStart;
 }
 
 class _AppLocalizationsDelegate

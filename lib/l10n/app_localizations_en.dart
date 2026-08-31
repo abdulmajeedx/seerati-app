@@ -224,4 +224,59 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorGeneric => 'Something went wrong. Please try again.';
+
+  @override
+  String get extrasStep => 'Languages & Courses';
+
+  @override
+  String get resumeTitle => 'Resume Title';
+
+  @override
+  String get untitledResume => 'Untitled Resume';
+
+  @override
+  String get addPhoto => 'Add Photo';
+
+  @override
+  String get removePhoto => 'Remove Photo';
+
+  @override
+  String get levelBeginner => 'Beginner';
+
+  @override
+  String get levelIntermediate => 'Intermediate';
+
+  @override
+  String get levelAdvanced => 'Advanced';
+
+  @override
+  String get levelNative => 'Native';
+
+  @override
+  String get noExperienceYet => 'No experience added yet';
+
+  @override
+  String get noEducationYet => 'No education added yet';
+
+  @override
+  String get skillsHint => 'Type a skill and press Enter';
+
+  @override
+  String get present => 'Present';
+
+  @override
+  String get resumeSaved => 'Resume saved successfully';
+
+  @override
+  String get selectDate => 'Select date';
+
+  @override
+  String get summaryHint =>
+      'Write a short professional summary about yourself…';
+
+  @override
+  String get optionalHint => 'Optional';
+
+  @override
+  String get endBeforeStart => 'End date must be after start date';
 }

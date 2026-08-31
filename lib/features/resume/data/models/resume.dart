@@ -65,6 +65,22 @@ class Resume extends HiveObject {
   DateTime updatedAt;
 
   bool get isArabic => language == 'ar';
+
+  Resume copy() => Resume(
+        id: id,
+        title: title,
+        language: language,
+        templateId: templateId,
+        personalInfo: personalInfo.copy(),
+        summary: summary,
+        experiences: [for (final e in experiences) e.copy()],
+        educations: [for (final e in educations) e.copy()],
+        skills: List.of(skills),
+        languages: [for (final e in languages) e.copy()],
+        courses: [for (final e in courses) e.copy()],
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+      );
 }
 
 @HiveType(typeId: 1)
@@ -95,6 +111,15 @@ class PersonalInfo extends HiveObject {
 
   @HiveField(5)
   String? photoPath;
+
+  PersonalInfo copy() => PersonalInfo(
+        fullName: fullName,
+        jobTitle: jobTitle,
+        phone: phone,
+        email: email,
+        city: city,
+        photoPath: photoPath,
+      );
 }
 
 @HiveType(typeId: 2)
@@ -129,6 +154,16 @@ class ExperienceItem extends HiveObject {
 
   @HiveField(6)
   String description;
+
+  ExperienceItem copy() => ExperienceItem(
+        jobTitle: jobTitle,
+        company: company,
+        city: city,
+        startDate: startDate,
+        endDate: endDate,
+        isCurrent: isCurrent,
+        description: description,
+      );
 }
 
 @HiveType(typeId: 3)
@@ -159,6 +194,15 @@ class EducationItem extends HiveObject {
 
   @HiveField(5)
   String description;
+
+  EducationItem copy() => EducationItem(
+        degree: degree,
+        institution: institution,
+        city: city,
+        startDate: startDate,
+        endDate: endDate,
+        description: description,
+      );
 }
 
 @HiveType(typeId: 4)
@@ -170,6 +214,8 @@ class LanguageItem extends HiveObject {
 
   @HiveField(1)
   String level;
+
+  LanguageItem copy() => LanguageItem(name: name, level: level);
 }
 
 @HiveType(typeId: 5)
@@ -184,4 +230,6 @@ class CourseItem extends HiveObject {
 
   @HiveField(2)
   String year;
+
+  CourseItem copy() => CourseItem(name: name, issuer: issuer, year: year);
 }

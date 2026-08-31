@@ -224,4 +224,58 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorGeneric => 'حدث خطأ ما. حاول مرة أخرى.';
+
+  @override
+  String get extrasStep => 'اللغات والدورات';
+
+  @override
+  String get resumeTitle => 'عنوان السيرة الذاتية';
+
+  @override
+  String get untitledResume => 'سيرة بدون عنوان';
+
+  @override
+  String get addPhoto => 'إضافة صورة';
+
+  @override
+  String get removePhoto => 'إزالة الصورة';
+
+  @override
+  String get levelBeginner => 'مبتدئ';
+
+  @override
+  String get levelIntermediate => 'متوسط';
+
+  @override
+  String get levelAdvanced => 'متقدم';
+
+  @override
+  String get levelNative => 'اللغة الأم';
+
+  @override
+  String get noExperienceYet => 'لم تُضف أي خبرات بعد';
+
+  @override
+  String get noEducationYet => 'لم تُضف أي مؤهلات بعد';
+
+  @override
+  String get skillsHint => 'اكتب مهارة واضغط إدخال';
+
+  @override
+  String get present => 'حتى الآن';
+
+  @override
+  String get resumeSaved => 'تم حفظ السيرة الذاتية بنجاح';
+
+  @override
+  String get selectDate => 'اختر التاريخ';
+
+  @override
+  String get summaryHint => 'اكتب ملخصاً مهنياً قصيراً عن نفسك…';
+
+  @override
+  String get optionalHint => 'اختياري';
+
+  @override
+  String get endBeforeStart => 'تاريخ النهاية يجب أن يكون بعد تاريخ البداية';
 }

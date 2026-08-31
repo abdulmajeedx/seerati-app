@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/locale_provider.dart';
 import '../../../core/providers/theme_provider.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../resume/presentation/resume_form_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -52,7 +53,9 @@ class HomeScreen extends ConsumerWidget {
             icon: Icons.article_outlined,
             title: l10n.newResume,
             subtitle: l10n.newResumeSubtitle,
-            onTap: () => _comingSoon(context),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const ResumeFormScreen()),
+            ),
           ),
           const SizedBox(height: 12),
           _ActionCard(
