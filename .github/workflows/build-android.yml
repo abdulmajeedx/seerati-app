@@ -6,6 +6,9 @@ on:
     tags: ['v*']
   workflow_dispatch:
 
+permissions:
+  contents: write  # needed to attach the APK to GitHub Releases on tags
+
 jobs:
   build:
     runs-on: ubuntu-latest
