@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.3.0] - 2026-08-31
+
+### Added
+- **Backup and restore**: export every resume and cover letter (photos included) to a single JSON file you can save or send anywhere, and restore it on any device — no account, no server, nothing leaves the phone unless you share the file yourself.
+- Restore merges by id and never deletes: entries in the backup overwrite their counterparts, anything else on the device is left alone.
+- The whole file is validated before a single write, so a corrupt or foreign file changes nothing. A photo that fails to decode is skipped rather than failing the restore.
+- A backup carries no premium flag or device identity, so sharing the file cannot hand out a paid unlock.
+
 ## [2.2.1] - 2026-08-31
 
 ### Added

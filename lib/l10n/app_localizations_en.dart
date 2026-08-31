@@ -443,4 +443,44 @@ class AppLocalizationsEn extends AppLocalizations {
   String creditsLeft(int count) {
     return '$count AI credits left today';
   }
+
+  @override
+  String get backup => 'Backup';
+
+  @override
+  String get exportBackup => 'Export a backup';
+
+  @override
+  String get importBackup => 'Restore from a backup';
+
+  @override
+  String get backupShareText => 'Seerati backup';
+
+  @override
+  String get nothingToBackUp => 'There is nothing to back up yet.';
+
+  @override
+  String get importConfirmTitle => 'Restore from a backup?';
+
+  @override
+  String get importConfirmBody =>
+      'Entries with the same id are overwritten with the backup\'s version. Nothing is deleted.';
+
+  @override
+  String get restore => 'Restore';
+
+  @override
+  String importDone(int added, int updated) {
+    return 'Restored $added new and $updated updated entries';
+  }
+
+  @override
+  String get importInvalidFile => 'This file is not a Seerati backup.';
+
+  @override
+  String get importUnsupportedVersion =>
+      'This backup was made by a newer version of the app. Update Seerati and try again.';
+
+  @override
+  String get importEmpty => 'This backup is empty.';
 }

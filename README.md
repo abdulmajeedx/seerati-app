@@ -21,6 +21,7 @@
 - 🔎 **البحث عن وظائف بالذكاء الاصطناعي**: يبحث في مواقع التوظيف مباشرة ويعرض وظائف حقيقية بروابطها مع سبب مطابقتها لسيرتك
 - 🤖 **مساعد ذكاء اصطناعي**: تحسين الملخص المهني، صياغة الخبرات كنقاط احترافية، وخطاب تقديم مخصص من إعلان الوظيفة
 - 🔒 تشفير البيانات المحلية (AES-256) بمفتاح في Android Keystore
+- 💾 **نسخ احتياطي واستعادة**: صدّر كل سيرك وخطاباتك (بالصور) في ملف واحد واستعدها على أي جهاز — بلا حساب وبلا خادم
 
 ## التشغيل
 
@@ -90,6 +91,7 @@ A free, fully offline bilingual (Arabic/English) **resume** and **cover letter**
 - 🔎 **AI job search**: live web searches across job boards, returning real openings with links and why each matches your resume
 - 🤖 **AI assistant**: improve your summary, rewrite experience as resume bullets, and generate a cover letter tailored to a job ad
 - 🔒 Local data encrypted with AES-256, key held in the Android Keystore
+- 💾 **Backup & restore**: export every resume and cover letter (photos included) to one file and restore it on any device — no account, no server
 
 > The AI features call the Seerati backend (`backend/`), which holds the Claude
 > API key. Builds without `SEERATI_API_BASE` / `SEERATI_APP_KEY` hide them and

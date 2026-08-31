@@ -943,6 +943,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} AI credits left today'**
   String creditsLeft(int count);
+
+  /// No description provided for @backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get backup;
+
+  /// No description provided for @exportBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Export a backup'**
+  String get exportBackup;
+
+  /// No description provided for @importBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from a backup'**
+  String get importBackup;
+
+  /// No description provided for @backupShareText.
+  ///
+  /// In en, this message translates to:
+  /// **'Seerati backup'**
+  String get backupShareText;
+
+  /// No description provided for @nothingToBackUp.
+  ///
+  /// In en, this message translates to:
+  /// **'There is nothing to back up yet.'**
+  String get nothingToBackUp;
+
+  /// No description provided for @importConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from a backup?'**
+  String get importConfirmTitle;
+
+  /// No description provided for @importConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Entries with the same id are overwritten with the backup\'s version. Nothing is deleted.'**
+  String get importConfirmBody;
+
+  /// No description provided for @restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get restore;
+
+  /// No description provided for @importDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Restored {added} new and {updated} updated entries'**
+  String importDone(int added, int updated);
+
+  /// No description provided for @importInvalidFile.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is not a Seerati backup.'**
+  String get importInvalidFile;
+
+  /// No description provided for @importUnsupportedVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'This backup was made by a newer version of the app. Update Seerati and try again.'**
+  String get importUnsupportedVersion;
+
+  /// No description provided for @importEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'This backup is empty.'**
+  String get importEmpty;
 }
 
 class _AppLocalizationsDelegate

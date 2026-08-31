@@ -8,8 +8,9 @@ import 'package:intl/intl.dart' hide TextDirection;
 import '../../../core/providers/locale_provider.dart';
 import '../../../core/providers/theme_provider.dart';
 import '../../../core/services/storage_service.dart';
-import '../../../l10n/app_localizations.dart';
 import '../../../core/services/api_client.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../backup/presentation/backup_actions.dart';
 import '../../cover_letter/presentation/ai_cover_letter_screen.dart';
 import '../../cover_letter/presentation/cover_letter_list_screen.dart';
 import '../../jobs/presentation/job_search_screen.dart';
@@ -72,6 +73,32 @@ class HomeScreen extends ConsumerWidget {
             itemBuilder: (context) => [
               PopupMenuItem(value: 'ar', child: Text(l10n.arabic)),
               PopupMenuItem(value: 'en', child: Text(l10n.english)),
+            ],
+          ),
+          PopupMenuButton<String>(
+            tooltip: l10n.backup,
+            onSelected: (action) => action == 'export'
+                ? BackupActions.export(context)
+                : BackupActions.import(context),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'export',
+                child: ListTile(
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.upload_file_outlined),
+                  title: Text(l10n.exportBackup),
+                ),
+              ),
+              PopupMenuItem(
+                value: 'import',
+                child: ListTile(
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.settings_backup_restore),
+                  title: Text(l10n.importBackup),
+                ),
+              ),
             ],
           ),
         ],

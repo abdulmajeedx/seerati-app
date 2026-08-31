@@ -141,5 +141,18 @@
   "ipLimited": "طلبات كثيرة من هذه الشبكة اليوم. حاول غداً.",
   "serviceBusy": "خدمة الذكاء الاصطناعي مشغولة حالياً. حاول بعد قليل.",
   "creditsLeft": "بقي {count} من نقاط الذكاء الاصطناعي اليوم",
-  "@creditsLeft": {"placeholders": {"count": {"type": "int"}}}
+  "@creditsLeft": {"placeholders": {"count": {"type": "int"}}},
+  "backup": "النسخ الاحتياطي",
+  "exportBackup": "تصدير نسخة احتياطية",
+  "importBackup": "استعادة من نسخة احتياطية",
+  "backupShareText": "نسخة احتياطية من سيرتي",
+  "nothingToBackUp": "لا توجد بيانات لنسخها بعد.",
+  "importConfirmTitle": "استعادة من نسخة احتياطية؟",
+  "importConfirmBody": "العناصر ذات المعرّف نفسه ستُستبدل بنسخة الملف. لن يُحذف أي شيء.",
+  "restore": "استعادة",
+  "importDone": "تمت استعادة {added} عنصراً جديداً و{updated} محدّثاً",
+  "@importDone": {"placeholders": {"added": {"type": "int"}, "updated": {"type": "int"}}},
+  "importInvalidFile": "هذا الملف ليس نسخة احتياطية من سيرتي.",
+  "importUnsupportedVersion": "النسخة الاحتياطية أُنشئت بإصدار أحدث من التطبيق. حدّث سيرتي ثم أعد المحاولة.",
+  "importEmpty": "النسخة الاحتياطية فارغة."
 }

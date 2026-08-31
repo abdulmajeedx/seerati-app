@@ -44,6 +44,35 @@ class CoverLetter extends HiveObject {
   @HiveField(8)
   DateTime updatedAt;
 
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'language': language,
+        'sender_name': senderName,
+        'recipient_name': recipientName,
+        'company_name': companyName,
+        'job_title': jobTitle,
+        'body': body,
+        'created_at': createdAt.toIso8601String(),
+        'updated_at': updatedAt.toIso8601String(),
+      };
+
+  static CoverLetter fromJson(Map<String, dynamic> json) {
+    String str(Object? v) => v is String ? v : '';
+    DateTime date(Object? v) =>
+        (v is String ? DateTime.tryParse(v) : null) ?? DateTime.now();
+    return CoverLetter(
+      id: str(json['id']),
+      language: json['language'] == 'en' ? 'en' : 'ar',
+      senderName: str(json['sender_name']),
+      recipientName: str(json['recipient_name']),
+      companyName: str(json['company_name']),
+      jobTitle: str(json['job_title']),
+      body: str(json['body']),
+      createdAt: date(json['created_at']),
+      updatedAt: date(json['updated_at']),
+    );
+  }
+
   CoverLetter copy() => CoverLetter(
         id: id,
         language: language,

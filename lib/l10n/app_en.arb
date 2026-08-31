@@ -141,5 +141,18 @@
   "ipLimited": "Too many requests from this network today. Try again tomorrow.",
   "serviceBusy": "The AI service is at capacity right now. Please try again later.",
   "creditsLeft": "{count} AI credits left today",
-  "@creditsLeft": {"placeholders": {"count": {"type": "int"}}}
+  "@creditsLeft": {"placeholders": {"count": {"type": "int"}}},
+  "backup": "Backup",
+  "exportBackup": "Export a backup",
+  "importBackup": "Restore from a backup",
+  "backupShareText": "Seerati backup",
+  "nothingToBackUp": "There is nothing to back up yet.",
+  "importConfirmTitle": "Restore from a backup?",
+  "importConfirmBody": "Entries with the same id are overwritten with the backup's version. Nothing is deleted.",
+  "restore": "Restore",
+  "importDone": "Restored {added} new and {updated} updated entries",
+  "@importDone": {"placeholders": {"added": {"type": "int"}, "updated": {"type": "int"}}},
+  "importInvalidFile": "This file is not a Seerati backup.",
+  "importUnsupportedVersion": "This backup was made by a newer version of the app. Update Seerati and try again.",
+  "importEmpty": "This backup is empty."
 }

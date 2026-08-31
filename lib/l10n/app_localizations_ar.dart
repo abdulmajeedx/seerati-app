@@ -436,4 +436,44 @@ class AppLocalizationsAr extends AppLocalizations {
   String creditsLeft(int count) {
     return 'بقي $count من نقاط الذكاء الاصطناعي اليوم';
   }
+
+  @override
+  String get backup => 'النسخ الاحتياطي';
+
+  @override
+  String get exportBackup => 'تصدير نسخة احتياطية';
+
+  @override
+  String get importBackup => 'استعادة من نسخة احتياطية';
+
+  @override
+  String get backupShareText => 'نسخة احتياطية من سيرتي';
+
+  @override
+  String get nothingToBackUp => 'لا توجد بيانات لنسخها بعد.';
+
+  @override
+  String get importConfirmTitle => 'استعادة من نسخة احتياطية؟';
+
+  @override
+  String get importConfirmBody =>
+      'العناصر ذات المعرّف نفسه ستُستبدل بنسخة الملف. لن يُحذف أي شيء.';
+
+  @override
+  String get restore => 'استعادة';
+
+  @override
+  String importDone(int added, int updated) {
+    return 'تمت استعادة $added عنصراً جديداً و$updated محدّثاً';
+  }
+
+  @override
+  String get importInvalidFile => 'هذا الملف ليس نسخة احتياطية من سيرتي.';
+
+  @override
+  String get importUnsupportedVersion =>
+      'النسخة الاحتياطية أُنشئت بإصدار أحدث من التطبيق. حدّث سيرتي ثم أعد المحاولة.';
+
+  @override
+  String get importEmpty => 'النسخة الاحتياطية فارغة.';
 }
