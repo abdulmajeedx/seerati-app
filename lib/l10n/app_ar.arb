@@ -136,5 +136,10 @@
   "noJobsFound": "لم نجد وظائف مطابقة. جرّب مسمى وظيفي أوسع أو مدينة أخرى.",
   "openJobPost": "فتح الإعلان",
   "jobsCached": "نتائج حديثة",
-  "couldNotOpenLink": "تعذّر فتح الرابط"
+  "couldNotOpenLink": "تعذّر فتح الرابط",
+  "lifetimeQuotaExhausted": "انتهت حصتك المجانية من الذكاء الاصطناعي. رقِّ حسابك للمتابعة.",
+  "ipLimited": "طلبات كثيرة من هذه الشبكة اليوم. حاول غداً.",
+  "serviceBusy": "خدمة الذكاء الاصطناعي مشغولة حالياً. حاول بعد قليل.",
+  "creditsLeft": "بقي {count} من نقاط الذكاء الاصطناعي اليوم",
+  "@creditsLeft": {"placeholders": {"count": {"type": "int"}}}
 }

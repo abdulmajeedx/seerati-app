@@ -7,24 +7,53 @@ import 'claude.dart';
 import 'db.dart';
 import 'prompts.dart' as prompts;
 
+/// One credit ≈ US$0.01 of Claude spend, from measured per-endpoint cost.
+/// Every ceiling below is denominated in credits so limits translate directly
+/// into money.
 class ApiConfig {
   const ApiConfig({
     required this.appKey,
-    this.freeDailyQuota = 6,
-    this.premiumDailyQuota = 60,
+    this.freeDailyQuota = 15,
+    this.premiumDailyQuota = 150,
+    this.freeLifetimeQuota = 45,
+    this.ipDailyQuota = 45,
+    this.globalDailyQuota = 300,
     this.jobsModel,
   });
 
   final String appKey;
+
+  /// Per device, per UTC day.
   final int freeDailyQuota;
   final int premiumDailyQuota;
+
+  /// Total a free device may ever spend. Blunts quota farming by reinstalling
+  /// the app, which otherwise mints a fresh device id. 0 disables the cap.
+  final int freeLifetimeQuota;
+
+  /// Per client IP per day — catches one person cycling through devices.
+  final int ipDailyQuota;
+
+  /// Hard ceiling on the whole service per day: the owner's wallet, not the
+  /// user's. Roughly US$3/day at the default.
+  final int globalDailyQuota;
 
   /// null ⇒ the ClaudeClient default.
   final String? jobsModel;
 
-  /// A job search runs several web searches; it bills roughly 15x a text call.
-  static const jobsQuotaCost = 3;
+  static const costText = 1;
+  static const costCoverLetter = 2;
+
+  /// A job search runs several web searches whose results re-enter context;
+  /// measured at ~US$0.12 per call.
+  static const costJobs = 12;
   static const jobsCacheTtl = Duration(hours: 6);
+
+  int dailyQuota({required bool premium}) =>
+      premium ? premiumDailyQuota : freeDailyQuota;
+
+  int lifetimeQuota({required bool premium}) =>
+      premium ? 0 : freeLifetimeQuota;
 }
 
 class Api {
@@ -112,7 +141,8 @@ class Api {
         );
       });
 
-  Future<Response> _aiCoverLetter(Request request) => _aiCall(request, (body) {
+  Future<Response> _aiCoverLetter(Request request) =>
+      _aiCall(request, cost: ApiConfig.costCoverLetter, (body) {
         final language = _language(body);
         return (
           prompts.coverLetterSystem(language),
@@ -146,13 +176,8 @@ class Api {
           headers: {'content-type': 'application/json; charset=utf-8'});
     }
 
-    db.ensureDevice(deviceId);
-    final premium = db.isPremium(deviceId);
-    final limit = premium ? config.premiumDailyQuota : config.freeDailyQuota;
-    if (!db.tryConsumeQuota(deviceId, limit,
-        cost: ApiConfig.jobsQuotaCost)) {
-      return _json(429, {'error': 'quota_exhausted', 'premium': premium});
-    }
+    final spend = _reserve(request, deviceId, ApiConfig.costJobs);
+    if (spend.denied != null) return spend.denied!;
 
     try {
       final raw = await claude.generate(
@@ -173,10 +198,11 @@ class Api {
       final payload = jsonEncode(jobs);
       if (jobs.isNotEmpty) db.cacheJobs(cacheKey, payload);
       return Response(200,
-          body: '{"jobs":$payload,"cached":false}',
+          body: '{"jobs":$payload,"cached":false,'
+              '"remaining":${spend.remaining(db, config)}}',
           headers: {'content-type': 'application/json; charset=utf-8'});
     } on ClaudeException catch (e) {
-      db.refundQuota(deviceId, cost: ApiConfig.jobsQuotaCost);
+      spend.refund(db);
       return _json(e.statusCode >= 500 || e.statusCode == 429 ? 503 : 422,
           {'error': e.message});
     }
@@ -218,28 +244,53 @@ class Api {
     return jobs;
   }
 
-  Future<Response> _aiCall(Request request,
-      (String, String) Function(Map<String, dynamic>) build) async {
+  Future<Response> _aiCall(
+      Request request, (String, String) Function(Map<String, dynamic>) build,
+      {int cost = ApiConfig.costText}) async {
     final body = await _body(request);
     if (body == null) return _json(400, {'error': 'bad_request'});
     final deviceId = _str(body, 'device_id', 64);
     if (deviceId.isEmpty) return _json(400, {'error': 'bad_request'});
-    db.ensureDevice(deviceId);
-    final premium = db.isPremium(deviceId);
-    final limit = premium ? config.premiumDailyQuota : config.freeDailyQuota;
-    if (!db.tryConsumeQuota(deviceId, limit)) {
-      return _json(429, {'error': 'quota_exhausted', 'premium': premium});
-    }
+    final spend = _reserve(request, deviceId, cost);
+    if (spend.denied != null) return spend.denied!;
     final (system, prompt) = build(body);
     try {
       final text = await claude.generate(system: system, prompt: prompt);
-      return _json(200, {'text': text});
+      return _json(
+          200, {'text': text, 'remaining': spend.remaining(db, config)});
     } on ClaudeException catch (e) {
-      // The user got no text, so the credit goes back.
-      db.refundQuota(deviceId);
+      // The user got no text, so the credits go back.
+      spend.refund(db);
       return _json(e.statusCode >= 500 || e.statusCode == 429 ? 503 : 422,
           {'error': e.message});
     }
+  }
+
+  /// Reserves [cost] credits against all four ceilings, or produces the
+  /// response explaining which one refused.
+  _Spend _reserve(Request request, String deviceId, int cost) {
+    db.ensureDevice(deviceId);
+    final premium = db.isPremium(deviceId);
+    final ip = _clientIp(request);
+    final deny = db.tryConsume(
+      deviceId,
+      ip,
+      cost: cost,
+      dailyLimit: config.dailyQuota(premium: premium),
+      lifetimeLimit: config.lifetimeQuota(premium: premium),
+      ipDailyLimit: config.ipDailyQuota,
+      globalDailyLimit: config.globalDailyQuota,
+    );
+    return _Spend(
+      deviceId: deviceId,
+      ip: ip,
+      cost: cost,
+      premium: premium,
+      denied: deny == null
+          ? null
+          : _json(deny == Db.denyGlobal ? 503 : 429,
+              {'error': deny, 'premium': premium}),
+    );
   }
 
   static Future<Map<String, dynamic>?> _body(Request request) async {
@@ -280,4 +331,33 @@ class Api {
       Response(status,
           body: jsonEncode(body),
           headers: {'content-type': 'application/json; charset=utf-8'});
+}
+
+class _Spend {
+  const _Spend({
+    required this.deviceId,
+    required this.ip,
+    required this.cost,
+    required this.premium,
+    required this.denied,
+  });
+
+  final String deviceId;
+  final String ip;
+  final int cost;
+  final bool premium;
+
+  /// Non-null when a ceiling refused the request.
+  final Response? denied;
+
+  void refund(Db db) => db.refund(deviceId, ip, cost: cost);
+
+  int remaining(Db db, ApiConfig config) => db.remaining(
+        deviceId,
+        ip,
+        dailyLimit: config.dailyQuota(premium: premium),
+        lifetimeLimit: config.lifetimeQuota(premium: premium),
+        ipDailyLimit: config.ipDailyQuota,
+        globalDailyLimit: config.globalDailyQuota,
+      );
 }

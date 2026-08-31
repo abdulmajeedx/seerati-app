@@ -919,6 +919,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t open the link'**
   String get couldNotOpenLink;
+
+  /// No description provided for @lifetimeQuotaExhausted.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used your free AI allowance. Upgrade to keep going.'**
+  String get lifetimeQuotaExhausted;
+
+  /// No description provided for @ipLimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many requests from this network today. Try again tomorrow.'**
+  String get ipLimited;
+
+  /// No description provided for @serviceBusy.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI service is at capacity right now. Please try again later.'**
+  String get serviceBusy;
+
+  /// No description provided for @creditsLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} AI credits left today'**
+  String creditsLeft(int count);
 }
 
 class _AppLocalizationsDelegate

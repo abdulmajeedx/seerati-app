@@ -49,7 +49,26 @@ class Db {
         payload TEXT NOT NULL,
         created_at INTEGER NOT NULL
       );
+      CREATE TABLE IF NOT EXISTS ip_usage (
+        ip TEXT NOT NULL,
+        day TEXT NOT NULL,
+        count INTEGER NOT NULL DEFAULT 0,
+        PRIMARY KEY (ip, day)
+      );
+      CREATE TABLE IF NOT EXISTS global_usage (
+        day TEXT PRIMARY KEY,
+        count INTEGER NOT NULL DEFAULT 0
+      );
     ''');
+    // Added in 2.2.0; older databases predate the column.
+    final columns = _db
+        .select('PRAGMA table_info(devices)')
+        .map((r) => r['name'] as String);
+    if (!columns.contains('lifetime_used')) {
+      _db.execute(
+          'ALTER TABLE devices ADD COLUMN lifetime_used INTEGER NOT NULL '
+          'DEFAULT 0');
+    }
   }
 
   final Database _db;
@@ -88,44 +107,138 @@ class Db {
     );
   }
 
-  /// Atomically consumes [cost] AI credits for today (UTC).
-  /// Returns false when the daily quota is exhausted.
-  bool tryConsumeQuota(String deviceId, int dailyLimit, {int cost = 1}) {
+  /// Why a spend request was refused; null means it was granted.
+  /// Checked outermost-first so the answer names the binding limit.
+  static const denyGlobal = 'service_busy';
+  static const denyIp = 'ip_limited';
+  static const denyLifetime = 'lifetime_exhausted';
+  static const denyDaily = 'quota_exhausted';
+
+  /// Atomically reserves [cost] credits against every applicable ceiling.
+  /// Either all counters move or none do, so a partial spend can't leak.
+  String? tryConsume(
+    String deviceId,
+    String ip, {
+    required int cost,
+    required int dailyLimit,
+    required int lifetimeLimit,
+    required int ipDailyLimit,
+    required int globalDailyLimit,
+  }) {
     final day = DateTime.now().toUtc().toIso8601String().substring(0, 10);
-    bool ok = false;
+    String? deny;
     _db.execute('BEGIN IMMEDIATE');
     try {
       _db.execute(
-        'INSERT OR IGNORE INTO usage (device_id, day, count) VALUES (?, ?, 0)',
-        [deviceId, day],
-      );
-      final row = _db.select(
-        'SELECT count FROM usage WHERE device_id = ? AND day = ?',
-        [deviceId, day],
-      ).first;
-      if ((row['count'] as int) + cost <= dailyLimit) {
+          'INSERT OR IGNORE INTO global_usage (day, count) VALUES (?, 0)',
+          [day]);
+      final global = _db.select(
+          'SELECT count FROM global_usage WHERE day = ?', [day]).first;
+      if ((global['count'] as int) + cost > globalDailyLimit) {
+        deny = denyGlobal;
+      }
+
+      if (deny == null) {
         _db.execute(
-          'UPDATE usage SET count = count + ? WHERE device_id = ? AND day = ?',
-          [cost, deviceId, day],
-        );
-        ok = true;
+            'INSERT OR IGNORE INTO ip_usage (ip, day, count) VALUES (?, ?, 0)',
+            [ip, day]);
+        final ipRow = _db.select(
+            'SELECT count FROM ip_usage WHERE ip = ? AND day = ?',
+            [ip, day]).first;
+        if ((ipRow['count'] as int) + cost > ipDailyLimit) deny = denyIp;
+      }
+
+      if (deny == null && lifetimeLimit > 0) {
+        final device = _db.select(
+            'SELECT lifetime_used FROM devices WHERE id = ?', [deviceId]);
+        final used =
+            device.isEmpty ? 0 : device.first['lifetime_used'] as int;
+        if (used + cost > lifetimeLimit) deny = denyLifetime;
+      }
+
+      if (deny == null) {
+        _db.execute(
+            'INSERT OR IGNORE INTO usage (device_id, day, count) '
+            'VALUES (?, ?, 0)',
+            [deviceId, day]);
+        final row = _db.select(
+            'SELECT count FROM usage WHERE device_id = ? AND day = ?',
+            [deviceId, day]).first;
+        if ((row['count'] as int) + cost > dailyLimit) deny = denyDaily;
+      }
+
+      if (deny == null) {
+        _db
+          ..execute(
+              'UPDATE usage SET count = count + ? WHERE device_id = ? AND day = ?',
+              [cost, deviceId, day])
+          ..execute(
+              'UPDATE ip_usage SET count = count + ? WHERE ip = ? AND day = ?',
+              [cost, ip, day])
+          ..execute('UPDATE global_usage SET count = count + ? WHERE day = ?',
+              [cost, day])
+          ..execute(
+              'UPDATE devices SET lifetime_used = lifetime_used + ? WHERE id = ?',
+              [cost, deviceId]);
       }
       _db.execute('COMMIT');
     } catch (_) {
       _db.execute('ROLLBACK');
       rethrow;
     }
-    return ok;
+    return deny;
   }
 
-  /// Gives back credits consumed by a call that never produced text.
-  void refundQuota(String deviceId, {int cost = 1}) {
+  /// Credits left for [deviceId] today, after every ceiling.
+  int remaining(
+    String deviceId,
+    String ip, {
+    required int dailyLimit,
+    required int lifetimeLimit,
+    required int ipDailyLimit,
+    required int globalDailyLimit,
+  }) {
     final day = DateTime.now().toUtc().toIso8601String().substring(0, 10);
-    _db.execute(
-      'UPDATE usage SET count = MAX(0, count - ?) '
-      'WHERE device_id = ? AND day = ?',
-      [cost, deviceId, day],
-    );
+    int used(String sql, List<Object?> args) {
+      final rows = _db.select(sql, args);
+      return rows.isEmpty ? 0 : rows.first.values.first as int? ?? 0;
+    }
+
+    final limits = <int>[
+      dailyLimit -
+          used('SELECT count FROM usage WHERE device_id = ? AND day = ?',
+              [deviceId, day]),
+      ipDailyLimit -
+          used('SELECT count FROM ip_usage WHERE ip = ? AND day = ?', [ip, day]),
+      globalDailyLimit -
+          used('SELECT count FROM global_usage WHERE day = ?', [day]),
+      if (lifetimeLimit > 0)
+        lifetimeLimit -
+            used('SELECT lifetime_used FROM devices WHERE id = ?', [deviceId]),
+    ];
+    final min = limits.reduce((a, b) => a < b ? a : b);
+    return min < 0 ? 0 : min;
+  }
+
+  /// Gives back credits reserved for a call that never produced text.
+  void refund(String deviceId, String ip, {int cost = 1}) {
+    final day = DateTime.now().toUtc().toIso8601String().substring(0, 10);
+    _db
+      ..execute(
+          'UPDATE usage SET count = MAX(0, count - ?) '
+          'WHERE device_id = ? AND day = ?',
+          [cost, deviceId, day])
+      ..execute(
+          'UPDATE ip_usage SET count = MAX(0, count - ?) '
+          'WHERE ip = ? AND day = ?',
+          [cost, ip, day])
+      ..execute(
+          'UPDATE global_usage SET count = MAX(0, count - ?) WHERE day = ?',
+          [cost, day])
+      ..execute(
+          'UPDATE devices SET lifetime_used = MAX(0, lifetime_used - ?) '
+          'WHERE id = ?',
+          [cost, deviceId]);
   }
 
   /// Single-use redemption: marks the code as used by [deviceId] and grants

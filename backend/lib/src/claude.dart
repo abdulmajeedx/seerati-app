@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
@@ -84,7 +85,18 @@ class ClaudeClient {
       throw ClaudeException(503, 'upstream_unreachable');
     }
     if (response.statusCode != 200) {
-      throw ClaudeException(response.statusCode, 'upstream_error');
+      // A billing or usage-limit refusal is an operator problem, not a user
+      // one — surface it as "service unavailable" so the app never tells the
+      // user to rephrase a prompt that was fine.
+      final detail = _errorMessage(response.body);
+      final billing = response.statusCode == 402 ||
+          detail.contains('usage limit') ||
+          detail.contains('credit balance') ||
+          detail.contains('billing');
+      stderr.writeln('claude upstream ${response.statusCode}'
+          '${billing ? ' (billing/usage limit)' : ''}');
+      throw ClaudeException(
+          billing ? 503 : response.statusCode, 'ai_unavailable');
     }
     final body = jsonDecode(utf8.decode(response.bodyBytes))
         as Map<String, dynamic>;
@@ -98,5 +110,17 @@ class ClaudeClient {
         .join();
     if (text.trim().isEmpty) throw ClaudeException(502, 'empty_response');
     return text.trim();
+  }
+
+  static String _errorMessage(String body) {
+    try {
+      final error = (jsonDecode(body) as Map<String, dynamic>)['error'];
+      if (error is Map && error['message'] is String) {
+        return (error['message'] as String).toLowerCase();
+      }
+    } catch (_) {
+      // Non-JSON error bodies fall through to the status-code check.
+    }
+    return '';
   }
 }

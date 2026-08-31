@@ -420,4 +420,20 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get couldNotOpenLink => 'تعذّر فتح الرابط';
+
+  @override
+  String get lifetimeQuotaExhausted =>
+      'انتهت حصتك المجانية من الذكاء الاصطناعي. رقِّ حسابك للمتابعة.';
+
+  @override
+  String get ipLimited => 'طلبات كثيرة من هذه الشبكة اليوم. حاول غداً.';
+
+  @override
+  String get serviceBusy =>
+      'خدمة الذكاء الاصطناعي مشغولة حالياً. حاول بعد قليل.';
+
+  @override
+  String creditsLeft(int count) {
+    return 'بقي $count من نقاط الذكاء الاصطناعي اليوم';
+  }
 }

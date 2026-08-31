@@ -1,11 +1,21 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
-enum ApiErrorKind { network, quota, declined, unauthorized, server }
+enum ApiErrorKind {
+  network,
+  quota,
+  lifetimeQuota,
+  ipLimited,
+  serviceBusy,
+  declined,
+  unauthorized,
+  server,
+}
 
 class ApiException implements Exception {
   const ApiException(this.kind, {this.premium = false});
@@ -61,6 +71,9 @@ class ApiClient {
   static bool get isConfigured => _envBase.isNotEmpty && _envKey.isNotEmpty;
 
   bool get _configured => _baseUrl.isNotEmpty && _appKey.isNotEmpty;
+
+  /// Credits the server reported after the most recent successful call.
+  final ValueNotifier<int?> remainingCredits = ValueNotifier<int?>(null);
 
   String? _deviceId;
 
@@ -183,6 +196,8 @@ class ApiClient {
     }
     switch (response.statusCode) {
       case 200:
+        final left = body['remaining'];
+        if (left is int) remainingCredits.value = left;
         return body;
       case 401:
         throw const ApiException(ApiErrorKind.unauthorized);
@@ -191,7 +206,18 @@ class ApiClient {
       case 422:
         throw const ApiException(ApiErrorKind.declined);
       case 429:
-        throw ApiException(ApiErrorKind.quota, premium: body['premium'] == true);
+        throw ApiException(
+          switch (body['error']) {
+            'lifetime_exhausted' => ApiErrorKind.lifetimeQuota,
+            'ip_limited' => ApiErrorKind.ipLimited,
+            _ => ApiErrorKind.quota,
+          },
+          premium: body['premium'] == true,
+        );
+      case 503:
+        throw ApiException(body['error'] == 'service_busy'
+            ? ApiErrorKind.serviceBusy
+            : ApiErrorKind.server);
       default:
         throw const ApiException(ApiErrorKind.server);
     }

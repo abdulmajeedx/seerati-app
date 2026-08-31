@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/services/api_client.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../paywall/presentation/paywall_screen.dart';
+import '../../../shared/api_error_message.dart';
 import '../../resume/data/models/resume.dart';
 
 class JobSearchScreen extends ConsumerStatefulWidget {
@@ -49,8 +49,6 @@ class _JobSearchScreenState extends ConsumerState<JobSearchScreen> {
 
   Future<void> _search() async {
     if (!_formKey.currentState!.validate()) return;
-    final l10n = AppLocalizations.of(context);
-    final messenger = ScaffoldMessenger.of(context);
     final resume = _latestResume();
     setState(() => _busy = true);
     try {
@@ -68,26 +66,7 @@ class _JobSearchScreenState extends ConsumerState<JobSearchScreen> {
       setState(() => _results = results);
     } on ApiException catch (e) {
       if (!mounted) return;
-      final message = switch (e.kind) {
-        ApiErrorKind.network => l10n.networkError,
-        ApiErrorKind.quota =>
-          e.premium ? l10n.quotaExhaustedPremium : l10n.quotaExhausted,
-        ApiErrorKind.declined => l10n.aiDeclined,
-        ApiErrorKind.unauthorized || ApiErrorKind.server => l10n.errorGeneric,
-      };
-      messenger
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(
-          content: Text(message),
-          action: e.kind == ApiErrorKind.quota && !e.premium
-              ? SnackBarAction(
-                  label: l10n.upgradeForMore,
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const PaywallScreen()),
-                  ),
-                )
-              : null,
-        ));
+      showApiError(context, e);
     } finally {
       if (mounted) setState(() => _busy = false);
     }

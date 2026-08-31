@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.2.0] - 2026-08-31
+
+### Added
+- Four layered spend ceilings, all denominated in credits where 1 credit ≈ US$0.01 of AI spend: per device per day (15 free / 150 Premium), a lifetime cap per free device (45), a per-IP daily cap (45), and a global daily cap for the whole service (300). The lifetime and per-IP caps are what make reinstalling the app to farm a fresh free quota pointless.
+- Endpoint costs now reflect measured spend: text calls 1 credit, cover letters 2, job search 12.
+- Responses report the credits left, shown on the home screen.
+
+### Fixed
+- A billing or account usage-limit refusal upstream is reported as "service unavailable" instead of "couldn't generate this text", which wrongly told users to rephrase a perfectly good prompt.
+- Every limit refusal names the ceiling that refused it, and a refused or failed call moves no counter.
+
 ## [2.1.0] - 2026-08-31
 
 ### Added

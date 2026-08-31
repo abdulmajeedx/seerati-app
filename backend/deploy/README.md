@@ -21,6 +21,23 @@ Config lives in `~/seerati-keys/backend.env` (chmod 600, never committed):
 | `SEERATI_BIND` | `any` to bind all interfaces; default is loopback only |
 | `SEERATI_JOBS_MODEL` | Model for job search only. Unset ⇒ `claude-opus-5` |
 
+## Spend ceilings
+
+All limits are in credits, where **1 credit ≈ US$0.01** of AI spend. Costs:
+text call 1, cover letter 2, job search 12.
+
+| Ceiling | Default | Purpose |
+|---|---|---|
+| Device / day | 15 free, 150 Premium | Normal per-user allowance |
+| Device / lifetime | 45 (free only) | Caps what one free install can ever spend |
+| IP / day | 45 | Stops one person cycling devices to farm quota |
+| Service / day | 300 (≈US$3) | Protects the account balance from abuse or a bug |
+
+Checked outermost-first, so the error names the binding ceiling
+(`service_busy`, `ip_limited`, `lifetime_exhausted`, `quota_exhausted`).
+A refused or failed call moves no counter. Edit the defaults in
+`ApiConfig` (`lib/src/handlers.dart`).
+
 ## Cost per call (measured, Claude Opus 5)
 
 | Endpoint | Tokens in/out | Cost | Latency |

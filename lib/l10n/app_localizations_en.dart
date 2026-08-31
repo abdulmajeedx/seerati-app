@@ -426,4 +426,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get couldNotOpenLink => 'Couldn\'t open the link';
+
+  @override
+  String get lifetimeQuotaExhausted =>
+      'You\'ve used your free AI allowance. Upgrade to keep going.';
+
+  @override
+  String get ipLimited =>
+      'Too many requests from this network today. Try again tomorrow.';
+
+  @override
+  String get serviceBusy =>
+      'The AI service is at capacity right now. Please try again later.';
+
+  @override
+  String creditsLeft(int count) {
+    return '$count AI credits left today';
+  }
 }

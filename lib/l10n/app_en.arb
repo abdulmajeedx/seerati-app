@@ -136,5 +136,10 @@
   "noJobsFound": "No matching openings found. Try a broader role or city.",
   "openJobPost": "Open the posting",
   "jobsCached": "Recent results",
-  "couldNotOpenLink": "Couldn't open the link"
+  "couldNotOpenLink": "Couldn't open the link",
+  "lifetimeQuotaExhausted": "You've used your free AI allowance. Upgrade to keep going.",
+  "ipLimited": "Too many requests from this network today. Try again tomorrow.",
+  "serviceBusy": "The AI service is at capacity right now. Please try again later.",
+  "creditsLeft": "{count} AI credits left today",
+  "@creditsLeft": {"placeholders": {"count": {"type": "int"}}}
 }

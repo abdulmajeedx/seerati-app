@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/services/api_client.dart';
-import '../../features/paywall/presentation/paywall_screen.dart';
 import '../../l10n/app_localizations.dart';
+import '../api_error_message.dart';
 
 /// Runs an AI call with a busy state and localized error handling.
 /// Hidden entirely in builds without a configured backend.
@@ -34,8 +34,6 @@ class _AiButtonState extends ConsumerState<AiButton> {
 
   Future<void> _run() async {
     if (widget.validate != null && !widget.validate!()) return;
-    final l10n = AppLocalizations.of(context);
-    final messenger = ScaffoldMessenger.of(context);
     setState(() => _busy = true);
     try {
       final text = await widget.request(ref.read(apiClientProvider));
@@ -43,26 +41,7 @@ class _AiButtonState extends ConsumerState<AiButton> {
       widget.onResult(text);
     } on ApiException catch (e) {
       if (!mounted) return;
-      final message = switch (e.kind) {
-        ApiErrorKind.network => l10n.networkError,
-        ApiErrorKind.quota =>
-          e.premium ? l10n.quotaExhaustedPremium : l10n.quotaExhausted,
-        ApiErrorKind.declined => l10n.aiDeclined,
-        ApiErrorKind.unauthorized || ApiErrorKind.server => l10n.errorGeneric,
-      };
-      messenger
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(
-          content: Text(message),
-          action: e.kind == ApiErrorKind.quota && !e.premium
-              ? SnackBarAction(
-                  label: l10n.upgradeForMore,
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const PaywallScreen()),
-                  ),
-                )
-              : null,
-        ));
+      showApiError(context, e);
     } finally {
       if (mounted) setState(() => _busy = false);
     }

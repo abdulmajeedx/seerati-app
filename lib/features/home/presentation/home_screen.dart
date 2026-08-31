@@ -97,6 +97,32 @@ class HomeScreen extends ConsumerWidget {
             ),
           ),
           if (ApiClient.isConfigured) ...[
+            ValueListenableBuilder<int?>(
+              valueListenable: ref.read(apiClientProvider).remainingCredits,
+              builder: (context, credits, _) => credits == null
+                  ? const SizedBox.shrink()
+                  : Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: Row(
+                        children: [
+                          Icon(Icons.bolt_outlined,
+                              size: 16,
+                              color: Theme.of(context).colorScheme.primary),
+                          const SizedBox(width: 6),
+                          Text(
+                            l10n.creditsLeft(credits),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant),
+                          ),
+                        ],
+                      ),
+                    ),
+            ),
             const SizedBox(height: 12),
             _ActionCard(
               icon: Icons.work_outline,
