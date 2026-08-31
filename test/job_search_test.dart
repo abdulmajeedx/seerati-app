@@ -97,4 +97,31 @@ void main() {
       expect(e.premium, false);
     }
   });
+
+  test('remote config gates the feature and fails closed', () async {
+    final on = _client((_) async => http.Response('{"jobs_enabled":true}', 200));
+    expect((await on.fetchConfig()).jobsEnabled, true);
+
+    final off =
+        _client((_) async => http.Response('{"jobs_enabled":false}', 200));
+    expect((await off.fetchConfig()).jobsEnabled, false);
+
+    // An unreachable or broken server must hide the feature, never show a
+    // card that leads to an error.
+    final down = _client((_) async => throw http.ClientException('down'));
+    expect((await down.fetchConfig()).jobsEnabled, false);
+    final broken = _client((_) async => http.Response('nope', 500));
+    expect((await broken.fetchConfig()).jobsEnabled, false);
+  });
+
+  test('a disabled feature reads as busy, not as a user error', () async {
+    final client =
+        _client((_) async => http.Response('{"error":"feature_disabled"}', 503));
+    try {
+      await _search(client);
+      fail('expected ApiException');
+    } on ApiException catch (e) {
+      expect(e.kind, ApiErrorKind.serviceBusy);
+    }
+  });
 }

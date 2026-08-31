@@ -25,6 +25,16 @@ class ApiException implements Exception {
 
 final apiClientProvider = Provider<ApiClient>((ref) => ApiClient());
 
+class RemoteConfig {
+  const RemoteConfig({required this.jobsEnabled});
+
+  final bool jobsEnabled;
+}
+
+/// Resolves once per app launch; a failure hides the gated features.
+final remoteConfigProvider = FutureProvider<RemoteConfig>(
+    (ref) => ref.read(apiClientProvider).fetchConfig());
+
 class JobResult {
   const JobResult({
     required this.title,
@@ -131,6 +141,26 @@ class ApiClient {
         'resume_summary': resumeSummary,
       });
 
+  /// Server-controlled feature flags, so an expensive feature can be switched
+  /// off without shipping a release. Unreachable server ⇒ assume off.
+  Future<RemoteConfig> fetchConfig() async {
+    if (!_configured) return const RemoteConfig(jobsEnabled: false);
+    try {
+      final response = await _http.get(
+        Uri.parse('$_baseUrl/v1/config'),
+        headers: {'x-app-key': _appKey},
+      ).timeout(const Duration(seconds: 10));
+      if (response.statusCode != 200) {
+        return const RemoteConfig(jobsEnabled: false);
+      }
+      final body =
+          jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      return RemoteConfig(jobsEnabled: body['jobs_enabled'] == true);
+    } catch (_) {
+      return const RemoteConfig(jobsEnabled: false);
+    }
+  }
+
   Future<List<JobResult>> searchJobs({
     required String language,
     required String jobTitle,
@@ -215,9 +245,13 @@ class ApiClient {
           premium: body['premium'] == true,
         );
       case 503:
-        throw ApiException(body['error'] == 'service_busy'
-            ? ApiErrorKind.serviceBusy
-            : ApiErrorKind.server);
+        throw ApiException(switch (body['error']) {
+          'service_busy' => ApiErrorKind.serviceBusy,
+          // A feature switched off server-side reads the same to the user as a
+          // busy service: nothing they did, nothing they can fix.
+          'feature_disabled' => ApiErrorKind.serviceBusy,
+          _ => ApiErrorKind.server,
+        });
       default:
         throw const ApiException(ApiErrorKind.server);
     }

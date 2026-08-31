@@ -20,6 +20,18 @@ Config lives in `~/seerati-keys/backend.env` (chmod 600, never committed):
 | `PORT` | Listen port, default 8787 |
 | `SEERATI_BIND` | `any` to bind all interfaces; default is loopback only |
 | `SEERATI_JOBS_MODEL` | Model for job search only. Unset ⇒ `claude-opus-5` |
+| `SEERATI_JOBS_ENABLED` | `0` switches job search off; the app reads this from `/v1/config` and hides the feature |
+
+## Turning job search on or off
+
+```bash
+sed -i 's|^SEERATI_JOBS_ENABLED=.*|SEERATI_JOBS_ENABLED=1|' ~/seerati-keys/backend.env
+systemctl --user restart seerati-backend
+curl -s https://api.istx.io/v1/config -H "x-app-key: $SEERATI_APP_KEY"
+```
+
+Use `0` to switch it off. No app release is needed either way — clients pick
+the flag up on their next launch.
 
 ## Spend ceilings
 

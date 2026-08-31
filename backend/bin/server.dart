@@ -25,7 +25,11 @@ Future<void> main() async {
   final api = Api(
     db: Db(dbPath),
     claude: ClaudeClient(apiKey: apiKey, mock: mock),
-    config: ApiConfig(appKey: appKey, jobsModel: env['SEERATI_JOBS_MODEL']),
+    config: ApiConfig(
+      appKey: appKey,
+      jobsModel: env['SEERATI_JOBS_MODEL'],
+      jobsEnabled: env['SEERATI_JOBS_ENABLED'] != '0',
+    ),
   );
   final handler =
       const Pipeline().addMiddleware(logRequests()).addHandler(api.handler);

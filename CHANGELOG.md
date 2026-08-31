@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.2.1] - 2026-08-31
+
+### Added
+- Server-controlled feature flags (`GET /v1/config`): job search can be switched off from the backend without shipping a release, and the app hides the card instead of offering a feature that would fail. A server that can't be reached fails closed.
+
+### Changed
+- Job search is switched **off** by default in the current deployment while its per-call cost is evaluated; a disabled feature reports as "service busy" rather than blaming the user's input.
+
 ## [2.2.0] - 2026-08-31
 
 ### Added

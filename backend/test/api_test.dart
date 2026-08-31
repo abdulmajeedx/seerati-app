@@ -290,6 +290,31 @@ void main() {
     expect((await _json(r))['error'], 'ai_unavailable');
   });
 
+  test('the jobs kill switch closes the endpoint and is advertised', () async {
+    final off = Api(
+      db: db,
+      claude: ClaudeClient(apiKey: '', mock: true),
+      config: const ApiConfig(appKey: _appKey, jobsEnabled: false),
+    ).handler;
+
+    final config = await Future.sync(() => off(
+        Request('GET', Uri.parse('http://localhost/v1/config'),
+            headers: {'x-app-key': _appKey})));
+    expect((await _json(config))['jobs_enabled'], false);
+
+    final blocked = await _post(
+        off, '/v1/ai/jobs', {'device_id': 'k1', 'job_title': 'Flutter'});
+    expect(blocked.statusCode, 503);
+    expect((await _json(blocked))['error'], 'feature_disabled');
+
+    // Disabling job search must not touch the credits of a device that never
+    // got a result, nor block the cheaper endpoints.
+    final text = await _post(
+        off, '/v1/ai/summary', {'device_id': 'k1', 'job_title': 'x'});
+    expect(text.statusCode, 200);
+    expect((await _json(text))['remaining'], const ApiConfig(appKey: _appKey).freeDailyQuota - 1);
+  });
+
   test('malformed and oversized input is rejected', () async {
     final noDevice = await _post(handler, '/v1/ai/summary', {'job_title': 'x'});
     expect(noDevice.statusCode, 400);

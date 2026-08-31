@@ -123,16 +123,19 @@ class HomeScreen extends ConsumerWidget {
                       ),
                     ),
             ),
-            const SizedBox(height: 12),
-            _ActionCard(
-              icon: Icons.work_outline,
-              title: l10n.jobSearch,
-              subtitle: l10n.jobSearchSubtitle,
-              highlight: true,
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const JobSearchScreen()),
+            if (ref.watch(remoteConfigProvider).valueOrNull?.jobsEnabled ??
+                false) ...[
+              const SizedBox(height: 12),
+              _ActionCard(
+                icon: Icons.work_outline,
+                title: l10n.jobSearch,
+                subtitle: l10n.jobSearchSubtitle,
+                highlight: true,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const JobSearchScreen()),
+                ),
               ),
-            ),
+            ],
             const SizedBox(height: 12),
             _ActionCard(
               icon: Icons.auto_awesome_outlined,

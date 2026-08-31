@@ -19,6 +19,7 @@ class ApiConfig {
     this.ipDailyQuota = 45,
     this.globalDailyQuota = 300,
     this.jobsModel,
+    this.jobsEnabled = true,
   });
 
   final String appKey;
@@ -40,6 +41,11 @@ class ApiConfig {
 
   /// null ⇒ the ClaudeClient default.
   final String? jobsModel;
+
+  /// Remote kill switch for the most expensive endpoint. The app reads it from
+  /// /v1/config and hides the feature, so it can be turned off without a
+  /// release.
+  final bool jobsEnabled;
 
   static const costText = 1;
   static const costCoverLetter = 2;
@@ -70,6 +76,8 @@ class Api {
   Handler get handler {
     final router = Router()
       ..get('/health', (Request r) => _json(200, {'ok': true}))
+      ..get('/v1/config',
+          (Request r) => _json(200, {'jobs_enabled': config.jobsEnabled}))
       ..post('/v1/redeem', _redeem)
       ..post('/v1/ai/summary', _aiSummary)
       ..post('/v1/ai/experience', _aiExperience)
@@ -157,6 +165,9 @@ class Api {
       });
 
   Future<Response> _aiJobs(Request request) async {
+    if (!config.jobsEnabled) {
+      return _json(503, {'error': 'feature_disabled'});
+    }
     final body = await _body(request);
     if (body == null) return _json(400, {'error': 'bad_request'});
     final deviceId = _str(body, 'device_id', 64);
