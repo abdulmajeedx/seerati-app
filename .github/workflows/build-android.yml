@@ -30,9 +30,24 @@ jobs:
 
       - run: flutter test
 
-      # Without android/key.properties the build falls back to debug signing,
-      # which is fine for sideloading. To ship store-signed builds from CI,
-      # add KEYSTORE_BASE64 / KEY_PROPERTIES secrets and decode them here.
+      # With ANDROID_KEYSTORE_BASE64 + ANDROID_KEY_PROPERTIES secrets the APK
+      # is release-signed; without them Gradle falls back to debug signing and
+      # the release-publish step is skipped so an unsigned build never
+      # replaces a properly signed release asset.
+      - name: Set up release signing (optional)
+        id: signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEY_PROPERTIES: ${{ secrets.ANDROID_KEY_PROPERTIES }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ] && [ -n "$KEY_PROPERTIES" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > android/upload-keystore.jks
+            printf '%s\n' "$KEY_PROPERTIES" > android/key.properties
+            echo "signed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - run: flutter build apk --release
 
       - run: cp build/app/outputs/flutter-apk/app-release.apk seerati.apk
@@ -42,8 +57,8 @@ jobs:
           name: seerati-apk
           path: seerati.apk
 
-      - name: Publish GitHub Release (tags only)
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Publish GitHub Release (signed tag builds only)
+        if: startsWith(github.ref, 'refs/tags/v') && steps.signing.outputs.signed == 'true'
         uses: softprops/action-gh-release@v2
         with:
           files: seerati.apk
