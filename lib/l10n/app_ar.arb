@@ -113,5 +113,19 @@
   "activationCode": "كود التفعيل",
   "activate": "تفعيل",
   "invalidCode": "كود غير صالح",
-  "tooManyAttempts": "محاولات كثيرة. حاول بعد دقيقة."
+  "tooManyAttempts": "محاولات كثيرة. حاول بعد دقيقة.",
+  "aiImprove": "تحسين بالذكاء الاصطناعي",
+  "aiRewrite": "صياغة احترافية",
+  "aiWorking": "جارٍ التوليد…",
+  "networkError": "تعذّر الاتصال. تحقق من الإنترنت وحاول مجدداً.",
+  "quotaExhausted": "استخدمت حصتك اليومية من الذكاء الاصطناعي.",
+  "quotaExhaustedPremium": "استخدمت حصتك اليومية. تتجدد غداً.",
+  "upgradeForMore": "ترقية",
+  "aiDeclined": "تعذّر توليد هذا النص. حاول بصياغة مختلفة.",
+  "coverLetterFromAd": "خطاب من إعلان وظيفة",
+  "coverLetterFromAdSubtitle": "الصق الإعلان واحصل على خطاب مخصص",
+  "jobAd": "نص إعلان الوظيفة",
+  "jobAdHint": "الصق إعلان الوظيفة هنا…",
+  "generateWithAi": "إنشاء بالذكاء الاصطناعي",
+  "aiSectionTitle": "مساعد الذكاء الاصطناعي"
 }

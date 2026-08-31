@@ -113,5 +113,19 @@
   "activationCode": "Activation Code",
   "activate": "Activate",
   "invalidCode": "Invalid code",
-  "tooManyAttempts": "Too many attempts. Try again in a minute."
+  "tooManyAttempts": "Too many attempts. Try again in a minute.",
+  "aiImprove": "Improve with AI",
+  "aiRewrite": "Rewrite professionally",
+  "aiWorking": "Generating…",
+  "networkError": "Connection failed. Check your internet and try again.",
+  "quotaExhausted": "You've used today's AI quota.",
+  "quotaExhaustedPremium": "You've used today's AI quota. It resets tomorrow.",
+  "upgradeForMore": "Upgrade",
+  "aiDeclined": "Couldn't generate this text. Try rephrasing your input.",
+  "coverLetterFromAd": "Cover letter from a job ad",
+  "coverLetterFromAdSubtitle": "Paste the ad and get a tailored letter",
+  "jobAd": "Job ad text",
+  "jobAdHint": "Paste the job ad here…",
+  "generateWithAi": "Generate with AI",
+  "aiSectionTitle": "AI Assistant"
 }

@@ -350,4 +350,46 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tooManyAttempts => 'محاولات كثيرة. حاول بعد دقيقة.';
+
+  @override
+  String get aiImprove => 'تحسين بالذكاء الاصطناعي';
+
+  @override
+  String get aiRewrite => 'صياغة احترافية';
+
+  @override
+  String get aiWorking => 'جارٍ التوليد…';
+
+  @override
+  String get networkError => 'تعذّر الاتصال. تحقق من الإنترنت وحاول مجدداً.';
+
+  @override
+  String get quotaExhausted => 'استخدمت حصتك اليومية من الذكاء الاصطناعي.';
+
+  @override
+  String get quotaExhaustedPremium => 'استخدمت حصتك اليومية. تتجدد غداً.';
+
+  @override
+  String get upgradeForMore => 'ترقية';
+
+  @override
+  String get aiDeclined => 'تعذّر توليد هذا النص. حاول بصياغة مختلفة.';
+
+  @override
+  String get coverLetterFromAd => 'خطاب من إعلان وظيفة';
+
+  @override
+  String get coverLetterFromAdSubtitle => 'الصق الإعلان واحصل على خطاب مخصص';
+
+  @override
+  String get jobAd => 'نص إعلان الوظيفة';
+
+  @override
+  String get jobAdHint => 'الصق إعلان الوظيفة هنا…';
+
+  @override
+  String get generateWithAi => 'إنشاء بالذكاء الاصطناعي';
+
+  @override
+  String get aiSectionTitle => 'مساعد الذكاء الاصطناعي';
 }

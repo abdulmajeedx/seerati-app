@@ -352,4 +352,50 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tooManyAttempts => 'Too many attempts. Try again in a minute.';
+
+  @override
+  String get aiImprove => 'Improve with AI';
+
+  @override
+  String get aiRewrite => 'Rewrite professionally';
+
+  @override
+  String get aiWorking => 'Generating…';
+
+  @override
+  String get networkError =>
+      'Connection failed. Check your internet and try again.';
+
+  @override
+  String get quotaExhausted => 'You\'ve used today\'s AI quota.';
+
+  @override
+  String get quotaExhaustedPremium =>
+      'You\'ve used today\'s AI quota. It resets tomorrow.';
+
+  @override
+  String get upgradeForMore => 'Upgrade';
+
+  @override
+  String get aiDeclined =>
+      'Couldn\'t generate this text. Try rephrasing your input.';
+
+  @override
+  String get coverLetterFromAd => 'Cover letter from a job ad';
+
+  @override
+  String get coverLetterFromAdSubtitle =>
+      'Paste the ad and get a tailored letter';
+
+  @override
+  String get jobAd => 'Job ad text';
+
+  @override
+  String get jobAdHint => 'Paste the job ad here…';
+
+  @override
+  String get generateWithAi => 'Generate with AI';
+
+  @override
+  String get aiSectionTitle => 'AI Assistant';
 }

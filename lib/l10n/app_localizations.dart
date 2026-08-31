@@ -781,6 +781,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Too many attempts. Try again in a minute.'**
   String get tooManyAttempts;
+
+  /// No description provided for @aiImprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Improve with AI'**
+  String get aiImprove;
+
+  /// No description provided for @aiRewrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewrite professionally'**
+  String get aiRewrite;
+
+  /// No description provided for @aiWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'Generating…'**
+  String get aiWorking;
+
+  /// No description provided for @networkError.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection failed. Check your internet and try again.'**
+  String get networkError;
+
+  /// No description provided for @quotaExhausted.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used today\'s AI quota.'**
+  String get quotaExhausted;
+
+  /// No description provided for @quotaExhaustedPremium.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used today\'s AI quota. It resets tomorrow.'**
+  String get quotaExhaustedPremium;
+
+  /// No description provided for @upgradeForMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade'**
+  String get upgradeForMore;
+
+  /// No description provided for @aiDeclined.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t generate this text. Try rephrasing your input.'**
+  String get aiDeclined;
+
+  /// No description provided for @coverLetterFromAd.
+  ///
+  /// In en, this message translates to:
+  /// **'Cover letter from a job ad'**
+  String get coverLetterFromAd;
+
+  /// No description provided for @coverLetterFromAdSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the ad and get a tailored letter'**
+  String get coverLetterFromAdSubtitle;
+
+  /// No description provided for @jobAd.
+  ///
+  /// In en, this message translates to:
+  /// **'Job ad text'**
+  String get jobAd;
+
+  /// No description provided for @jobAdHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the job ad here…'**
+  String get jobAdHint;
+
+  /// No description provided for @generateWithAi.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate with AI'**
+  String get generateWithAi;
+
+  /// No description provided for @aiSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Assistant'**
+  String get aiSectionTitle;
 }
 
 class _AppLocalizationsDelegate

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/services/api_client.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/models/cover_letter.dart';
+import 'ai_cover_letter_screen.dart';
 import 'cover_letter_editor_screen.dart';
 import 'cover_letter_form_screen.dart';
 
@@ -36,7 +38,19 @@ class CoverLetterListScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final localeCode = Localizations.localeOf(context).toString();
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.myCoverLetters)),
+      appBar: AppBar(
+        title: Text(l10n.myCoverLetters),
+        actions: [
+          if (ApiClient.isConfigured)
+            IconButton(
+              icon: const Icon(Icons.auto_awesome_outlined),
+              tooltip: l10n.coverLetterFromAd,
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const AiCoverLetterScreen()),
+              ),
+            ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton.extended(
         icon: const Icon(Icons.add),
         label: Text(l10n.newCoverLetter),

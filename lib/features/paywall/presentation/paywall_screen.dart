@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/providers/premium_provider.dart';
 import '../../../core/services/activation_service.dart';
+import '../../../core/services/api_client.dart';
 import '../../../core/services/purchase_service.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -160,8 +161,31 @@ class _ActivationDialogState extends ConsumerState<_ActivationDialog> {
       setState(() => _errorText = l10n.tooManyAttempts);
       return;
     }
-    setState(() => _busy = true);
-    final ok = await ActivationService.redeem(_controller.text);
+    setState(() {
+      _busy = true;
+      _errorText = null;
+    });
+    // With a backend configured the server is authoritative: codes are
+    // single-use across devices. Offline builds fall back to local signing.
+    bool ok;
+    if (ApiClient.isConfigured) {
+      try {
+        ok = await ref.read(apiClientProvider).redeem(_controller.text);
+      } on ApiException catch (e) {
+        if (!mounted) return;
+        setState(() {
+          _busy = false;
+          _errorText = e.kind == ApiErrorKind.network
+              ? l10n.networkError
+              : (e.kind == ApiErrorKind.declined
+                  ? l10n.invalidCode
+                  : l10n.errorGeneric);
+        });
+        return;
+      }
+    } else {
+      ok = await ActivationService.redeem(_controller.text);
+    }
     if (!mounted) return;
     if (!ok) {
       setState(() {

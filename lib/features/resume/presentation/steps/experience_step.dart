@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/widgets/ai_button.dart';
 import '../../../../shared/widgets/date_picker_field.dart';
 import '../../data/models/resume.dart';
 
@@ -20,7 +21,8 @@ class _ExperienceStepState extends State<ExperienceStep> {
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder: (_) => _ExperienceSheet(item: item),
+      builder: (_) =>
+          _ExperienceSheet(item: item, language: widget.draft.language),
     );
     if (result == null) return;
     setState(() {
@@ -86,9 +88,10 @@ class _ExperienceStepState extends State<ExperienceStep> {
 }
 
 class _ExperienceSheet extends StatefulWidget {
-  const _ExperienceSheet({this.item});
+  const _ExperienceSheet({this.item, required this.language});
 
   final ExperienceItem? item;
+  final String language;
 
   @override
   State<_ExperienceSheet> createState() => _ExperienceSheetState();
@@ -97,6 +100,14 @@ class _ExperienceSheet extends StatefulWidget {
 class _ExperienceSheetState extends State<_ExperienceSheet> {
   final _formKey = GlobalKey<FormState>();
   late final ExperienceItem _item = widget.item?.copy() ?? ExperienceItem();
+  late final TextEditingController _description =
+      TextEditingController(text: _item.description);
+
+  @override
+  void dispose() {
+    _description.dispose();
+    super.dispose();
+  }
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
@@ -178,12 +189,28 @@ class _ExperienceSheetState extends State<_ExperienceSheet> {
                 controlAffinity: ListTileControlAffinity.leading,
                 onChanged: (v) => setState(() => _item.isCurrent = v ?? false),
               ),
-              TextFormField(
-                initialValue: _item.description,
+              TextField(
+                controller: _description,
                 decoration: InputDecoration(
                     labelText: l10n.description, alignLabelWithHint: true),
                 maxLines: 3,
                 onChanged: (v) => _item.description = v,
+              ),
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: AiButton(
+                  label: l10n.aiRewrite,
+                  request: (client) => client.rewriteExperience(
+                    language: widget.language,
+                    jobTitle: _item.jobTitle,
+                    company: _item.company,
+                    rawDescription: _description.text,
+                  ),
+                  onResult: (text) {
+                    _description.text = text;
+                    _item.description = text;
+                  },
+                ),
               ),
               const SizedBox(height: 16),
               FilledButton(onPressed: _submit, child: Text(l10n.save)),
