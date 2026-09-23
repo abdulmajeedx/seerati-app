@@ -476,4 +476,21 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get importEmpty => 'النسخة الاحتياطية فارغة.';
+
+  @override
+  String get skip => 'تخطّي';
+
+  @override
+  String get onboardTemplatesTitle => 'قوالب تلفت الانتباه';
+
+  @override
+  String get onboardTemplatesSubtitle =>
+      'اختر قالباً وشاهد سيرتك فيه مباشرة، ثم صدّرها PDF جاهزاً للمشاركة.';
+
+  @override
+  String get onboardPrivacyTitle => 'بياناتك تبقى معك';
+
+  @override
+  String get onboardPrivacySubtitle =>
+      'كل شيء محفوظ ومشفّر على جهازك — بدون حساب — مع ملف نسخة احتياطية تنقله أينما شئت.';
 }

@@ -1015,6 +1015,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This backup is empty.'**
   String get importEmpty;
+
+  /// No description provided for @skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skip;
+
+  /// No description provided for @onboardTemplatesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Templates that stand out'**
+  String get onboardTemplatesTitle;
+
+  /// No description provided for @onboardTemplatesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a template, see your resume in it right away, and export a PDF ready to share.'**
+  String get onboardTemplatesSubtitle;
+
+  /// No description provided for @onboardPrivacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data stays with you'**
+  String get onboardPrivacyTitle;
+
+  /// No description provided for @onboardPrivacySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything is saved encrypted on your device — no account needed — with a backup file you can move anywhere.'**
+  String get onboardPrivacySubtitle;
 }
 
 class _AppLocalizationsDelegate

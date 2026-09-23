@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- App icon: a resume page on the brand teal, replacing the default Flutter icon. Android gets an adaptive icon (with a monochrome layer for themed icons); iOS gets every required size. Regenerate with `python3 tool/generate_icons.py`.
+- Branded launch screen on Android (including the Android 12+ system splash) and iOS, instead of a blank white screen.
+- Three-page onboarding (welcome, templates, privacy) with Skip, shown on first launch only; returning users open straight to the home screen.
+- Template picker shows each template's real first page rendered from the user's own resume, falling back to the schematic sketch while it renders.
+
 ## [2.3.0] - 2026-08-31
 
 ### Added

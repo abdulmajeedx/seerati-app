@@ -154,5 +154,10 @@
   "@importDone": {"placeholders": {"added": {"type": "int"}, "updated": {"type": "int"}}},
   "importInvalidFile": "هذا الملف ليس نسخة احتياطية من سيرتي.",
   "importUnsupportedVersion": "النسخة الاحتياطية أُنشئت بإصدار أحدث من التطبيق. حدّث سيرتي ثم أعد المحاولة.",
-  "importEmpty": "النسخة الاحتياطية فارغة."
+  "importEmpty": "النسخة الاحتياطية فارغة.",
+  "skip": "تخطّي",
+  "onboardTemplatesTitle": "قوالب تلفت الانتباه",
+  "onboardTemplatesSubtitle": "اختر قالباً وشاهد سيرتك فيه مباشرة، ثم صدّرها PDF جاهزاً للمشاركة.",
+  "onboardPrivacyTitle": "بياناتك تبقى معك",
+  "onboardPrivacySubtitle": "كل شيء محفوظ ومشفّر على جهازك — بدون حساب — مع ملف نسخة احتياطية تنقله أينما شئت."
 }
