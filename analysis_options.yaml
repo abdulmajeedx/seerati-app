@@ -30,3 +30,6 @@ linter:
 analyzer:
   exclude:
     - backend/**
+    - build/**
+    - android/**
+    - ios/**
