@@ -88,7 +88,7 @@ class _ExperienceStepState extends State<ExperienceStep> {
                     tooltip: l10n.delete,
                     onPressed: () => setState(() => items.removeAt(i)),
                   ),
-                  ?handle,
+                  handle ?? const SizedBox.shrink(),
                 ],
               ),
             ),

@@ -83,7 +83,7 @@ class _EducationStepState extends State<EducationStep> {
                     tooltip: l10n.delete,
                     onPressed: () => setState(() => items.removeAt(i)),
                   ),
-                  ?handle,
+                  handle ?? const SizedBox.shrink(),
                 ],
               ),
             ),

@@ -75,7 +75,7 @@ void main() {
             onChanged: () => setState(() => changes++),
             itemBuilder: (context, item, i, handle) => SizedBox(
               height: 56,
-              child: Row(children: [Expanded(child: Text(item)), ?handle]),
+              child: Row(children: [Expanded(child: Text(item)), handle ?? const SizedBox.shrink()]),
             ),
           ),
         ),
@@ -105,7 +105,7 @@ void main() {
           items: ['only'],
           onChanged: () {},
           itemBuilder: (context, item, i, handle) =>
-              Row(children: [Text(item), ?handle]),
+              Row(children: [Text(item), handle ?? const SizedBox.shrink()]),
         ),
       ),
     ));

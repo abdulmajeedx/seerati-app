@@ -68,7 +68,7 @@ class _ExtrasStepState extends State<ExtrasStep> {
                 tooltip: l10n.delete,
                 onPressed: () => setState(() => list.removeAt(i)),
               ),
-              ?handle,
+              handle ?? const SizedBox.shrink(),
             ],
           ),
         ),
@@ -100,7 +100,7 @@ class _ExtrasStepState extends State<ExtrasStep> {
                   onPressed: () =>
                       setState(() => widget.draft.languages.removeAt(i)),
                 ),
-                ?handle,
+                handle ?? const SizedBox.shrink(),
               ],
             ),
           ),
@@ -146,7 +146,7 @@ class _ExtrasStepState extends State<ExtrasStep> {
                   onPressed: () =>
                       setState(() => widget.draft.projects.removeAt(i)),
                 ),
-                ?handle,
+                handle ?? const SizedBox.shrink(),
               ],
             ),
           ),
