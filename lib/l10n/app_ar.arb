@@ -159,5 +159,9 @@
   "onboardTemplatesTitle": "قوالب تلفت الانتباه",
   "onboardTemplatesSubtitle": "اختر قالباً وشاهد سيرتك فيه مباشرة، ثم صدّرها PDF جاهزاً للمشاركة.",
   "onboardPrivacyTitle": "بياناتك تبقى معك",
-  "onboardPrivacySubtitle": "كل شيء محفوظ ومشفّر على جهازك — بدون حساب — مع ملف نسخة احتياطية تنقله أينما شئت."
+  "onboardPrivacySubtitle": "كل شيء محفوظ ومشفّر على جهازك — بدون حساب — مع ملف نسخة احتياطية تنقله أينما شئت.",
+  "discardChangesTitle": "تجاهل التعديلات؟",
+  "discardChangesMsg": "لم تُحفظ تعديلاتك بعد. إن خرجت الآن فستفقدها.",
+  "keepEditing": "متابعة التعديل",
+  "discard": "تجاهل"
 }

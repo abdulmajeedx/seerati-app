@@ -101,4 +101,48 @@ void main() {
         tester.element(find.byType(ResumeFormScreen)));
     expect(direction, TextDirection.rtl);
   });
+
+  Widget host() => Builder(
+        builder: (context) => Scaffold(
+          body: TextButton(
+            onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => const ResumeFormScreen())),
+            child: const Text('open'),
+          ),
+        ),
+      );
+
+  testWidgets('leaving an untouched form does not ask', (tester) async {
+    enlargeSurface(tester);
+    await tester.pumpWidget(_wrap(host()));
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.text('Discard changes?'), findsNothing);
+    expect(find.byType(ResumeFormScreen), findsNothing);
+  });
+
+  testWidgets('leaving with unsaved edits asks first', (tester) async {
+    enlargeSurface(tester);
+    await tester.pumpWidget(_wrap(host()));
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+        find.widgetWithText(TextFormField, 'Full Name'), 'Ahmed Ali');
+    await tester.pump();
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.text('Discard changes?'), findsOneWidget);
+    await tester.tap(find.text('Keep editing'));
+    await tester.pumpAndSettle();
+    expect(find.byType(ResumeFormScreen), findsOneWidget);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Discard'));
+    await tester.pumpAndSettle();
+    expect(find.byType(ResumeFormScreen), findsNothing);
+  });
 }

@@ -493,4 +493,17 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get onboardPrivacySubtitle =>
       'كل شيء محفوظ ومشفّر على جهازك — بدون حساب — مع ملف نسخة احتياطية تنقله أينما شئت.';
+
+  @override
+  String get discardChangesTitle => 'تجاهل التعديلات؟';
+
+  @override
+  String get discardChangesMsg =>
+      'لم تُحفظ تعديلاتك بعد. إن خرجت الآن فستفقدها.';
+
+  @override
+  String get keepEditing => 'متابعة التعديل';
+
+  @override
+  String get discard => 'تجاهل';
 }

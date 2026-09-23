@@ -5,6 +5,7 @@ import 'package:printing/printing.dart';
 import '../../../core/providers/premium_provider.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/discard_changes.dart';
 import '../data/models/cover_letter.dart';
 import '../services/cover_letter_pdf.dart';
 
@@ -20,8 +21,12 @@ class CoverLetterEditorScreen extends ConsumerStatefulWidget {
 
 class _CoverLetterEditorScreenState
     extends ConsumerState<CoverLetterEditorScreen> {
-  late final TextEditingController _body =
-      TextEditingController(text: widget.letter.body);
+  late final TextEditingController _body = TextEditingController(
+    text: widget.letter.body,
+  );
+
+  /// Body as last saved, to detect unsaved edits.
+  late String _savedBody = widget.letter.body;
 
   @override
   void dispose() {
@@ -35,10 +40,20 @@ class _CoverLetterEditorScreenState
       ..body = _body.text
       ..updatedAt = DateTime.now();
     await StorageService.coverLetters.put(widget.letter.id, widget.letter);
+    _savedBody = widget.letter.body;
     if (!mounted) return;
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text(l10n.coverLetterSaved)));
+  }
+
+  Future<void> _handleBack() async {
+    if (_body.text != _savedBody && !await confirmDiscardChanges(context)) {
+      return;
+    }
+    // Preview writes the draft into the (live, Hive-backed) letter; undo that.
+    widget.letter.body = _savedBody;
+    if (mounted) Navigator.of(context).pop();
   }
 
   void _preview() {
@@ -47,7 +62,9 @@ class _CoverLetterEditorScreenState
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => _CoverLetterPreviewScreen(
-            letter: widget.letter, watermark: !premium),
+          letter: widget.letter,
+          watermark: !premium,
+        ),
       ),
     );
   }
@@ -58,32 +75,38 @@ class _CoverLetterEditorScreenState
     final title = widget.letter.companyName.trim().isNotEmpty
         ? widget.letter.companyName
         : l10n.coverLetter;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.save_outlined),
-            tooltip: l10n.save,
-            onPressed: _save,
-          ),
-          IconButton(
-            icon: const Icon(Icons.picture_as_pdf_outlined),
-            tooltip: l10n.preview,
-            onPressed: _preview,
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: TextField(
-          controller: _body,
-          maxLines: null,
-          expands: true,
-          textAlignVertical: TextAlignVertical.top,
-          decoration: InputDecoration(
-            labelText: l10n.letterBody,
-            alignLabelWithHint: true,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _handleBack();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(title),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.save_outlined),
+              tooltip: l10n.save,
+              onPressed: _save,
+            ),
+            IconButton(
+              icon: const Icon(Icons.picture_as_pdf_outlined),
+              tooltip: l10n.preview,
+              onPressed: _preview,
+            ),
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: TextField(
+            controller: _body,
+            maxLines: null,
+            expands: true,
+            textAlignVertical: TextAlignVertical.top,
+            decoration: InputDecoration(
+              labelText: l10n.letterBody,
+              alignLabelWithHint: true,
+            ),
           ),
         ),
       ),
@@ -92,8 +115,10 @@ class _CoverLetterEditorScreenState
 }
 
 class _CoverLetterPreviewScreen extends StatelessWidget {
-  const _CoverLetterPreviewScreen(
-      {required this.letter, required this.watermark});
+  const _CoverLetterPreviewScreen({
+    required this.letter,
+    required this.watermark,
+  });
 
   final CoverLetter letter;
   final bool watermark;

@@ -500,4 +500,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get onboardPrivacySubtitle =>
       'Everything is saved encrypted on your device — no account needed — with a backup file you can move anywhere.';
+
+  @override
+  String get discardChangesTitle => 'Discard changes?';
+
+  @override
+  String get discardChangesMsg =>
+      'Your edits haven\'t been saved. If you leave now, they\'ll be lost.';
+
+  @override
+  String get keepEditing => 'Keep editing';
+
+  @override
+  String get discard => 'Discard';
 }

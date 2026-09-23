@@ -1045,6 +1045,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Everything is saved encrypted on your device — no account needed — with a backup file you can move anywhere.'**
   String get onboardPrivacySubtitle;
+
+  /// No description provided for @discardChangesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard changes?'**
+  String get discardChangesTitle;
+
+  /// No description provided for @discardChangesMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Your edits haven\'t been saved. If you leave now, they\'ll be lost.'**
+  String get discardChangesMsg;
+
+  /// No description provided for @keepEditing.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep editing'**
+  String get keepEditing;
+
+  /// No description provided for @discard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get discard;
 }
 
 class _AppLocalizationsDelegate
