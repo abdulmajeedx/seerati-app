@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
+import 'dialog_action_style.dart';
 
 /// Asks before throwing away unsaved edits. True means leave.
 Future<bool> confirmDiscardChanges(BuildContext context) async {
@@ -17,8 +18,7 @@ Future<bool> confirmDiscardChanges(BuildContext context) async {
           child: Text(l10n.discard),
         ),
         FilledButton(
-          // The theme's full-width minimum doesn't suit dialog actions.
-          style: FilledButton.styleFrom(minimumSize: const Size(64, 40)),
+          style: dialogActionStyle,
           onPressed: () => Navigator.of(context).pop(false),
           child: Text(l10n.keepEditing),
         ),

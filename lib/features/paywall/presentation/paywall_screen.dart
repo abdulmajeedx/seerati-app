@@ -6,6 +6,7 @@ import '../../../core/services/activation_service.dart';
 import '../../../core/services/api_client.dart';
 import '../../../core/services/purchase_service.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/dialog_action_style.dart';
 
 class PaywallScreen extends ConsumerWidget {
   const PaywallScreen({super.key});
@@ -226,7 +227,9 @@ class _ActivationDialogState extends ConsumerState<_ActivationDialog> {
             onPressed: () => Navigator.of(context).pop(),
             child: Text(l10n.cancel)),
         FilledButton(
-            onPressed: _busy ? null : _activate, child: Text(l10n.activate)),
+            style: dialogActionStyle,
+            onPressed: _busy ? null : _activate,
+            child: Text(l10n.activate)),
       ],
     );
   }
