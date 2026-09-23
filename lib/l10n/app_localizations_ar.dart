@@ -28,13 +28,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get newResume => 'سيرة ذاتية جديدة';
 
   @override
-  String get newResumeSubtitle => 'أنشئ سيرة ذاتية احترافية خطوة بخطوة';
-
-  @override
   String get coverLetter => 'خطاب تقديم';
-
-  @override
-  String get coverLetterSubtitle => 'أنشئ خطاب تقديم جاهزاً للإرسال';
 
   @override
   String get myResumes => 'سيري الذاتية';
@@ -514,4 +508,12 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get emptyLettersMsg =>
       'أنشئ خطاب تقديم من قالب جاهز، ثم عدّله كما تشاء.';
+
+  @override
+  String get changeTemplate => 'تغيير القالب';
+
+  @override
+  String resumeProgress(String percent) {
+    return 'مكتملة $percent';
+  }
 }
