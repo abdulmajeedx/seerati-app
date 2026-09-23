@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [2.4.0] - 2026-09-23
 
 ### Added
 - App icon: a resume page on the brand teal, replacing the default Flutter icon. Android gets an adaptive icon (with a monochrome layer for themed icons); iOS gets every required size. Regenerate with `python3 tool/generate_icons.py`.
