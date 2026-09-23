@@ -134,23 +134,11 @@ abstract class AppLocalizations {
   /// **'New Resume'**
   String get newResume;
 
-  /// No description provided for @newResumeSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Create a professional resume step by step'**
-  String get newResumeSubtitle;
-
   /// No description provided for @coverLetter.
   ///
   /// In en, this message translates to:
   /// **'Cover Letter'**
   String get coverLetter;
-
-  /// No description provided for @coverLetterSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Generate a ready-to-send cover letter'**
-  String get coverLetterSubtitle;
 
   /// No description provided for @myResumes.
   ///
@@ -1081,6 +1069,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create a cover letter from a ready template, then edit it however you like.'**
   String get emptyLettersMsg;
+
+  /// No description provided for @changeTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Change template'**
+  String get changeTemplate;
+
+  /// No description provided for @resumeProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent} complete'**
+  String resumeProgress(String percent);
 }
 
 class _AppLocalizationsDelegate

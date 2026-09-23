@@ -28,13 +28,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newResume => 'New Resume';
 
   @override
-  String get newResumeSubtitle => 'Create a professional resume step by step';
-
-  @override
   String get coverLetter => 'Cover Letter';
-
-  @override
-  String get coverLetterSubtitle => 'Generate a ready-to-send cover letter';
 
   @override
   String get myResumes => 'My Resumes';
@@ -520,4 +514,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get emptyLettersMsg =>
       'Create a cover letter from a ready template, then edit it however you like.';
+
+  @override
+  String get changeTemplate => 'Change template';
+
+  @override
+  String resumeProgress(String percent) {
+    return '$percent complete';
+  }
 }

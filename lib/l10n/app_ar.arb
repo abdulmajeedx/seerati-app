@@ -6,9 +6,7 @@
   "getStarted": "ابدأ الآن",
   "homeTitle": "الرئيسية",
   "newResume": "سيرة ذاتية جديدة",
-  "newResumeSubtitle": "أنشئ سيرة ذاتية احترافية خطوة بخطوة",
   "coverLetter": "خطاب تقديم",
-  "coverLetterSubtitle": "أنشئ خطاب تقديم جاهزاً للإرسال",
   "myResumes": "سيري الذاتية",
   "settings": "الإعدادات",
   "language": "اللغة",
@@ -165,5 +163,8 @@
   "emptyResumesTitle": "ابدأ سيرتك الذاتية الأولى",
   "emptyResumesMsg": "أجب عن بضعة أسئلة، واختر قالباً، وصدّرها PDF في دقائق.",
   "emptyLettersTitle": "لا توجد خطابات بعد",
-  "emptyLettersMsg": "أنشئ خطاب تقديم من قالب جاهز، ثم عدّله كما تشاء."
+  "emptyLettersMsg": "أنشئ خطاب تقديم من قالب جاهز، ثم عدّله كما تشاء.",
+  "changeTemplate": "تغيير القالب",
+  "resumeProgress": "مكتملة {percent}",
+  "@resumeProgress": {"placeholders": {"percent": {"type": "String"}}}
 }

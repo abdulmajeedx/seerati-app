@@ -6,9 +6,7 @@
   "getStarted": "Get Started",
   "homeTitle": "Home",
   "newResume": "New Resume",
-  "newResumeSubtitle": "Create a professional resume step by step",
   "coverLetter": "Cover Letter",
-  "coverLetterSubtitle": "Generate a ready-to-send cover letter",
   "myResumes": "My Resumes",
   "settings": "Settings",
   "language": "Language",
@@ -165,5 +163,8 @@
   "emptyResumesTitle": "Start your first resume",
   "emptyResumesMsg": "Answer a few questions, pick a template and export a PDF in minutes.",
   "emptyLettersTitle": "No cover letters yet",
-  "emptyLettersMsg": "Create a cover letter from a ready template, then edit it however you like."
+  "emptyLettersMsg": "Create a cover letter from a ready template, then edit it however you like.",
+  "changeTemplate": "Change template",
+  "resumeProgress": "{percent} complete",
+  "@resumeProgress": {"placeholders": {"percent": {"type": "String"}}}
 }
