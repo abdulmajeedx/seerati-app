@@ -166,5 +166,7 @@
   "emptyLettersMsg": "أنشئ خطاب تقديم من قالب جاهز، ثم عدّله كما تشاء.",
   "changeTemplate": "تغيير القالب",
   "resumeProgress": "مكتملة {percent}",
-  "@resumeProgress": {"placeholders": {"percent": {"type": "String"}}}
+  "@resumeProgress": {"placeholders": {"percent": {"type": "String"}}},
+  "stepOf": "الخطوة {current} من {total}",
+  "@stepOf": {"placeholders": {"current": {"type": "int"}, "total": {"type": "int"}}}
 }

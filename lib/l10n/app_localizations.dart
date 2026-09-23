@@ -1081,6 +1081,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{percent} complete'**
   String resumeProgress(String percent);
+
+  /// No description provided for @stepOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {current} of {total}'**
+  String stepOf(int current, int total);
 }
 
 class _AppLocalizationsDelegate
