@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../core/services/api_client.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/empty_state.dart';
 import '../data/models/cover_letter.dart';
 import 'ai_cover_letter_screen.dart';
 import 'cover_letter_editor_screen.dart';
@@ -22,11 +23,13 @@ class CoverLetterListScreen extends StatelessWidget {
         content: Text(l10n.confirmDeleteMsg),
         actions: [
           TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(l10n.cancel)),
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
           FilledButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(l10n.delete)),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.delete),
+          ),
         ],
       ),
     );
@@ -65,13 +68,17 @@ class CoverLetterListScreen extends StatelessWidget {
             ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
           if (letters.isEmpty) {
             return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Text(
-                  l10n.noCoverLettersYet,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant),
+              child: SingleChildScrollView(
+                child: EmptyState(
+                  icon: Icons.mail_outline,
+                  title: l10n.emptyLettersTitle,
+                  message: l10n.emptyLettersMsg,
+                  actionLabel: l10n.newCoverLetter,
+                  onAction: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const CoverLetterFormScreen(),
+                    ),
+                  ),
                 ),
               ),
             );
@@ -85,18 +92,19 @@ class CoverLetterListScreen extends StatelessWidget {
               final title = letter.companyName.trim().isNotEmpty
                   ? letter.companyName
                   : (letter.jobTitle.trim().isNotEmpty
-                      ? letter.jobTitle
-                      : l10n.untitledLetter);
+                        ? letter.jobTitle
+                        : l10n.untitledLetter);
               return Card(
                 child: ListTile(
                   leading: const Icon(Icons.mail_outline),
                   title: Text(title),
                   subtitle: Text(
-                      DateFormat.yMMMd(localeCode).format(letter.updatedAt)),
+                    DateFormat.yMMMd(localeCode).format(letter.updatedAt),
+                  ),
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                        builder: (_) =>
-                            CoverLetterEditorScreen(letter: letter)),
+                      builder: (_) => CoverLetterEditorScreen(letter: letter),
+                    ),
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete_outline),

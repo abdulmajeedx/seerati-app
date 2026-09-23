@@ -158,12 +158,6 @@ abstract class AppLocalizations {
   /// **'My Resumes'**
   String get myResumes;
 
-  /// No description provided for @noResumesYet.
-  ///
-  /// In en, this message translates to:
-  /// **'No resumes yet. Create your first one!'**
-  String get noResumesYet;
-
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
@@ -656,12 +650,6 @@ abstract class AppLocalizations {
   /// **'My Cover Letters'**
   String get myCoverLetters;
 
-  /// No description provided for @noCoverLettersYet.
-  ///
-  /// In en, this message translates to:
-  /// **'No cover letters yet. Create your first one!'**
-  String get noCoverLettersYet;
-
   /// No description provided for @newCoverLetter.
   ///
   /// In en, this message translates to:
@@ -1069,6 +1057,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Discard'**
   String get discard;
+
+  /// No description provided for @emptyResumesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start your first resume'**
+  String get emptyResumesTitle;
+
+  /// No description provided for @emptyResumesMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer a few questions, pick a template and export a PDF in minutes.'**
+  String get emptyResumesMsg;
+
+  /// No description provided for @emptyLettersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No cover letters yet'**
+  String get emptyLettersTitle;
+
+  /// No description provided for @emptyLettersMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a cover letter from a ready template, then edit it however you like.'**
+  String get emptyLettersMsg;
 }
 
 class _AppLocalizationsDelegate

@@ -40,9 +40,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myResumes => 'My Resumes';
 
   @override
-  String get noResumesYet => 'No resumes yet. Create your first one!';
-
-  @override
   String get settings => 'Settings';
 
   @override
@@ -290,10 +287,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myCoverLetters => 'My Cover Letters';
 
   @override
-  String get noCoverLettersYet =>
-      'No cover letters yet. Create your first one!';
-
-  @override
   String get newCoverLetter => 'New Cover Letter';
 
   @override
@@ -513,4 +506,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get discard => 'Discard';
+
+  @override
+  String get emptyResumesTitle => 'Start your first resume';
+
+  @override
+  String get emptyResumesMsg =>
+      'Answer a few questions, pick a template and export a PDF in minutes.';
+
+  @override
+  String get emptyLettersTitle => 'No cover letters yet';
+
+  @override
+  String get emptyLettersMsg =>
+      'Create a cover letter from a ready template, then edit it however you like.';
 }

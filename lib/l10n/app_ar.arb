@@ -10,7 +10,6 @@
   "coverLetter": "خطاب تقديم",
   "coverLetterSubtitle": "أنشئ خطاب تقديم جاهزاً للإرسال",
   "myResumes": "سيري الذاتية",
-  "noResumesYet": "لا توجد سير ذاتية بعد. أنشئ سيرتك الأولى!",
   "settings": "الإعدادات",
   "language": "اللغة",
   "arabic": "العربية",
@@ -93,7 +92,6 @@
   "confirmDelete": "تأكيد الحذف",
   "confirmDeleteMsg": "لا يمكن التراجع عن هذا الإجراء.",
   "myCoverLetters": "خطاباتي",
-  "noCoverLettersYet": "لا توجد خطابات بعد. أنشئ خطابك الأول!",
   "newCoverLetter": "خطاب تقديم جديد",
   "letterBody": "نص الخطاب",
   "coverLetterSaved": "تم حفظ الخطاب",
@@ -163,5 +161,9 @@
   "discardChangesTitle": "تجاهل التعديلات؟",
   "discardChangesMsg": "لم تُحفظ تعديلاتك بعد. إن خرجت الآن فستفقدها.",
   "keepEditing": "متابعة التعديل",
-  "discard": "تجاهل"
+  "discard": "تجاهل",
+  "emptyResumesTitle": "ابدأ سيرتك الذاتية الأولى",
+  "emptyResumesMsg": "أجب عن بضعة أسئلة، واختر قالباً، وصدّرها PDF في دقائق.",
+  "emptyLettersTitle": "لا توجد خطابات بعد",
+  "emptyLettersMsg": "أنشئ خطاب تقديم من قالب جاهز، ثم عدّله كما تشاء."
 }
