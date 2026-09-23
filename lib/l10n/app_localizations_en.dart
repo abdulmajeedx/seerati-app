@@ -522,4 +522,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String resumeProgress(String percent) {
     return '$percent complete';
   }
+
+  @override
+  String stepOf(int current, int total) {
+    return 'Step $current of $total';
+  }
 }

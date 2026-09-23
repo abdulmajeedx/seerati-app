@@ -166,5 +166,7 @@
   "emptyLettersMsg": "Create a cover letter from a ready template, then edit it however you like.",
   "changeTemplate": "Change template",
   "resumeProgress": "{percent} complete",
-  "@resumeProgress": {"placeholders": {"percent": {"type": "String"}}}
+  "@resumeProgress": {"placeholders": {"percent": {"type": "String"}}},
+  "stepOf": "Step {current} of {total}",
+  "@stepOf": {"placeholders": {"current": {"type": "int"}, "total": {"type": "int"}}}
 }

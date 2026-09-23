@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:seerati/core/services/storage_service.dart';
 import 'package:seerati/features/resume/presentation/resume_form_screen.dart';
+import 'package:seerati/features/resume/presentation/resume_preview_screen.dart';
 import 'package:seerati/l10n/app_localizations.dart';
 
 Widget _wrap(Widget child, {Locale locale = const Locale('en')}) {
@@ -144,5 +145,20 @@ void main() {
     await tester.tap(find.text('Discard'));
     await tester.pumpAndSettle();
     expect(find.byType(ResumeFormScreen), findsNothing);
+  });
+
+  testWidgets('preview shows the draft from any step', (tester) async {
+    enlargeSurface(tester);
+    await tester.pumpWidget(_wrap(const ResumeFormScreen()));
+    await tester.enterText(
+        find.widgetWithText(TextFormField, 'Full Name'), 'Ahmed Ali');
+    await tester.tap(find.text('Next'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Preview'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    final preview =
+        tester.widget<ResumePreviewScreen>(find.byType(ResumePreviewScreen));
+    expect(preview.resume.personalInfo.fullName, 'Ahmed Ali');
   });
 }

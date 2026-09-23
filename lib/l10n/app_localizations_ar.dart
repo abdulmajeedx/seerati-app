@@ -516,4 +516,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String resumeProgress(String percent) {
     return 'مكتملة $percent';
   }
+
+  @override
+  String stepOf(int current, int total) {
+    return 'الخطوة $current من $total';
+  }
 }

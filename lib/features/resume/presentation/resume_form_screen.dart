@@ -13,6 +13,7 @@ import 'steps/extras_step.dart';
 import 'steps/personal_info_step.dart';
 import 'steps/skills_step.dart';
 import 'steps/summary_step.dart';
+import 'resume_preview_screen.dart';
 import 'template_picker_screen.dart';
 
 class ResumeFormScreen extends StatefulWidget {
@@ -98,14 +99,41 @@ class _ResumeFormScreenState extends State<ResumeFormScreen> {
     );
   }
 
-  StepState _stateFor(int index) {
-    if (index == _step) return StepState.editing;
-    return index < _step ? StepState.complete : StepState.indexed;
+  /// Jumping forward past the first step still requires a valid name.
+  void _goTo(int index) {
+    if (index == _step) return;
+    if (_step == 0 &&
+        index > 0 &&
+        !(_personalFormKey.currentState?.validate() ?? false)) {
+      return;
+    }
+    setState(() => _step = index);
+  }
+
+  /// PDF of the draft as it stands, in its current template.
+  void _preview() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => ResumePreviewScreen(resume: _draft)),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final steps = <(String, Widget)>[
+      (
+        l10n.personalInfo,
+        PersonalInfoStep(draft: _draft, formKey: _personalFormKey),
+      ),
+      (l10n.summary, SummaryStep(draft: _draft)),
+      (l10n.experience, ExperienceStep(draft: _draft)),
+      (l10n.education, EducationStep(draft: _draft)),
+      (l10n.skills, SkillsStep(draft: _draft)),
+      ('${l10n.extrasStep} (${l10n.optionalHint})', ExtrasStep(draft: _draft)),
+    ];
+    final isLast = _step == _stepCount - 1;
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {
@@ -114,72 +142,175 @@ class _ResumeFormScreenState extends State<ResumeFormScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.existing == null ? l10n.newResume : l10n.edit),
+          actions: [
+            IconButton(
+              tooltip: l10n.preview,
+              icon: const Icon(Icons.visibility_outlined),
+              onPressed: _preview,
+            ),
+          ],
         ),
-        body: Stepper(
-          currentStep: _step,
-          onStepTapped: (i) => setState(() => _step = i),
-          onStepContinue: _next,
-          onStepCancel: _back,
-          controlsBuilder: (context, details) {
-            if (details.stepIndex != _step) return const SizedBox.shrink();
-            return Padding(
-              padding: const EdgeInsetsDirectional.only(top: 16),
-              child: Row(
+        body: Column(
+          children: [
+            _StepHeader(
+              titles: [for (final (title, _) in steps) title],
+              current: _step,
+              onTap: _goTo,
+            ),
+            Expanded(
+              // Every step stays mounted: they hold their own controllers,
+              // and saving validates the first step's form from any step.
+              child: IndexedStack(
+                index: _step,
                 children: [
-                  Expanded(
-                    child: FilledButton(
-                      onPressed: details.onStepContinue,
-                      child: Text(
-                        _step == _stepCount - 1 ? l10n.done : l10n.next,
+                  for (final (_, content) in steps)
+                    SingleChildScrollView(
+                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+                      child: content,
+                    ),
+                ],
+              ),
+            ),
+            // In the body, not bottomNavigationBar, so it rides above the
+            // keyboard instead of hiding behind it.
+            _StepControls(
+              showBack: _step > 0,
+              nextLabel: isLast ? l10n.done : l10n.next,
+              nextIcon: isLast ? Icons.check : null,
+              onBack: _back,
+              onNext: _next,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// "Step 2 of 6 · Summary" over a row of tappable progress segments.
+class _StepHeader extends StatelessWidget {
+  const _StepHeader({
+    required this.titles,
+    required this.current,
+    required this.onTap,
+  });
+
+  final List<String> titles;
+  final int current;
+  final ValueChanged<int> onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              for (var i = 0; i < titles.length; i++)
+                Expanded(
+                  child: Semantics(
+                    button: true,
+                    selected: i == current,
+                    label: titles[i],
+                    child: InkWell(
+                      onTap: () => onTap(i),
+                      borderRadius: BorderRadius.circular(4),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 2,
+                          vertical: 8,
+                        ),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 250),
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: i <= current
+                                ? scheme.primary
+                                : scheme.surfaceContainerHighest,
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                  if (_step > 0) ...[
-                    const SizedBox(width: 8),
-                    TextButton(
-                      onPressed: details.onStepCancel,
-                      child: Text(l10n.back),
-                    ),
-                  ],
-                ],
+                ),
+            ],
+          ),
+          Text(
+            l10n.stepOf(current + 1, titles.length),
+            style: text.labelMedium?.copyWith(color: scheme.onSurfaceVariant),
+          ),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: Text(
+              titles[current],
+              key: ValueKey(current),
+              style: text.headlineSmall,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Back / Next pinned above the keyboard-safe bottom edge.
+class _StepControls extends StatelessWidget {
+  const _StepControls({
+    required this.showBack,
+    required this.nextLabel,
+    required this.onBack,
+    required this.onNext,
+    this.nextIcon,
+  });
+
+  final bool showBack;
+  final String nextLabel;
+  final IconData? nextIcon;
+  final VoidCallback onBack;
+  final VoidCallback onNext;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        border: Border(top: BorderSide(color: scheme.outlineVariant)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          child: Row(
+            children: [
+              if (showBack) ...[
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size(96, 52),
+                  ),
+                  onPressed: onBack,
+                  child: Text(l10n.back),
+                ),
+                const SizedBox(width: 12),
+              ],
+              Expanded(
+                child: nextIcon == null
+                    ? FilledButton(onPressed: onNext, child: Text(nextLabel))
+                    : FilledButton.icon(
+                        onPressed: onNext,
+                        icon: Icon(nextIcon),
+                        label: Text(nextLabel),
+                      ),
               ),
-            );
-          },
-          steps: [
-            Step(
-              title: Text(l10n.personalInfo),
-              state: _stateFor(0),
-              content: PersonalInfoStep(
-                draft: _draft,
-                formKey: _personalFormKey,
-              ),
-            ),
-            Step(
-              title: Text(l10n.summary),
-              state: _stateFor(1),
-              content: SummaryStep(draft: _draft),
-            ),
-            Step(
-              title: Text(l10n.experience),
-              state: _stateFor(2),
-              content: ExperienceStep(draft: _draft),
-            ),
-            Step(
-              title: Text(l10n.education),
-              state: _stateFor(3),
-              content: EducationStep(draft: _draft),
-            ),
-            Step(
-              title: Text(l10n.skills),
-              state: _stateFor(4),
-              content: SkillsStep(draft: _draft),
-            ),
-            Step(
-              title: Text('${l10n.extrasStep} (${l10n.optionalHint})'),
-              state: _stateFor(5),
-              content: ExtrasStep(draft: _draft),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
