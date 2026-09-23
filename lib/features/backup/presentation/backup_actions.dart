@@ -8,6 +8,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/backup_service.dart';
+import '../../../shared/widgets/dialog_action_style.dart';
 
 /// Wires [BackupService] to the platform: a share sheet for export, a file
 /// picker for import. All decisions and validation live in the service.
@@ -57,6 +58,7 @@ abstract final class BackupActions {
               onPressed: () => Navigator.of(context).pop(false),
               child: Text(l10n.cancel)),
           FilledButton(
+              style: dialogActionStyle,
               onPressed: () => Navigator.of(context).pop(true),
               child: Text(l10n.restore)),
         ],

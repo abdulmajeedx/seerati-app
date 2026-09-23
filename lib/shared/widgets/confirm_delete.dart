@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
+import 'dialog_action_style.dart';
 
 /// "Delete this?" confirmation. True means delete.
 Future<bool> confirmDelete(BuildContext context) async {
@@ -18,11 +19,11 @@ Future<bool> confirmDelete(BuildContext context) async {
           child: Text(l10n.cancel),
         ),
         FilledButton(
-          // The theme's full-width minimum doesn't suit dialog actions.
-          style: FilledButton.styleFrom(
-            minimumSize: const Size(64, 40),
-            backgroundColor: scheme.error,
-            foregroundColor: scheme.onError,
+          style: dialogActionStyle.merge(
+            FilledButton.styleFrom(
+              backgroundColor: scheme.error,
+              foregroundColor: scheme.onError,
+            ),
           ),
           onPressed: () => Navigator.of(context).pop(true),
           child: Text(l10n.delete),
