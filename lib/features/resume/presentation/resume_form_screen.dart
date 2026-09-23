@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../core/services/storage_service.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/discard_changes.dart';
 import '../data/models/resume.dart';
 import 'steps/education_step.dart';
 import 'steps/experience_step.dart';
@@ -27,6 +30,9 @@ class _ResumeFormScreenState extends State<ResumeFormScreen> {
   int _step = 0;
   static const _stepCount = 6;
 
+  /// The draft as it was when the screen opened, to detect unsaved edits.
+  late final String _initial;
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +46,19 @@ class _ResumeFormScreenState extends State<ResumeFormScreen> {
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
         );
+    _initial = jsonEncode(_draft.toJson());
+  }
+
+  bool get _dirty => jsonEncode(_draft.toJson()) != _initial;
+
+  /// Back steps through the form first, then asks before dropping edits.
+  Future<void> _handleBack() async {
+    if (_step > 0) {
+      _back();
+      return;
+    }
+    if (_dirty && !await confirmDiscardChanges(context)) return;
+    if (mounted) Navigator.of(context).pop();
   }
 
   void _next() {
@@ -87,72 +106,81 @@ class _ResumeFormScreenState extends State<ResumeFormScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.existing == null ? l10n.newResume : l10n.edit),
-      ),
-      body: Stepper(
-        currentStep: _step,
-        onStepTapped: (i) => setState(() => _step = i),
-        onStepContinue: _next,
-        onStepCancel: _back,
-        controlsBuilder: (context, details) {
-          if (details.stepIndex != _step) return const SizedBox.shrink();
-          return Padding(
-            padding: const EdgeInsetsDirectional.only(top: 16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: FilledButton(
-                    onPressed: details.onStepContinue,
-                    child: Text(
-                      _step == _stepCount - 1 ? l10n.done : l10n.next,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _handleBack();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.existing == null ? l10n.newResume : l10n.edit),
+        ),
+        body: Stepper(
+          currentStep: _step,
+          onStepTapped: (i) => setState(() => _step = i),
+          onStepContinue: _next,
+          onStepCancel: _back,
+          controlsBuilder: (context, details) {
+            if (details.stepIndex != _step) return const SizedBox.shrink();
+            return Padding(
+              padding: const EdgeInsetsDirectional.only(top: 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: details.onStepContinue,
+                      child: Text(
+                        _step == _stepCount - 1 ? l10n.done : l10n.next,
+                      ),
                     ),
                   ),
-                ),
-                if (_step > 0) ...[
-                  const SizedBox(width: 8),
-                  TextButton(
-                    onPressed: details.onStepCancel,
-                    child: Text(l10n.back),
-                  ),
+                  if (_step > 0) ...[
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: details.onStepCancel,
+                      child: Text(l10n.back),
+                    ),
+                  ],
                 ],
-              ],
+              ),
+            );
+          },
+          steps: [
+            Step(
+              title: Text(l10n.personalInfo),
+              state: _stateFor(0),
+              content: PersonalInfoStep(
+                draft: _draft,
+                formKey: _personalFormKey,
+              ),
             ),
-          );
-        },
-        steps: [
-          Step(
-            title: Text(l10n.personalInfo),
-            state: _stateFor(0),
-            content: PersonalInfoStep(draft: _draft, formKey: _personalFormKey),
-          ),
-          Step(
-            title: Text(l10n.summary),
-            state: _stateFor(1),
-            content: SummaryStep(draft: _draft),
-          ),
-          Step(
-            title: Text(l10n.experience),
-            state: _stateFor(2),
-            content: ExperienceStep(draft: _draft),
-          ),
-          Step(
-            title: Text(l10n.education),
-            state: _stateFor(3),
-            content: EducationStep(draft: _draft),
-          ),
-          Step(
-            title: Text(l10n.skills),
-            state: _stateFor(4),
-            content: SkillsStep(draft: _draft),
-          ),
-          Step(
-            title: Text('${l10n.extrasStep} (${l10n.optionalHint})'),
-            state: _stateFor(5),
-            content: ExtrasStep(draft: _draft),
-          ),
-        ],
+            Step(
+              title: Text(l10n.summary),
+              state: _stateFor(1),
+              content: SummaryStep(draft: _draft),
+            ),
+            Step(
+              title: Text(l10n.experience),
+              state: _stateFor(2),
+              content: ExperienceStep(draft: _draft),
+            ),
+            Step(
+              title: Text(l10n.education),
+              state: _stateFor(3),
+              content: EducationStep(draft: _draft),
+            ),
+            Step(
+              title: Text(l10n.skills),
+              state: _stateFor(4),
+              content: SkillsStep(draft: _draft),
+            ),
+            Step(
+              title: Text('${l10n.extrasStep} (${l10n.optionalHint})'),
+              state: _stateFor(5),
+              content: ExtrasStep(draft: _draft),
+            ),
+          ],
+        ),
       ),
     );
   }

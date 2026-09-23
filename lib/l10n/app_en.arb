@@ -159,5 +159,9 @@
   "onboardTemplatesTitle": "Templates that stand out",
   "onboardTemplatesSubtitle": "Pick a template, see your resume in it right away, and export a PDF ready to share.",
   "onboardPrivacyTitle": "Your data stays with you",
-  "onboardPrivacySubtitle": "Everything is saved encrypted on your device — no account needed — with a backup file you can move anywhere."
+  "onboardPrivacySubtitle": "Everything is saved encrypted on your device — no account needed — with a backup file you can move anywhere.",
+  "discardChangesTitle": "Discard changes?",
+  "discardChangesMsg": "Your edits haven't been saved. If you leave now, they'll be lost.",
+  "keepEditing": "Keep editing",
+  "discard": "Discard"
 }
