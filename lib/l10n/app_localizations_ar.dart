@@ -524,4 +524,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get lockedTemplate => 'قالب مميز، مقفل';
+
+  @override
+  String updateAvailableTitle(String version) {
+    return 'يتوفر الإصدار $version';
+  }
+
+  @override
+  String get updateAvailableMsg =>
+      'نزّله وثبّته فوق النسخة الحالية، وتبقى سيرك وخطاباتك كما هي.';
+
+  @override
+  String get updateDownload => 'تنزيل';
+
+  @override
+  String get updateLater => 'لاحقاً';
 }

@@ -169,5 +169,10 @@
   "@resumeProgress": {"placeholders": {"percent": {"type": "String"}}},
   "stepOf": "Step {current} of {total}",
   "@stepOf": {"placeholders": {"current": {"type": "int"}, "total": {"type": "int"}}},
-  "lockedTemplate": "Premium, locked"
+  "lockedTemplate": "Premium, locked",
+  "updateAvailableTitle": "Version {version} is available",
+  "updateAvailableMsg": "Download it and install over this one. Your resumes and letters stay.",
+  "updateDownload": "Download",
+  "updateLater": "Later",
+  "@updateAvailableTitle": {"placeholders": {"version": {"type": "String"}}}
 }

@@ -530,4 +530,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lockedTemplate => 'Premium, locked';
+
+  @override
+  String updateAvailableTitle(String version) {
+    return 'Version $version is available';
+  }
+
+  @override
+  String get updateAvailableMsg =>
+      'Download it and install over this one. Your resumes and letters stay.';
+
+  @override
+  String get updateDownload => 'Download';
+
+  @override
+  String get updateLater => 'Later';
 }
