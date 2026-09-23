@@ -521,4 +521,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String stepOf(int current, int total) {
     return 'الخطوة $current من $total';
   }
+
+  @override
+  String get lockedTemplate => 'قالب مميز، مقفل';
 }

@@ -10,6 +10,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/confirm_delete.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/feature_card.dart';
+import '../../../shared/widgets/layout.dart';
 import '../../cover_letter/presentation/ai_cover_letter_screen.dart';
 import '../../cover_letter/presentation/cover_letter_form_screen.dart';
 import '../../cover_letter/presentation/cover_letter_list.dart';
@@ -55,7 +56,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ],
       ),
-      body: IndexedStack(
+      body: FadeIndexedStack(
         index: _tab,
         children: [
           _ResumesTab(
@@ -85,7 +86,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       floatingActionButton: FloatingActionButton.extended(
         heroTag: null,
         icon: const Icon(Icons.add),
-        label: Text(_tab == 0 ? l10n.newResume : l10n.newCoverLetter),
+        label: AnimatedSize(
+          duration: const Duration(milliseconds: 200),
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: Text(
+              _tab == 0 ? l10n.newResume : l10n.newCoverLetter,
+              key: ValueKey(_tab),
+            ),
+          ),
+        ),
         onPressed: () => _open(
           _tab == 0 ? const ResumeFormScreen() : const CoverLetterFormScreen(),
         ),
@@ -137,7 +147,9 @@ class _ResumesTab extends StatelessWidget {
         final resumes = box.values.toList()
           ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
         return ListView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+          padding: readableHorizontalPadding(
+            context,
+          ).copyWith(top: 8, bottom: 96),
           children: [
             for (final w in header) ...[w, const SizedBox(height: 16)],
             if (resumes.isEmpty)

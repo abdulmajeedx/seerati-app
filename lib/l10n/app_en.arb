@@ -168,5 +168,6 @@
   "resumeProgress": "{percent} complete",
   "@resumeProgress": {"placeholders": {"percent": {"type": "String"}}},
   "stepOf": "Step {current} of {total}",
-  "@stepOf": {"placeholders": {"current": {"type": "int"}, "total": {"type": "int"}}}
+  "@stepOf": {"placeholders": {"current": {"type": "int"}, "total": {"type": "int"}}},
+  "lockedTemplate": "Premium, locked"
 }
