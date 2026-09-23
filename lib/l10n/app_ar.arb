@@ -186,5 +186,9 @@
   "projectLink": "الرابط",
   "certifications": "الشهادات المهنية",
   "addCertification": "إضافة شهادة",
-  "certificationName": "الشهادة"
+  "certificationName": "الشهادة",
+  "duplicate": "نسخ",
+  "copyOf": "{title} (نسخة)",
+  "resumeDuplicated": "أُنشئت نسخة. عدّلها لتناسب الوظيفة التالية.",
+  "@copyOf": {"placeholders": {"title": {"type": "String"}}}
 }

@@ -4,6 +4,7 @@ import '../../../../core/utils/language_levels.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/models/resume.dart';
 import '../../../../shared/widgets/dialog_action_style.dart';
+import '../../../../shared/widgets/reorderable_entries.dart';
 
 class ExtrasStep extends StatefulWidget {
   const ExtrasStep({super.key, required this.draft});
@@ -49,19 +50,29 @@ class _ExtrasStepState extends State<ExtrasStep> {
     if (result != null) setState(() => widget.draft.projects.add(result));
   }
 
-  Widget _credentialTile(List<CourseItem> list, int i, AppLocalizations l10n) {
-    final c = list[i];
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text(c.name),
-      subtitle: Text([c.issuer, c.year].where((s) => s.isNotEmpty).join(' · ')),
-      trailing: IconButton(
-        icon: const Icon(Icons.delete_outline),
-        tooltip: l10n.delete,
-        onPressed: () => setState(() => list.removeAt(i)),
-      ),
-    );
-  }
+  Widget _credentials(List<CourseItem> list, AppLocalizations l10n) =>
+      ReorderableEntries(
+        items: list,
+        onChanged: () => setState(() {}),
+        itemBuilder: (context, c, i, handle) => ListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(c.name),
+          subtitle: Text(
+            [c.issuer, c.year].where((s) => s.isNotEmpty).join(' · '),
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.delete_outline),
+                tooltip: l10n.delete,
+                onPressed: () => setState(() => list.removeAt(i)),
+              ),
+              ?handle,
+            ],
+          ),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -73,18 +84,27 @@ class _ExtrasStepState extends State<ExtrasStep> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(l10n.languagesSection, style: titleStyle),
-        for (final (i, lang) in widget.draft.languages.indexed)
-          ListTile(
+        ReorderableEntries(
+          items: widget.draft.languages,
+          onChanged: () => setState(() {}),
+          itemBuilder: (context, lang, i, handle) => ListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(lang.name),
             subtitle: Text(LanguageLevels.label(lang.level, l10n)),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete_outline),
-              tooltip: l10n.delete,
-              onPressed: () =>
-                  setState(() => widget.draft.languages.removeAt(i)),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.delete_outline),
+                  tooltip: l10n.delete,
+                  onPressed: () =>
+                      setState(() => widget.draft.languages.removeAt(i)),
+                ),
+                ?handle,
+              ],
             ),
           ),
+        ),
         OutlinedButton.icon(
           icon: const Icon(Icons.add),
           label: Text(l10n.addLanguage),
@@ -92,8 +112,7 @@ class _ExtrasStepState extends State<ExtrasStep> {
         ),
         const SizedBox(height: 24),
         Text(l10n.certifications, style: titleStyle),
-        for (var i = 0; i < widget.draft.certifications.length; i++)
-          _credentialTile(widget.draft.certifications, i, l10n),
+        _credentials(widget.draft.certifications, l10n),
         OutlinedButton.icon(
           icon: const Icon(Icons.add),
           label: Text(l10n.addCertification),
@@ -101,8 +120,7 @@ class _ExtrasStepState extends State<ExtrasStep> {
         ),
         const SizedBox(height: 24),
         Text(l10n.courses, style: titleStyle),
-        for (var i = 0; i < widget.draft.courses.length; i++)
-          _credentialTile(widget.draft.courses, i, l10n),
+        _credentials(widget.draft.courses, l10n),
         OutlinedButton.icon(
           icon: const Icon(Icons.add),
           label: Text(l10n.addCourse),
@@ -110,20 +128,29 @@ class _ExtrasStepState extends State<ExtrasStep> {
         ),
         const SizedBox(height: 24),
         Text(l10n.projects, style: titleStyle),
-        for (final (i, project) in widget.draft.projects.indexed)
-          ListTile(
+        ReorderableEntries(
+          items: widget.draft.projects,
+          onChanged: () => setState(() {}),
+          itemBuilder: (context, project, i, handle) => ListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(project.name),
             subtitle: project.link.isEmpty
                 ? null
                 : Text(project.link, textDirection: TextDirection.ltr),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete_outline),
-              tooltip: l10n.delete,
-              onPressed: () =>
-                  setState(() => widget.draft.projects.removeAt(i)),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.delete_outline),
+                  tooltip: l10n.delete,
+                  onPressed: () =>
+                      setState(() => widget.draft.projects.removeAt(i)),
+                ),
+                ?handle,
+              ],
             ),
           ),
+        ),
         OutlinedButton.icon(
           icon: const Icon(Icons.add),
           label: Text(l10n.addProject),

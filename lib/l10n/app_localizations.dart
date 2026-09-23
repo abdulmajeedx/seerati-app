@@ -1189,6 +1189,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Certification'**
   String get certificationName;
+
+  /// No description provided for @duplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get duplicate;
+
+  /// No description provided for @copyOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} (copy)'**
+  String copyOf(String title);
+
+  /// No description provided for @resumeDuplicated.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy created. Tailor it for the next job.'**
+  String get resumeDuplicated;
 }
 
 class _AppLocalizationsDelegate

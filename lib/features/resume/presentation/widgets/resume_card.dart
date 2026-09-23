@@ -6,7 +6,7 @@ import '../../data/models/resume.dart';
 import '../../data/resume_completeness.dart';
 import '../../templates/templates.dart';
 
-enum ResumeCardAction { edit, preview, changeTemplate, delete }
+enum ResumeCardAction { edit, preview, changeTemplate, duplicate, delete }
 
 /// A saved resume on the home list: a miniature of its template, the title
 /// and job, when it was last edited, and how complete it is.
@@ -108,6 +108,11 @@ class ResumeCard extends StatelessWidget {
                     ResumeCardAction.changeTemplate,
                     Icons.dashboard_customize_outlined,
                     l10n.changeTemplate,
+                  ),
+                  _item(
+                    ResumeCardAction.duplicate,
+                    Icons.copy_all_outlined,
+                    l10n.duplicate,
                   ),
                   _item(
                     ResumeCardAction.delete,

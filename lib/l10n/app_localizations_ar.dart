@@ -575,4 +575,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get certificationName => 'الشهادة';
+
+  @override
+  String get duplicate => 'نسخ';
+
+  @override
+  String copyOf(String title) {
+    return '$title (نسخة)';
+  }
+
+  @override
+  String get resumeDuplicated => 'أُنشئت نسخة. عدّلها لتناسب الوظيفة التالية.';
 }

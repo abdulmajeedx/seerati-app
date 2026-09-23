@@ -16,6 +16,7 @@ import '../../cover_letter/presentation/cover_letter_form_screen.dart';
 import '../../cover_letter/presentation/cover_letter_list.dart';
 import '../../jobs/presentation/job_search_screen.dart';
 import '../../resume/data/models/resume.dart';
+import '../../resume/data/resume_duplicator.dart';
 import '../../resume/presentation/resume_form_screen.dart';
 import '../../resume/presentation/resume_preview_screen.dart';
 import '../../resume/presentation/template_picker_screen.dart';
@@ -136,6 +137,19 @@ class _ResumesTab extends StatelessWidget {
     await StorageService.resumes.delete(resume.id);
   }
 
+  Future<void> _duplicate(BuildContext context, Resume resume) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final copy = await duplicateResume(
+      resume,
+      title: l10n.copyOf(resume.title),
+    );
+    await StorageService.resumes.put(copy.id, copy);
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(l10n.resumeDuplicated)));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -179,6 +193,7 @@ class _ResumesTab extends StatelessWidget {
                     ResumeCardAction.changeTemplate => open(
                       TemplatePickerScreen(resume: resume),
                     ),
+                    ResumeCardAction.duplicate => _duplicate(context, resume),
                     ResumeCardAction.delete => _delete(context, resume),
                   },
                 ),

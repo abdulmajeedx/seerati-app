@@ -186,5 +186,9 @@
   "projectLink": "Link",
   "certifications": "Certifications",
   "addCertification": "Add certification",
-  "certificationName": "Certification"
+  "certificationName": "Certification",
+  "duplicate": "Duplicate",
+  "copyOf": "{title} (copy)",
+  "resumeDuplicated": "Copy created. Tailor it for the next job.",
+  "@copyOf": {"placeholders": {"title": {"type": "String"}}}
 }

@@ -581,4 +581,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get certificationName => 'Certification';
+
+  @override
+  String get duplicate => 'Duplicate';
+
+  @override
+  String copyOf(String title) {
+    return '$title (copy)';
+  }
+
+  @override
+  String get resumeDuplicated => 'Copy created. Tailor it for the next job.';
 }
