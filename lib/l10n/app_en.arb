@@ -69,7 +69,7 @@
   "companyName": "Company Name",
   "generate": "Generate",
   "errorGeneric": "Something went wrong. Please try again.",
-  "extrasStep": "Languages & Courses",
+  "extrasStep": "Languages, certifications & projects",
   "resumeTitle": "Resume Title",
   "untitledResume": "Untitled Resume",
   "addPhoto": "Add Photo",
@@ -174,5 +174,17 @@
   "updateAvailableMsg": "Download it and install over this one. Your resumes and letters stay.",
   "updateDownload": "Download",
   "updateLater": "Later",
-  "@updateAvailableTitle": {"placeholders": {"version": {"type": "String"}}}
+  "@updateAvailableTitle": {"placeholders": {"version": {"type": "String"}}},
+  "linkedin": "LinkedIn",
+  "website": "Website or portfolio",
+  "nationality": "Nationality",
+  "birthDate": "Date of birth",
+  "moreDetails": "More details (optional)",
+  "projects": "Projects",
+  "addProject": "Add project",
+  "projectName": "Project name",
+  "projectLink": "Link",
+  "certifications": "Certifications",
+  "addCertification": "Add certification",
+  "certificationName": "Certification"
 }

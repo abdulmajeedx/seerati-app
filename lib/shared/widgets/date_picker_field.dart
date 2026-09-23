@@ -10,6 +10,9 @@ class DatePickerField extends StatelessWidget {
     required this.value,
     required this.onChanged,
     this.enabled = true,
+    this.firstDate,
+    this.lastDate,
+    this.showDay = false,
   });
 
   final String label;
@@ -17,13 +20,26 @@ class DatePickerField extends StatelessWidget {
   final ValueChanged<DateTime?> onChanged;
   final bool enabled;
 
+  /// Defaults: 1970 to five years ahead, for work and study dates.
+  final DateTime? firstDate;
+  final DateTime? lastDate;
+
+  /// "12 Mar 1994" instead of "Mar 1994", e.g. for a birth date.
+  final bool showDay;
+
   Future<void> _pick(BuildContext context) async {
     final now = DateTime.now();
+    final first = firstDate ?? DateTime(1970);
+    final last = lastDate ?? DateTime(now.year + 5);
+    // Keep the starting date inside the allowed range (e.g. lastDate = today).
+    var initial = value ?? now;
+    if (initial.isBefore(first)) initial = first;
+    if (initial.isAfter(last)) initial = last;
     final picked = await showDatePicker(
       context: context,
-      initialDate: value ?? now,
-      firstDate: DateTime(1970),
-      lastDate: DateTime(now.year + 5),
+      initialDate: initial,
+      firstDate: first,
+      lastDate: last,
     );
     if (picked != null) onChanged(picked);
   }
@@ -47,7 +63,7 @@ class DatePickerField extends StatelessWidget {
               : const Icon(Icons.calendar_today_outlined, size: 18),
         ),
         child: Text(
-          value == null ? l10n.selectDate : DateFormat.yMMM(localeCode).format(value!),
+          value == null ? l10n.selectDate : (showDay ? DateFormat.yMMMd(localeCode) : DateFormat.yMMM(localeCode)).format(value!),
           style: enabled
               ? null
               : TextStyle(color: Theme.of(context).disabledColor),

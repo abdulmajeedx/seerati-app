@@ -32,13 +32,17 @@ class Resume extends HiveObject {
     List<String>? skills,
     List<LanguageItem>? languages,
     List<CourseItem>? courses,
+    List<ProjectItem>? projects,
+    List<CourseItem>? certifications,
     required this.createdAt,
     required this.updatedAt,
   })  : experiences = experiences ?? [],
         educations = educations ?? [],
         skills = skills ?? [],
         languages = languages ?? [],
-        courses = courses ?? [];
+        courses = courses ?? [],
+        projects = projects ?? [],
+        certifications = certifications ?? [];
 
   @HiveField(0)
   String id;
@@ -80,6 +84,15 @@ class Resume extends HiveObject {
   @HiveField(12)
   DateTime updatedAt;
 
+  // Added in 2.6.0. Lists read back as null from older records, and the
+  // constructor turns null into an empty list.
+  @HiveField(13)
+  List<ProjectItem> projects;
+
+  /// Professional certifications (PMP, CFA…), kept apart from courses.
+  @HiveField(14)
+  List<CourseItem> certifications;
+
   bool get isArabic => language == 'ar';
 
   /// Backup format. Photos travel separately (as base64) because they live on
@@ -96,6 +109,8 @@ class Resume extends HiveObject {
         'skills': skills,
         'languages': [for (final e in languages) e.toJson()],
         'courses': [for (final e in courses) e.toJson()],
+        'projects': [for (final e in projects) e.toJson()],
+        'certifications': [for (final e in certifications) e.toJson()],
         'created_at': createdAt.toIso8601String(),
         'updated_at': updatedAt.toIso8601String(),
       };
@@ -124,6 +139,12 @@ class Resume extends HiveObject {
         courses: [
           for (final e in _list(json['courses'])) CourseItem.fromJson(e)
         ],
+        projects: [
+          for (final e in _list(json['projects'])) ProjectItem.fromJson(e)
+        ],
+        certifications: [
+          for (final e in _list(json['certifications'])) CourseItem.fromJson(e)
+        ],
         createdAt: _date(json['created_at']),
         updatedAt: _date(json['updated_at']),
       );
@@ -140,6 +161,8 @@ class Resume extends HiveObject {
         skills: List.of(skills),
         languages: [for (final e in languages) e.copy()],
         courses: [for (final e in courses) e.copy()],
+        projects: [for (final e in projects) e.copy()],
+        certifications: [for (final e in certifications) e.copy()],
         createdAt: createdAt,
         updatedAt: updatedAt,
       );
@@ -154,6 +177,10 @@ class PersonalInfo extends HiveObject {
     this.email = '',
     this.city = '',
     this.photoPath,
+    this.linkedin = '',
+    this.website = '',
+    this.birthDate,
+    this.nationality = '',
   });
 
   @HiveField(0)
@@ -174,12 +201,31 @@ class PersonalInfo extends HiveObject {
   @HiveField(5)
   String? photoPath;
 
+  // Added in 2.6.0; defaults keep records saved by older versions readable.
+  @HiveField(6, defaultValue: '')
+  String linkedin;
+
+  /// Personal site or portfolio.
+  @HiveField(7, defaultValue: '')
+  String website;
+
+  /// Often expected on Gulf resumes; optional.
+  @HiveField(8)
+  DateTime? birthDate;
+
+  @HiveField(9, defaultValue: '')
+  String nationality;
+
   Map<String, dynamic> toJson() => {
         'full_name': fullName,
         'job_title': jobTitle,
         'phone': phone,
         'email': email,
         'city': city,
+        'linkedin': linkedin,
+        'website': website,
+        'birth_date': birthDate?.toIso8601String(),
+        'nationality': nationality,
       };
 
   static PersonalInfo fromJson(Map<String, dynamic> json) => PersonalInfo(
@@ -188,6 +234,10 @@ class PersonalInfo extends HiveObject {
         phone: _str(json['phone']),
         email: _str(json['email']),
         city: _str(json['city']),
+        linkedin: _str(json['linkedin']),
+        website: _str(json['website']),
+        birthDate: _nullableDate(json['birth_date']),
+        nationality: _str(json['nationality']),
       );
 
   PersonalInfo copy() => PersonalInfo(
@@ -197,6 +247,10 @@ class PersonalInfo extends HiveObject {
         email: email,
         city: city,
         photoPath: photoPath,
+        linkedin: linkedin,
+        website: website,
+        birthDate: birthDate,
+        nationality: nationality,
       );
 }
 
@@ -362,4 +416,31 @@ class CourseItem extends HiveObject {
       );
 
   CourseItem copy() => CourseItem(name: name, issuer: issuer, year: year);
+}
+
+@HiveType(typeId: 7)
+class ProjectItem extends HiveObject {
+  ProjectItem({this.name = '', this.link = '', this.description = ''});
+
+  @HiveField(0)
+  String name;
+
+  /// Repository, store page or demo; shown without the scheme.
+  @HiveField(1)
+  String link;
+
+  @HiveField(2)
+  String description;
+
+  Map<String, dynamic> toJson() =>
+      {'name': name, 'link': link, 'description': description};
+
+  static ProjectItem fromJson(Map<String, dynamic> json) => ProjectItem(
+        name: _str(json['name']),
+        link: _str(json['link']),
+        description: _str(json['description']),
+      );
+
+  ProjectItem copy() =>
+      ProjectItem(name: name, link: link, description: description);
 }
