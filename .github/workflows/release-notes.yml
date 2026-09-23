@@ -27,9 +27,12 @@ jobs:
           git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null || { echo "::error::tag $TAG does not exist"; exit 1; }
           .github/release-notes/prepare.sh "$TAG"
 
+      # gh edits only the title and notes. action-gh-release's update path
+      # also sends target_commitish and was refused (403) on an existing release.
       - name: Update release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ inputs.tag }}
-          name: ${{ steps.notes.outputs.name }}
-          body_path: ${{ steps.notes.outputs.body_path }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          TITLE: ${{ steps.notes.outputs.name }}
+          BODY: ${{ steps.notes.outputs.body_path }}
+        run: gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --title "$TITLE" --notes-file "$BODY"
