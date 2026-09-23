@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [2.5.0] - 2026-09-23
 
 ### Changed
 - **Home**: bottom navigation between My resumes and My cover letters; the floating button creates whatever the current tab lists. Job search (when enabled) tops the resumes tab, the AI letter-from-ad card the letters tab.
