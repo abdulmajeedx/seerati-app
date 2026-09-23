@@ -13,6 +13,9 @@
   - All layouts mirror correctly for Arabic; when there is no photo, the sidebar and banner show the name's initials.
 - Template picker shows each template's real first page rendered from the user's own resume, falling back to the schematic sketch while it renders.
 
+### Fixed
+- Arabic PDFs: words ending in «ر» (and other letters whose glyph overhangs) no longer run into the next word or number — «يناير2020» and «ديسمبرالماضي» now read «يناير 2020» and «ديسمبر الماضي». The cause is a bug in the `pdf` package's right-to-left word placement; the app now uses a patched copy (`third_party/pdf`, see `PATCHES.md`) until it is fixed upstream.
+
 ## [2.3.0] - 2026-08-31
 
 ### Added

@@ -29,6 +29,12 @@ dependencies:
   share_plus: ^12.0.2
   file_selector: ^1.1.0
 
+# Patched copy of pdf: fixes word spacing in right-to-left (Arabic) text.
+# See third_party/pdf/PATCHES.md.
+dependency_overrides:
+  pdf:
+    path: third_party/pdf
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
