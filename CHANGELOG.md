@@ -1,5 +1,20 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+- **Home**: bottom navigation between My resumes and My cover letters; the floating button creates whatever the current tab lists. Job search (when enabled) tops the resumes tab, the AI letter-from-ad card the letters tab.
+- **Settings** live in one sheet behind a single icon: appearance (system/light/dark), language, backup export/restore and AI credits left.
+- **Resume cards** show a miniature of their template, the job and date, and how complete the resume is (name, job title, contact, summary, experience, education, skills), with Change template in the menu.
+- **Resume form**: one step per page under tappable progress segments ("Step 2 of 6"), Back/Next above the keyboard, and a Preview button that shows the draft's PDF from any step.
+- **Theme**: outlined cards, filled inputs, consistent radii, floating snackbars, rounded sheets; tabs and form steps fade when switched.
+- **Tablets**: lists and the form centre at a readable width; the template grid adds columns.
+
+### Added
+- Leaving the resume form or the cover letter editor with unsaved edits asks before discarding them.
+- Illustrated empty states with the action that fills the list.
+- Screen-reader labels for template cards (including locked state), resume completeness and feature cards.
+
 ## [2.4.0] - 2026-09-23
 
 ### Added
