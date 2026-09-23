@@ -6,6 +6,7 @@ abstract final class AppConstants {
   static const localeKey = 'locale';
   static const themeModeKey = 'theme_mode';
   static const isPremiumKey = 'is_premium';
+  static const onboardingDoneKey = 'onboarding_done';
 
   static const supportedResumeLanguages = ['ar', 'en'];
 

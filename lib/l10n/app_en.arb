@@ -154,5 +154,10 @@
   "@importDone": {"placeholders": {"added": {"type": "int"}, "updated": {"type": "int"}}},
   "importInvalidFile": "This file is not a Seerati backup.",
   "importUnsupportedVersion": "This backup was made by a newer version of the app. Update Seerati and try again.",
-  "importEmpty": "This backup is empty."
+  "importEmpty": "This backup is empty.",
+  "skip": "Skip",
+  "onboardTemplatesTitle": "Templates that stand out",
+  "onboardTemplatesSubtitle": "Pick a template, see your resume in it right away, and export a PDF ready to share.",
+  "onboardPrivacyTitle": "Your data stays with you",
+  "onboardPrivacySubtitle": "Everything is saved encrypted on your device — no account needed — with a backup file you can move anywhere."
 }

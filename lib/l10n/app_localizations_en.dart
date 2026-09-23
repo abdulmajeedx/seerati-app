@@ -483,4 +483,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get importEmpty => 'This backup is empty.';
+
+  @override
+  String get skip => 'Skip';
+
+  @override
+  String get onboardTemplatesTitle => 'Templates that stand out';
+
+  @override
+  String get onboardTemplatesSubtitle =>
+      'Pick a template, see your resume in it right away, and export a PDF ready to share.';
+
+  @override
+  String get onboardPrivacyTitle => 'Your data stays with you';
+
+  @override
+  String get onboardPrivacySubtitle =>
+      'Everything is saved encrypted on your device — no account needed — with a backup file you can move anywhere.';
 }
