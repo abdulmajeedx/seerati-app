@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/ai_button.dart';
 import '../../../../shared/widgets/date_picker_field.dart';
+import '../../../../shared/widgets/reorderable_entries.dart';
 import '../../data/models/resume.dart';
 
 class ExperienceStep extends StatefulWidget {
@@ -58,25 +59,41 @@ class _ExperienceStepState extends State<ExperienceStep> {
         if (items.isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text(l10n.noExperienceYet,
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant)),
+            child: Text(
+              l10n.noExperienceYet,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
           ),
-        for (final (i, e) in items.indexed)
-          Card(
+        ReorderableEntries(
+          items: items,
+          onChanged: () => setState(() {}),
+          itemBuilder: (context, e, i, handle) => Card(
             margin: const EdgeInsetsDirectional.only(bottom: 8),
             child: ListTile(
               title: Text(e.jobTitle),
               subtitle: Text(
-                  [e.company, _dates(context, e)].where((s) => s.isNotEmpty).join('\n')),
+                [
+                  e.company,
+                  _dates(context, e),
+                ].where((s) => s.isNotEmpty).join('\n'),
+              ),
               onTap: () => _openEditor(item: e),
-              trailing: IconButton(
-                icon: const Icon(Icons.delete_outline),
-                tooltip: l10n.delete,
-                onPressed: () => setState(() => items.removeAt(i)),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.delete_outline),
+                    tooltip: l10n.delete,
+                    onPressed: () => setState(() => items.removeAt(i)),
+                  ),
+                  ?handle,
+                ],
               ),
             ),
           ),
+        ),
         OutlinedButton.icon(
           icon: const Icon(Icons.add),
           label: Text(l10n.addExperience),
@@ -100,8 +117,9 @@ class _ExperienceSheet extends StatefulWidget {
 class _ExperienceSheetState extends State<_ExperienceSheet> {
   final _formKey = GlobalKey<FormState>();
   late final ExperienceItem _item = widget.item?.copy() ?? ExperienceItem();
-  late final TextEditingController _description =
-      TextEditingController(text: _item.description);
+  late final TextEditingController _description = TextEditingController(
+    text: _item.description,
+  );
 
   @override
   void dispose() {
@@ -116,8 +134,9 @@ class _ExperienceSheetState extends State<_ExperienceSheet> {
     if (_item.startDate != null &&
         _item.endDate != null &&
         _item.endDate!.isBefore(_item.startDate!)) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(l10n.endBeforeStart)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.endBeforeStart)));
       return;
     }
     Navigator.of(context).pop(_item);
@@ -192,7 +211,9 @@ class _ExperienceSheetState extends State<_ExperienceSheet> {
               TextField(
                 controller: _description,
                 decoration: InputDecoration(
-                    labelText: l10n.description, alignLabelWithHint: true),
+                  labelText: l10n.description,
+                  alignLabelWithHint: true,
+                ),
                 maxLines: 3,
                 onChanged: (v) => _item.description = v,
               ),
