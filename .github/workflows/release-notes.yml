@@ -1,0 +1,35 @@
+name: Release notes
+
+# Re-applies .github/release-notes/<tag>.md (title + description) to a
+# release that already exists. Doesn't rebuild or touch its assets.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing release tag, e.g. v2.4.0'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare release notes
+        id: notes
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          [ -f ".github/release-notes/$TAG.md" ] || { echo "::error::no .github/release-notes/$TAG.md"; exit 1; }
+          git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null || { echo "::error::tag $TAG does not exist"; exit 1; }
+          .github/release-notes/prepare.sh "$TAG"
+
+      - name: Update release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag }}
+          name: ${{ steps.notes.outputs.name }}
+          body_path: ${{ steps.notes.outputs.body_path }}
