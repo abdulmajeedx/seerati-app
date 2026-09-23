@@ -527,4 +527,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String stepOf(int current, int total) {
     return 'Step $current of $total';
   }
+
+  @override
+  String get lockedTemplate => 'Premium, locked';
 }

@@ -168,5 +168,6 @@
   "resumeProgress": "مكتملة {percent}",
   "@resumeProgress": {"placeholders": {"percent": {"type": "String"}}},
   "stepOf": "الخطوة {current} من {total}",
-  "@stepOf": {"placeholders": {"current": {"type": "int"}, "total": {"type": "int"}}}
+  "@stepOf": {"placeholders": {"current": {"type": "int"}, "total": {"type": "int"}}},
+  "lockedTemplate": "قالب مميز، مقفل"
 }

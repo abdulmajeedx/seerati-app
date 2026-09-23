@@ -28,46 +28,52 @@ class FeatureCard extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
       clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: scheme.primary,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(icon, color: scheme.onPrimary),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: text.titleMedium?.copyWith(
-                        color: scheme.onPrimaryContainer,
-                      ),
+      // Read as one button ("title, subtitle"), not three separate nodes.
+      child: MergeSemantics(
+        child: Semantics(
+          button: true,
+          child: InkWell(
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: scheme.primary,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      subtitle,
-                      style: text.bodySmall?.copyWith(
-                        color: scheme.onPrimaryContainer,
-                      ),
+                    child: Icon(icon, color: scheme.onPrimary),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: text.titleMedium?.copyWith(
+                            color: scheme.onPrimaryContainer,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          subtitle,
+                          style: text.bodySmall?.copyWith(
+                            color: scheme.onPrimaryContainer,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  Icon(
+                    isRtl ? Icons.chevron_left : Icons.chevron_right,
+                    color: scheme.onPrimaryContainer,
+                  ),
+                ],
               ),
-              Icon(
-                isRtl ? Icons.chevron_left : Icons.chevron_right,
-                color: scheme.onPrimaryContainer,
-              ),
-            ],
+            ),
           ),
         ),
       ),

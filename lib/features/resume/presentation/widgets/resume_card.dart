@@ -43,7 +43,7 @@ class ResumeCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _Miniature(spec: spec),
+              ExcludeSemantics(child: _Miniature(spec: spec)),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
@@ -75,6 +75,7 @@ class ResumeCard extends StatelessWidget {
                             child: LinearProgressIndicator(
                               value: progress,
                               minHeight: 6,
+                              semanticsLabel: l10n.resumeProgress(percent),
                               backgroundColor: scheme.surfaceContainerHighest,
                               color: progress >= 1
                                   ? scheme.primary

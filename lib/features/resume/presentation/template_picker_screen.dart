@@ -47,9 +47,10 @@ class TemplatePickerScreen extends ConsumerWidget {
     final premium = ref.watch(premiumProvider);
     return Scaffold(
       appBar: AppBar(title: Text(l10n.chooseTemplate)),
-      body: GridView.count(
+      // Two columns on a phone, more on tablets.
+      body: GridView.extent(
         padding: const EdgeInsets.all(16),
-        crossAxisCount: 2,
+        maxCrossAxisExtent: 240,
         mainAxisSpacing: 12,
         crossAxisSpacing: 12,
         childAspectRatio: .72,
@@ -98,7 +99,13 @@ class _TemplateCard extends StatelessWidget {
             ? BorderSide(color: scheme.primary, width: 2)
             : BorderSide.none,
       ),
-      child: InkWell(
+      // One announcement per card: name, and whether it's locked.
+      child: Semantics(
+        button: true,
+        selected: selected,
+        label: locked ? '$name, ${l10n.lockedTemplate}' : name,
+        excludeSemantics: true,
+        child: InkWell(
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(12),
@@ -143,6 +150,7 @@ class _TemplateCard extends StatelessWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }

@@ -6,6 +6,7 @@ import '../../../core/services/storage_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/confirm_delete.dart';
 import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/layout.dart';
 import '../data/models/cover_letter.dart';
 import 'cover_letter_editor_screen.dart';
 import 'cover_letter_form_screen.dart';
@@ -28,7 +29,9 @@ class CoverLetterList extends StatelessWidget {
         final letters = box.values.toList()
           ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
         return ListView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+          padding: readableHorizontalPadding(
+            context,
+          ).copyWith(top: 8, bottom: 96),
           children: [
             for (final w in header) ...[w, const SizedBox(height: 16)],
             if (letters.isEmpty)

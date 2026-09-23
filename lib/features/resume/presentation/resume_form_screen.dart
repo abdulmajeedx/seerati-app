@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/widgets/discard_changes.dart';
+import '../../../shared/widgets/layout.dart';
 import '../data/models/resume.dart';
 import 'steps/education_step.dart';
 import 'steps/experience_step.dart';
@@ -150,37 +151,39 @@ class _ResumeFormScreenState extends State<ResumeFormScreen> {
             ),
           ],
         ),
-        body: Column(
-          children: [
-            _StepHeader(
-              titles: [for (final (title, _) in steps) title],
-              current: _step,
-              onTap: _goTo,
-            ),
-            Expanded(
-              // Every step stays mounted: they hold their own controllers,
-              // and saving validates the first step's form from any step.
-              child: IndexedStack(
-                index: _step,
-                children: [
-                  for (final (_, content) in steps)
-                    SingleChildScrollView(
-                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-                      child: content,
-                    ),
-                ],
+        body: ReadableWidth(
+          child: Column(
+            children: [
+              _StepHeader(
+                titles: [for (final (title, _) in steps) title],
+                current: _step,
+                onTap: _goTo,
               ),
-            ),
-            // In the body, not bottomNavigationBar, so it rides above the
-            // keyboard instead of hiding behind it.
-            _StepControls(
-              showBack: _step > 0,
-              nextLabel: isLast ? l10n.done : l10n.next,
-              nextIcon: isLast ? Icons.check : null,
-              onBack: _back,
-              onNext: _next,
-            ),
-          ],
+              Expanded(
+                // Every step stays mounted: they hold their own controllers,
+                // and saving validates the first step's form from any step.
+                child: FadeIndexedStack(
+                  index: _step,
+                  children: [
+                    for (final (_, content) in steps)
+                      SingleChildScrollView(
+                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+                        child: content,
+                      ),
+                  ],
+                ),
+              ),
+              // In the body, not bottomNavigationBar, so it rides above the
+              // keyboard instead of hiding behind it.
+              _StepControls(
+                showBack: _step > 0,
+                nextLabel: isLast ? l10n.done : l10n.next,
+                nextIcon: isLast ? Icons.check : null,
+                onBack: _back,
+                onNext: _next,
+              ),
+            ],
+          ),
         ),
       ),
     );

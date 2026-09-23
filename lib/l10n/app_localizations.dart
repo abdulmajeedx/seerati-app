@@ -1087,6 +1087,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Step {current} of {total}'**
   String stepOf(int current, int total);
+
+  /// No description provided for @lockedTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium, locked'**
+  String get lockedTemplate;
 }
 
 class _AppLocalizationsDelegate
