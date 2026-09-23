@@ -40,9 +40,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get myResumes => 'سيري الذاتية';
 
   @override
-  String get noResumesYet => 'لا توجد سير ذاتية بعد. أنشئ سيرتك الأولى!';
-
-  @override
   String get settings => 'الإعدادات';
 
   @override
@@ -289,9 +286,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get myCoverLetters => 'خطاباتي';
 
   @override
-  String get noCoverLettersYet => 'لا توجد خطابات بعد. أنشئ خطابك الأول!';
-
-  @override
   String get newCoverLetter => 'خطاب تقديم جديد';
 
   @override
@@ -506,4 +500,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get discard => 'تجاهل';
+
+  @override
+  String get emptyResumesTitle => 'ابدأ سيرتك الذاتية الأولى';
+
+  @override
+  String get emptyResumesMsg =>
+      'أجب عن بضعة أسئلة، واختر قالباً، وصدّرها PDF في دقائق.';
+
+  @override
+  String get emptyLettersTitle => 'لا توجد خطابات بعد';
+
+  @override
+  String get emptyLettersMsg =>
+      'أنشئ خطاب تقديم من قالب جاهز، ثم عدّله كما تشاء.';
 }

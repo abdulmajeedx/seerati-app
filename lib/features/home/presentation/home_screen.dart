@@ -10,6 +10,7 @@ import '../../../core/providers/theme_provider.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/services/api_client.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/empty_state.dart';
 import '../../backup/presentation/backup_actions.dart';
 import '../../cover_letter/presentation/ai_cover_letter_screen.dart';
 import '../../cover_letter/presentation/cover_letter_list_screen.dart';
@@ -30,11 +31,13 @@ class HomeScreen extends ConsumerWidget {
         content: Text(l10n.confirmDeleteMsg),
         actions: [
           TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(l10n.cancel)),
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
           FilledButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(l10n.delete)),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.delete),
+          ),
         ],
       ),
     );
@@ -60,7 +63,8 @@ class HomeScreen extends ConsumerWidget {
           IconButton(
             tooltip: l10n.theme,
             icon: Icon(
-                isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined),
+              isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+            ),
             onPressed: () => ref
                 .read(themeModeProvider.notifier)
                 .setMode(isDark ? ThemeMode.light : ThemeMode.dark),
@@ -110,9 +114,9 @@ class HomeScreen extends ConsumerWidget {
             icon: Icons.article_outlined,
             title: l10n.newResume,
             subtitle: l10n.newResumeSubtitle,
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const ResumeFormScreen()),
-            ),
+            onTap: () => Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const ResumeFormScreen())),
           ),
           const SizedBox(height: 12),
           _ActionCard(
@@ -132,19 +136,20 @@ class HomeScreen extends ConsumerWidget {
                       padding: const EdgeInsets.only(top: 12),
                       child: Row(
                         children: [
-                          Icon(Icons.bolt_outlined,
-                              size: 16,
-                              color: Theme.of(context).colorScheme.primary),
+                          Icon(
+                            Icons.bolt_outlined,
+                            size: 16,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                           const SizedBox(width: 6),
                           Text(
                             l10n.creditsLeft(credits),
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
+                            style: Theme.of(context).textTheme.bodySmall
                                 ?.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant),
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                ),
                           ),
                         ],
                       ),
@@ -177,10 +182,9 @@ class HomeScreen extends ConsumerWidget {
           const SizedBox(height: 24),
           Text(
             l10n.myResumes,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
           ValueListenableBuilder(
@@ -189,19 +193,13 @@ class HomeScreen extends ConsumerWidget {
               final resumes = box.values.toList()
                 ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
               if (resumes.isEmpty) {
-                return Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Center(
-                      child: Text(
-                        l10n.noResumesYet,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color:
-                                  Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+                return EmptyState(
+                  icon: Icons.description_outlined,
+                  title: l10n.emptyResumesTitle,
+                  message: l10n.emptyResumesMsg,
+                  actionLabel: l10n.newResume,
+                  onAction: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const ResumeFormScreen()),
                   ),
                 );
               }
@@ -219,8 +217,8 @@ class HomeScreen extends ConsumerWidget {
                         ),
                         onTap: () => Navigator.of(context).push(
                           MaterialPageRoute(
-                              builder: (_) =>
-                                  ResumeFormScreen(existing: resume)),
+                            builder: (_) => ResumeFormScreen(existing: resume),
+                          ),
                         ),
                         trailing: PopupMenuButton<String>(
                           onSelected: (action) {
@@ -228,14 +226,16 @@ class HomeScreen extends ConsumerWidget {
                               case 'edit':
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                      builder: (_) => ResumeFormScreen(
-                                          existing: resume)),
+                                    builder: (_) =>
+                                        ResumeFormScreen(existing: resume),
+                                  ),
                                 );
                               case 'preview':
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                      builder: (_) => ResumePreviewScreen(
-                                          resume: resume)),
+                                    builder: (_) =>
+                                        ResumePreviewScreen(resume: resume),
+                                  ),
                                 );
                               case 'delete':
                                 _deleteResume(context, resume);
@@ -243,11 +243,17 @@ class HomeScreen extends ConsumerWidget {
                           },
                           itemBuilder: (context) => [
                             PopupMenuItem(
-                                value: 'edit', child: Text(l10n.edit)),
+                              value: 'edit',
+                              child: Text(l10n.edit),
+                            ),
                             PopupMenuItem(
-                                value: 'preview', child: Text(l10n.preview)),
+                              value: 'preview',
+                              child: Text(l10n.preview),
+                            ),
                             PopupMenuItem(
-                                value: 'delete', child: Text(l10n.delete)),
+                              value: 'delete',
+                              child: Text(l10n.delete),
+                            ),
                           ],
                         ),
                       ),
@@ -298,28 +304,34 @@ class _ActionCard extends StatelessWidget {
                   color: highlight ? scheme.primary : scheme.primaryContainer,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(icon,
-                    color:
-                        highlight ? scheme.onPrimary : scheme.onPrimaryContainer,
-                    size: 28),
+                child: Icon(
+                  icon,
+                  color: highlight
+                      ? scheme.onPrimary
+                      : scheme.onPrimaryContainer,
+                  size: 28,
+                ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
-                            ?.copyWith(fontWeight: FontWeight.bold)),
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 4),
-                    Text(subtitle,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: highlight
-                                  ? scheme.onPrimaryContainer
-                                  : scheme.onSurfaceVariant,
-                            )),
+                    Text(
+                      subtitle,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: highlight
+                            ? scheme.onPrimaryContainer
+                            : scheme.onSurfaceVariant,
+                      ),
+                    ),
                   ],
                 ),
               ),
