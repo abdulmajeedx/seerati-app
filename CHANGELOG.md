@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- **Update notice**: on Android the app checks GitHub for a newer release once per launch and offers it in a card (Download / Later). Offline or failed checks stay silent.
+- **More resume details**: LinkedIn, website/portfolio, nationality and date of birth (under "More details" on the first step), plus **Projects** and **Certifications** sections. All four templates render them; resumes saved by earlier versions open unchanged.
+- **Duplicate** a resume from its card menu to tailor a copy for another job (the photo is copied, not shared).
+- **Reorder** experience, education, languages, certifications, courses and projects by dragging.
+
+### Fixed
+- Dialog confirm buttons no longer stretch full-width under Cancel.
+- The date picker could fail to open when the latest allowed date was today.
+
 ## [2.5.0] - 2026-09-23
 
 ### Changed
