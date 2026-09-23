@@ -20,6 +20,10 @@ Resume _resume(String id) => Resume(
         phone: '+966500000000',
         email: 'a@example.com',
         city: 'الرياض',
+        linkedin: 'linkedin.com/in/ahmed',
+        website: 'ahmed.dev',
+        birthDate: DateTime(1995, 3, 12),
+        nationality: 'سعودي',
       ),
       summary: 'ملخص مهني.',
       experiences: [
@@ -41,6 +45,10 @@ Resume _resume(String id) => Resume(
       skills: ['Flutter', 'Dart'],
       languages: [LanguageItem(name: 'العربية', level: 'native')],
       courses: [CourseItem(name: 'Clean Code', issuer: 'Udemy', year: '2023')],
+      projects: [
+        ProjectItem(name: 'سيرتي', link: 'github.com/x', description: 'تطبيق'),
+      ],
+      certifications: [CourseItem(name: 'PMP', issuer: 'PMI', year: '2024')],
       createdAt: DateTime(2026, 1, 1),
       updatedAt: DateTime(2026, 2, 2),
     );
@@ -95,6 +103,12 @@ void main() {
     expect(restored.educations.single.endDate, DateTime(2021, 6));
     expect(restored.languages.single.level, 'native');
     expect(restored.courses.single.issuer, 'Udemy');
+    expect(restored.personalInfo.linkedin, 'linkedin.com/in/ahmed');
+    expect(restored.personalInfo.website, 'ahmed.dev');
+    expect(restored.personalInfo.birthDate, DateTime(1995, 3, 12));
+    expect(restored.personalInfo.nationality, 'سعودي');
+    expect(restored.projects.single.link, 'github.com/x');
+    expect(restored.certifications.single.name, 'PMP');
     expect(restored.createdAt, DateTime(2026, 1, 1));
     expect(StorageService.coverLetters.get('c1')!.body, 'Dear Hiring Manager,');
   });

@@ -217,7 +217,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorGeneric => 'Something went wrong. Please try again.';
 
   @override
-  String get extrasStep => 'Languages & Courses';
+  String get extrasStep => 'Languages, certifications & projects';
 
   @override
   String get resumeTitle => 'Resume Title';
@@ -545,4 +545,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get updateLater => 'Later';
+
+  @override
+  String get linkedin => 'LinkedIn';
+
+  @override
+  String get website => 'Website or portfolio';
+
+  @override
+  String get nationality => 'Nationality';
+
+  @override
+  String get birthDate => 'Date of birth';
+
+  @override
+  String get moreDetails => 'More details (optional)';
+
+  @override
+  String get projects => 'Projects';
+
+  @override
+  String get addProject => 'Add project';
+
+  @override
+  String get projectName => 'Project name';
+
+  @override
+  String get projectLink => 'Link';
+
+  @override
+  String get certifications => 'Certifications';
+
+  @override
+  String get addCertification => 'Add certification';
+
+  @override
+  String get certificationName => 'Certification';
 }

@@ -515,7 +515,7 @@ abstract class AppLocalizations {
   /// No description provided for @extrasStep.
   ///
   /// In en, this message translates to:
-  /// **'Languages & Courses'**
+  /// **'Languages, certifications & projects'**
   String get extrasStep;
 
   /// No description provided for @resumeTitle.
@@ -1117,6 +1117,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Later'**
   String get updateLater;
+
+  /// No description provided for @linkedin.
+  ///
+  /// In en, this message translates to:
+  /// **'LinkedIn'**
+  String get linkedin;
+
+  /// No description provided for @website.
+  ///
+  /// In en, this message translates to:
+  /// **'Website or portfolio'**
+  String get website;
+
+  /// No description provided for @nationality.
+  ///
+  /// In en, this message translates to:
+  /// **'Nationality'**
+  String get nationality;
+
+  /// No description provided for @birthDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of birth'**
+  String get birthDate;
+
+  /// No description provided for @moreDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'More details (optional)'**
+  String get moreDetails;
+
+  /// No description provided for @projects.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects'**
+  String get projects;
+
+  /// No description provided for @addProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Add project'**
+  String get addProject;
+
+  /// No description provided for @projectName.
+  ///
+  /// In en, this message translates to:
+  /// **'Project name'**
+  String get projectName;
+
+  /// No description provided for @projectLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Link'**
+  String get projectLink;
+
+  /// No description provided for @certifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Certifications'**
+  String get certifications;
+
+  /// No description provided for @addCertification.
+  ///
+  /// In en, this message translates to:
+  /// **'Add certification'**
+  String get addCertification;
+
+  /// No description provided for @certificationName.
+  ///
+  /// In en, this message translates to:
+  /// **'Certification'**
+  String get certificationName;
 }
 
 class _AppLocalizationsDelegate

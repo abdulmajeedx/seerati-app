@@ -195,10 +195,28 @@ class _Render {
   PdfColor get accent => spec.accent;
   bool get isAr => resume.isArabic;
 
-  List<String> get contactItems => [info.phone, info.email, info.city]
-      .map((v) => v.trim())
-      .where((v) => v.isNotEmpty)
-      .toList();
+  List<String> get contactItems => [
+        info.phone,
+        info.email,
+        info.city,
+        _bareLink(info.linkedin),
+        _bareLink(info.website),
+      ].map((v) => v.trim()).where((v) => v.isNotEmpty).toList();
+
+  /// "Nationality: …", "Date of birth: …" — only the ones filled in.
+  List<String> get detailItems => [
+        if (info.nationality.trim().isNotEmpty)
+          '${s.nationality}: ${info.nationality.trim()}',
+        if (info.birthDate != null)
+          '${s.birthDate}: ${s.formatFullDate(info.birthDate!)}',
+      ];
+
+  /// Links read better on paper without "https://www.".
+  static String _bareLink(String url) => url
+      .trim()
+      .replaceFirst(RegExp(r'^https?://', caseSensitive: false), '')
+      .replaceFirst(RegExp(r'^www\.', caseSensitive: false), '')
+      .replaceFirst(RegExp(r'/$'), '');
 
   // ── Layouts ────────────────────────────────────────────────────────────
 
@@ -227,9 +245,9 @@ class _Render {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         pw.Center(child: _avatar(96)),
-        if (contactItems.isNotEmpty) ...[
+        if (contactItems.isNotEmpty || detailItems.isNotEmpty) ...[
           sideTitle(s.contact),
-          for (final item in contactItems)
+          for (final item in [...contactItems, ...detailItems])
             side(pw.Padding(
               padding: const pw.EdgeInsets.only(bottom: 3),
               child: pw.Text(item, style: const pw.TextStyle(fontSize: 8.5)),
@@ -311,6 +329,13 @@ class _Render {
                         style: const pw.TextStyle(
                             fontSize: 9, color: PdfColors.grey700)),
                   ),
+                if (detailItems.isNotEmpty)
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.only(top: 2),
+                    child: pw.Text(detailItems.join('   ·   '),
+                        style: const pw.TextStyle(
+                            fontSize: 9, color: PdfColors.grey700)),
+                  ),
               ],
             ),
           ),
@@ -384,6 +409,12 @@ class _Render {
                       child: pw.Text(contactItems.join('   |   '),
                           style: pw.TextStyle(fontSize: 9, color: onBanner)),
                     ),
+                  if (detailItems.isNotEmpty)
+                    pw.Padding(
+                      padding: const pw.EdgeInsets.only(top: 2),
+                      child: pw.Text(detailItems.join('   |   '),
+                          style: pw.TextStyle(fontSize: 9, color: onBanner)),
+                    ),
                 ],
               ),
             ),
@@ -428,6 +459,13 @@ class _Render {
                     pw.Padding(
                       padding: const pw.EdgeInsets.only(top: 4),
                       child: pw.Text(contactItems.join('   |   '),
+                          style: const pw.TextStyle(
+                              fontSize: 9, color: PdfColors.grey700)),
+                    ),
+                  if (detailItems.isNotEmpty)
+                    pw.Padding(
+                      padding: const pw.EdgeInsets.only(top: 2),
+                      child: pw.Text(detailItems.join('   |   '),
                           style: const pw.TextStyle(
                               fontSize: 9, color: PdfColors.grey700)),
                     ),
@@ -549,9 +587,13 @@ class _Render {
         ),
       if (resume.experiences.isNotEmpty)
         (s.experience, [for (final e in resume.experiences) entry(_experience(e))]),
+      if (resume.projects.isNotEmpty)
+        (s.projects, [for (final p in resume.projects) entry(_project(p))]),
       if (resume.educations.isNotEmpty)
         (s.education, [for (final e in resume.educations) entry(_education(e))]),
       if (skills && resume.skills.isNotEmpty) (s.skills, [_chips(chips)]),
+      if (resume.certifications.isNotEmpty)
+        (s.certifications, [for (final c in resume.certifications) _credential(c)]),
       if (languages && resume.languages.isNotEmpty)
         (
           s.languages,
@@ -561,19 +603,23 @@ class _Render {
           ]
         ),
       if (resume.courses.isNotEmpty)
-        (
-          s.courses,
-          [
-            for (final c in resume.courses)
-              _line([
-                c.name,
-                if (c.issuer.trim().isNotEmpty) c.issuer,
-                if (c.year.trim().isNotEmpty) c.year,
-              ].join(' — ')),
-          ]
-        ),
+        (s.courses, [for (final c in resume.courses) _credential(c)]),
     ];
   }
+
+  /// A course or certification: "Name — Issuer — Year".
+  pw.Widget _credential(CourseItem c) => _line([
+        c.name,
+        if (c.issuer.trim().isNotEmpty) c.issuer,
+        if (c.year.trim().isNotEmpty) c.year,
+      ].join(' — '));
+
+  pw.Widget _project(ProjectItem p) => _entry(
+        title: p.name,
+        subtitle: _bareLink(p.link),
+        dates: '',
+        description: p.description,
+      );
 
   pw.Widget _line(String text) => pw.Padding(
         padding: const pw.EdgeInsets.only(bottom: 2),

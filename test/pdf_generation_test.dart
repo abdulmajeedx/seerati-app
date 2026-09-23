@@ -12,6 +12,10 @@ Resume _sample(String lang) => Resume(
         phone: '+966500000000',
         email: 'ahmed@example.com',
         city: lang == 'ar' ? 'الرياض' : 'Riyadh',
+        linkedin: 'https://www.linkedin.com/in/ahmed/',
+        website: 'ahmed.dev',
+        nationality: lang == 'ar' ? 'سعودي' : 'Saudi',
+        birthDate: DateTime(1995, 3, 12),
       ),
       summary: lang == 'ar' ? 'ملخص مهني قصير.' : 'A short summary.',
       experiences: [
@@ -34,6 +38,13 @@ Resume _sample(String lang) => Resume(
       skills: ['Flutter', 'Dart'],
       languages: [LanguageItem(name: lang == 'ar' ? 'العربية' : 'Arabic', level: 'native')],
       courses: [CourseItem(name: 'Clean Code', issuer: 'Udemy', year: '2023')],
+      projects: [
+        ProjectItem(
+            name: lang == 'ar' ? 'تطبيق سيرتي' : 'Seerati app',
+            link: 'github.com/x/seerati',
+            description: 'Flutter'),
+      ],
+      certifications: [CourseItem(name: 'PMP', issuer: 'PMI', year: '2021')],
       createdAt: DateTime(2026, 1, 1),
       updatedAt: DateTime(2026, 1, 1),
     );

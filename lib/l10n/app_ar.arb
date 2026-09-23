@@ -69,7 +69,7 @@
   "companyName": "اسم الشركة",
   "generate": "إنشاء",
   "errorGeneric": "حدث خطأ ما. حاول مرة أخرى.",
-  "extrasStep": "اللغات والدورات",
+  "extrasStep": "اللغات والشهادات والمشاريع",
   "resumeTitle": "عنوان السيرة الذاتية",
   "untitledResume": "سيرة بدون عنوان",
   "addPhoto": "إضافة صورة",
@@ -174,5 +174,17 @@
   "updateAvailableMsg": "نزّله وثبّته فوق النسخة الحالية، وتبقى سيرك وخطاباتك كما هي.",
   "updateDownload": "تنزيل",
   "updateLater": "لاحقاً",
-  "@updateAvailableTitle": {"placeholders": {"version": {"type": "String"}}}
+  "@updateAvailableTitle": {"placeholders": {"version": {"type": "String"}}},
+  "linkedin": "لينكدإن",
+  "website": "الموقع أو معرض الأعمال",
+  "nationality": "الجنسية",
+  "birthDate": "تاريخ الميلاد",
+  "moreDetails": "تفاصيل إضافية (اختياري)",
+  "projects": "المشاريع",
+  "addProject": "إضافة مشروع",
+  "projectName": "اسم المشروع",
+  "projectLink": "الرابط",
+  "certifications": "الشهادات المهنية",
+  "addCertification": "إضافة شهادة",
+  "certificationName": "الشهادة"
 }

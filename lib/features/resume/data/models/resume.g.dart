@@ -28,6 +28,8 @@ class ResumeAdapter extends TypeAdapter<Resume> {
       skills: (fields[8] as List?)?.cast<String>(),
       languages: (fields[9] as List?)?.cast<LanguageItem>(),
       courses: (fields[10] as List?)?.cast<CourseItem>(),
+      projects: (fields[13] as List?)?.cast<ProjectItem>(),
+      certifications: (fields[14] as List?)?.cast<CourseItem>(),
       createdAt: fields[11] as DateTime,
       updatedAt: fields[12] as DateTime,
     );
@@ -36,7 +38,7 @@ class ResumeAdapter extends TypeAdapter<Resume> {
   @override
   void write(BinaryWriter writer, Resume obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(15)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -62,7 +64,11 @@ class ResumeAdapter extends TypeAdapter<Resume> {
       ..writeByte(11)
       ..write(obj.createdAt)
       ..writeByte(12)
-      ..write(obj.updatedAt);
+      ..write(obj.updatedAt)
+      ..writeByte(13)
+      ..write(obj.projects)
+      ..writeByte(14)
+      ..write(obj.certifications);
   }
 
   @override
@@ -93,13 +99,17 @@ class PersonalInfoAdapter extends TypeAdapter<PersonalInfo> {
       email: fields[3] as String,
       city: fields[4] as String,
       photoPath: fields[5] as String?,
+      linkedin: fields[6] == null ? '' : fields[6] as String,
+      website: fields[7] == null ? '' : fields[7] as String,
+      birthDate: fields[8] as DateTime?,
+      nationality: fields[9] == null ? '' : fields[9] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, PersonalInfo obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.fullName)
       ..writeByte(1)
@@ -111,7 +121,15 @@ class PersonalInfoAdapter extends TypeAdapter<PersonalInfo> {
       ..writeByte(4)
       ..write(obj.city)
       ..writeByte(5)
-      ..write(obj.photoPath);
+      ..write(obj.photoPath)
+      ..writeByte(6)
+      ..write(obj.linkedin)
+      ..writeByte(7)
+      ..write(obj.website)
+      ..writeByte(8)
+      ..write(obj.birthDate)
+      ..writeByte(9)
+      ..write(obj.nationality);
   }
 
   @override
@@ -299,6 +317,46 @@ class CourseItemAdapter extends TypeAdapter<CourseItem> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is CourseItemAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class ProjectItemAdapter extends TypeAdapter<ProjectItem> {
+  @override
+  final int typeId = 7;
+
+  @override
+  ProjectItem read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return ProjectItem(
+      name: fields[0] as String,
+      link: fields[1] as String,
+      description: fields[2] as String,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, ProjectItem obj) {
+    writer
+      ..writeByte(3)
+      ..writeByte(0)
+      ..write(obj.name)
+      ..writeByte(1)
+      ..write(obj.link)
+      ..writeByte(2)
+      ..write(obj.description);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ProjectItemAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

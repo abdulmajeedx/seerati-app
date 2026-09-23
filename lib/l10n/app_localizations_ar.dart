@@ -217,7 +217,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorGeneric => 'حدث خطأ ما. حاول مرة أخرى.';
 
   @override
-  String get extrasStep => 'اللغات والدورات';
+  String get extrasStep => 'اللغات والشهادات والمشاريع';
 
   @override
   String get resumeTitle => 'عنوان السيرة الذاتية';
@@ -539,4 +539,40 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get updateLater => 'لاحقاً';
+
+  @override
+  String get linkedin => 'لينكدإن';
+
+  @override
+  String get website => 'الموقع أو معرض الأعمال';
+
+  @override
+  String get nationality => 'الجنسية';
+
+  @override
+  String get birthDate => 'تاريخ الميلاد';
+
+  @override
+  String get moreDetails => 'تفاصيل إضافية (اختياري)';
+
+  @override
+  String get projects => 'المشاريع';
+
+  @override
+  String get addProject => 'إضافة مشروع';
+
+  @override
+  String get projectName => 'اسم المشروع';
+
+  @override
+  String get projectLink => 'الرابط';
+
+  @override
+  String get certifications => 'الشهادات المهنية';
+
+  @override
+  String get addCertification => 'إضافة شهادة';
+
+  @override
+  String get certificationName => 'الشهادة';
 }
