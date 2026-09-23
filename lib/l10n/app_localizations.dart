@@ -1093,6 +1093,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Premium, locked'**
   String get lockedTemplate;
+
+  /// No description provided for @updateAvailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} is available'**
+  String updateAvailableTitle(String version);
+
+  /// No description provided for @updateAvailableMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Download it and install over this one. Your resumes and letters stay.'**
+  String get updateAvailableMsg;
+
+  /// No description provided for @updateDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get updateDownload;
+
+  /// No description provided for @updateLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get updateLater;
 }
 
 class _AppLocalizationsDelegate

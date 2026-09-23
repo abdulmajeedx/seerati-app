@@ -20,6 +20,7 @@ import '../../resume/presentation/resume_form_screen.dart';
 import '../../resume/presentation/resume_preview_screen.dart';
 import '../../resume/presentation/template_picker_screen.dart';
 import '../../resume/presentation/widgets/resume_card.dart';
+import '../../update/presentation/update_banner.dart';
 import 'settings_sheet.dart';
 
 /// Two tabs — resumes and cover letters — with the create action for the
@@ -151,6 +152,8 @@ class _ResumesTab extends StatelessWidget {
             context,
           ).copyWith(top: 8, bottom: 96),
           children: [
+            // Sizes to nothing when there's no update to offer.
+            const UpdateBanner(),
             for (final w in header) ...[w, const SizedBox(height: 16)],
             if (resumes.isEmpty)
               EmptyState(

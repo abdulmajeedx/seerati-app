@@ -7,6 +7,13 @@ abstract final class AppConstants {
   static const themeModeKey = 'theme_mode';
   static const isPremiumKey = 'is_premium';
   static const onboardingDoneKey = 'onboarding_done';
+  static const dismissedUpdateKey = 'dismissed_update';
+
+  /// Must match `version:` in pubspec.yaml (a test enforces it). Compared
+  /// against the latest GitHub release to offer updates.
+  static const appVersion = '2.5.0';
+  static const releasesApi =
+      'https://api.github.com/repos/abdulmajeedx/seerati-app/releases/latest';
 
   static const supportedResumeLanguages = ['ar', 'en'];
 

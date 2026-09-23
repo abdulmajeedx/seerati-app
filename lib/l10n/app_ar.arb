@@ -169,5 +169,10 @@
   "@resumeProgress": {"placeholders": {"percent": {"type": "String"}}},
   "stepOf": "الخطوة {current} من {total}",
   "@stepOf": {"placeholders": {"current": {"type": "int"}, "total": {"type": "int"}}},
-  "lockedTemplate": "قالب مميز، مقفل"
+  "lockedTemplate": "قالب مميز، مقفل",
+  "updateAvailableTitle": "يتوفر الإصدار {version}",
+  "updateAvailableMsg": "نزّله وثبّته فوق النسخة الحالية، وتبقى سيرك وخطاباتك كما هي.",
+  "updateDownload": "تنزيل",
+  "updateLater": "لاحقاً",
+  "@updateAvailableTitle": {"placeholders": {"version": {"type": "String"}}}
 }
