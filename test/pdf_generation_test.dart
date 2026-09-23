@@ -56,4 +56,24 @@ void main() {
       });
     }
   }
+
+  // Long resumes must flow onto later pages in every layout (the sidebar
+  // uses Partitions, the banner drops its top margin on page 1 only).
+  for (final lang in ['ar', 'en']) {
+    for (final template in ['classic', 'modern', 'minimal', 'colorful']) {
+      testWidgets('long $lang resume spans pages with $template template',
+          (tester) async {
+        await tester.runAsync(() async {
+          final resume = _sample(lang)..templateId = template;
+          final job = resume.experiences.first;
+          resume.experiences.addAll([for (var i = 0; i < 15; i++) job.copy()]);
+          final bytes = await PdfService.build(resume, watermark: false);
+          final pages = RegExp(r'/Type\s*/Page[^s]')
+              .allMatches(String.fromCharCodes(bytes))
+              .length;
+          expect(pages, greaterThan(1));
+        });
+      });
+    }
+  }
 }

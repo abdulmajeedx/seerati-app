@@ -8,6 +8,7 @@ class ResumeStrings {
     required this.skills,
     required this.languages,
     required this.courses,
+    required this.contact,
     required this.present,
     required this.months,
     required this.levels,
@@ -19,6 +20,7 @@ class ResumeStrings {
   final String skills;
   final String languages;
   final String courses;
+  final String contact;
   final String present;
   final List<String> months;
   final Map<String, String> levels;
@@ -36,6 +38,7 @@ class ResumeStrings {
     skills: 'Skills',
     languages: 'Languages',
     courses: 'Courses',
+    contact: 'Contact',
     present: 'Present',
     months: [
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -56,6 +59,7 @@ class ResumeStrings {
     skills: 'المهارات',
     languages: 'اللغات',
     courses: 'الدورات',
+    contact: 'التواصل',
     present: 'حتى الآن',
     months: [
       'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',

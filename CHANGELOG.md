@@ -6,6 +6,11 @@
 - App icon: a resume page on the brand teal, replacing the default Flutter icon. Android gets an adaptive icon (with a monochrome layer for themed icons); iOS gets every required size. Regenerate with `python3 tool/generate_icons.py`.
 - Branded launch screen on Android (including the Android 12+ system splash) and iOS, instead of a blank white screen.
 - Three-page onboarding (welcome, templates, privacy) with Skip, shown on first launch only; returning users open straight to the home screen.
+- The three Premium templates are now distinct layouts, not recolours of the free one:
+  - **Modern**: tinted full-height sidebar (photo or initials, contact, skills, languages) beside the main column; continues on every page.
+  - **Minimal**: section labels in a narrow side column, hairline rules, photo as a small rounded square.
+  - **Colorful**: full-bleed banner with a decorative disc, timeline rule joining entries, filled skill chips.
+  - All layouts mirror correctly for Arabic; when there is no photo, the sidebar and banner show the name's initials.
 - Template picker shows each template's real first page rendered from the user's own resume, falling back to the schematic sketch while it renders.
 
 ## [2.3.0] - 2026-08-31
