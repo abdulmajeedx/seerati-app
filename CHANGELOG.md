@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [2.6.0] - 2026-09-27
 
 ### Added
 - **Update notice**: on Android the app checks GitHub for a newer release once per launch and offers it in a card (Download / Later). Offline or failed checks stay silent.

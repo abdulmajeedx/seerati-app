@@ -11,7 +11,7 @@ abstract final class AppConstants {
 
   /// Must match `version:` in pubspec.yaml (a test enforces it). Compared
   /// against the latest GitHub release to offer updates.
-  static const appVersion = '2.5.0';
+  static const appVersion = '2.6.0';
   static const releasesApi =
       'https://api.github.com/repos/abdulmajeedx/seerati-app/releases/latest';
 
