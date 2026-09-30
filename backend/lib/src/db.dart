@@ -59,6 +59,22 @@ class Db {
         day TEXT PRIMARY KEY,
         count INTEGER NOT NULL DEFAULT 0
       );
+      CREATE TABLE IF NOT EXISTS purchases (
+        token_hash TEXT NOT NULL,
+        device_id TEXT NOT NULL,
+        order_id TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        PRIMARY KEY (token_hash, device_id)
+      );
+      CREATE INDEX IF NOT EXISTS purchases_device ON purchases (device_id);
+      CREATE TABLE IF NOT EXISTS voided_purchases (
+        token_hash TEXT PRIMARY KEY,
+        voided_at INTEGER NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS meta (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
+      );
     ''');
     // Added in 2.2.0; older databases predate the column.
     final columns = _db
@@ -80,10 +96,99 @@ class Db {
     );
   }
 
+  /// Premium comes from a redeemed code (`devices.premium`) or from a Play
+  /// purchase bound to this device. Deriving it keeps revocation a plain row
+  /// delete.
   bool isPremium(String deviceId) {
-    final rows =
-        _db.select('SELECT premium FROM devices WHERE id = ?', [deviceId]);
-    return rows.isNotEmpty && rows.first['premium'] == 1;
+    final rows = _db.select(
+      'SELECT EXISTS(SELECT 1 FROM devices WHERE id = ? AND premium = 1) '
+      'OR EXISTS(SELECT 1 FROM purchases p WHERE p.device_id = ? AND '
+      'p.token_hash NOT IN (SELECT token_hash FROM voided_purchases)) '
+      'AS premium',
+      [deviceId, deviceId],
+    );
+    return rows.first['premium'] == 1;
+  }
+
+  /// True when a purchase this device relied on was refunded or charged back,
+  /// so the app can withdraw its local unlock too.
+  bool hasVoidedPurchase(String deviceId) => _db.select(
+        'SELECT 1 FROM purchases p JOIN voided_purchases v '
+        'ON v.token_hash = p.token_hash WHERE p.device_id = ? LIMIT 1',
+        [deviceId],
+      ).isNotEmpty;
+
+  bool isVoided(String tokenHash) => _db.select(
+        'SELECT 1 FROM voided_purchases WHERE token_hash = ?',
+        [tokenHash],
+      ).isNotEmpty;
+
+  /// Returns true the first time [tokenHash] is recorded as voided.
+  bool markVoided(String tokenHash, DateTime at) {
+    _db.execute(
+      'INSERT OR IGNORE INTO voided_purchases (token_hash, voided_at) '
+      'VALUES (?, ?)',
+      [tokenHash, at.millisecondsSinceEpoch],
+    );
+    return _db.updatedRows == 1;
+  }
+
+  int? metaInt(String key) {
+    final rows = _db.select('SELECT value FROM meta WHERE key = ?', [key]);
+    return rows.isEmpty ? null : int.tryParse(rows.first['value'] as String);
+  }
+
+  void setMetaInt(String key, int value) {
+    _db.execute(
+      'INSERT INTO meta (key, value) VALUES (?, ?) '
+      'ON CONFLICT(key) DO UPDATE SET value = excluded.value',
+      [key, '$value'],
+    );
+  }
+
+  /// Binds a Google-verified purchase (identified by the SHA-256 of its token)
+  /// to [deviceId]. One purchase may serve at most [maxDevices] devices at a
+  /// time; binding another evicts the oldest, so reinstalling always works but
+  /// a token shared around loses its earliest users. Returns how many devices
+  /// were evicted.
+  int bindPurchase(
+    String tokenHash,
+    String deviceId,
+    String orderId, {
+    required int maxDevices,
+  }) {
+    var evicted = 0;
+    _db.execute('BEGIN IMMEDIATE');
+    try {
+      ensureDevice(deviceId);
+      final existing = _db.select(
+          'SELECT 1 FROM purchases WHERE token_hash = ? AND device_id = ?',
+          [tokenHash, deviceId]);
+      if (existing.isEmpty) {
+        _db.execute(
+          'INSERT INTO purchases (token_hash, device_id, order_id, created_at) '
+          'VALUES (?, ?, ?, ?)',
+          [tokenHash, deviceId, orderId, DateTime.now().millisecondsSinceEpoch],
+        );
+        final count = _db.select(
+            'SELECT COUNT(*) AS n FROM purchases WHERE token_hash = ?',
+            [tokenHash]).first['n'] as int;
+        if (count > maxDevices) {
+          evicted = count - maxDevices;
+          _db.execute(
+            'DELETE FROM purchases WHERE rowid IN ('
+            'SELECT rowid FROM purchases WHERE token_hash = ? '
+            'ORDER BY created_at ASC, rowid ASC LIMIT ?)',
+            [tokenHash, evicted],
+          );
+        }
+      }
+      _db.execute('COMMIT');
+    } catch (_) {
+      _db.execute('ROLLBACK');
+      rethrow;
+    }
+    return evicted;
   }
 
   /// Job searches are expensive, so identical queries are served from cache

@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'core/providers/locale_provider.dart';
 import 'core/providers/theme_provider.dart';
+import 'core/services/entitlement_sync.dart';
 import 'core/theme/app_theme.dart';
 import 'features/home/presentation/home_screen.dart';
 import 'features/welcome/presentation/welcome_screen.dart';
@@ -16,6 +17,7 @@ class SeeratiApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeProvider);
     final themeMode = ref.watch(themeModeProvider);
+    ref.listen(entitlementSyncProvider, (_, _) {});
     return MaterialApp(
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       debugShowCheckedModeBanner: false,

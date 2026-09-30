@@ -79,6 +79,63 @@ void main() {
         _throwsKind(ApiErrorKind.declined));
   });
 
+  test('verifyPurchase sends the token and maps the server verdict', () async {
+    late http.Request captured;
+    final verified = _client((request) async {
+      captured = request;
+      return http.Response(jsonEncode({'premium': true}), 200);
+    });
+    expect(
+        await verified.verifyPurchase(
+            productId: 'seerati_premium', purchaseToken: 'tok-0123456789abcdef'),
+        PurchaseVerdict.verified);
+    expect(captured.url.path, '/v1/purchase/verify');
+    final sent = jsonDecode(captured.body) as Map<String, dynamic>;
+    expect(sent['purchase_token'], 'tok-0123456789abcdef');
+    expect(sent['product_id'], 'seerati_premium');
+    expect(sent['device_id'], isNotEmpty);
+
+    final pending = _status(200, {'premium': false, 'pending': true});
+    expect(
+        await pending.verifyPurchase(
+            productId: 'seerati_premium', purchaseToken: 'tok-0123456789abcdef'),
+        PurchaseVerdict.pending);
+
+    final forged = _status(404);
+    await expectLater(
+        forged.verifyPurchase(
+            productId: 'seerati_premium', purchaseToken: 'tok-0123456789abcdef'),
+        _throwsKind(ApiErrorKind.declined));
+    final down = _status(503, {'error': 'purchases_unavailable'});
+    await expectLater(
+        down.verifyPurchase(
+            productId: 'seerati_premium', purchaseToken: 'tok-0123456789abcdef'),
+        _throwsKind(ApiErrorKind.server));
+  });
+
+  test('fetchEntitlement maps premium and revoked, defaulting to false',
+      () async {
+    late http.Request captured;
+    final client = _client((request) async {
+      captured = request;
+      return http.Response(jsonEncode({'premium': false, 'revoked': true}), 200);
+    });
+    final e = await client.fetchEntitlement();
+    expect(e.premium, false);
+    expect(e.revoked, true);
+    expect(captured.url.path, '/v1/entitlement');
+    expect((jsonDecode(captured.body) as Map)['device_id'], isNotEmpty);
+
+    final bare = await _status(200).fetchEntitlement();
+    expect(bare.premium, false);
+    expect(bare.revoked, false);
+
+    await expectLater(
+        _status(503).fetchEntitlement(), _throwsKind(ApiErrorKind.server));
+    await expectLater(_status(401).fetchEntitlement(),
+        _throwsKind(ApiErrorKind.unauthorized));
+  });
+
   test('unconfigured builds never open a socket', () async {
     var called = false;
     final client = ApiClient(

@@ -319,6 +319,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get purchaseSuccess => 'تم الشراء بنجاح — استمتع!';
 
   @override
+  String get purchaseNotVerified =>
+      'لم نتمكن من تأكيد عملية الشراء بعد. تحقق من الاتصال ثم اضغط «استعادة المشتريات».';
+
+  @override
   String get alreadyPremium => 'أنت تملك النسخة الكاملة بالفعل.';
 
   @override

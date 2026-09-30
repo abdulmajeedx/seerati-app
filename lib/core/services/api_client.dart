@@ -17,6 +17,17 @@ enum ApiErrorKind {
   server,
 }
 
+enum PurchaseVerdict { verified, pending }
+
+/// What the server currently grants this device. [revoked] means a purchase
+/// it relied on was refunded or charged back.
+class Entitlement {
+  const Entitlement({required this.premium, required this.revoked});
+
+  final bool premium;
+  final bool revoked;
+}
+
 class ApiException implements Exception {
   const ApiException(this.kind, {this.premium = false});
   final ApiErrorKind kind;
@@ -189,6 +200,30 @@ class ApiClient {
   Future<bool> redeem(String code) async {
     final body = await _post('/v1/redeem', {'code': code});
     return body['premium'] == true;
+  }
+
+  /// Asks the server to check a Play purchase with Google. Premium is only
+  /// real once this returns [PurchaseVerdict.verified]; a 404 (forged or
+  /// canceled) surfaces as [ApiErrorKind.declined].
+  Future<PurchaseVerdict> verifyPurchase({
+    required String productId,
+    required String purchaseToken,
+  }) async {
+    final body = await _post('/v1/purchase/verify', {
+      'product_id': productId,
+      'purchase_token': purchaseToken,
+    });
+    return body['premium'] == true
+        ? PurchaseVerdict.verified
+        : PurchaseVerdict.pending;
+  }
+
+  Future<Entitlement> fetchEntitlement() async {
+    final body = await _post('/v1/entitlement', const {});
+    return Entitlement(
+      premium: body['premium'] == true,
+      revoked: body['revoked'] == true,
+    );
   }
 
   Future<String> _text(String path, Map<String, dynamic> payload) async {

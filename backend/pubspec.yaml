@@ -12,6 +12,7 @@ dependencies:
   http: ^1.2.2
   sqlite3: ^2.4.7
   crypto: ^3.0.6
+  googleapis_auth: ^2.3.4
 
 dev_dependencies:
   lints: ^6.0.0

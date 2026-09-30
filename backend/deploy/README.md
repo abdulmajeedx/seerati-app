@@ -21,6 +21,54 @@ Config lives in `~/seerati-keys/backend.env` (chmod 600, never committed):
 | `SEERATI_BIND` | `any` to bind all interfaces; default is loopback only |
 | `SEERATI_JOBS_MODEL` | Model for job search only. Unset ⇒ `claude-opus-5` |
 | `SEERATI_JOBS_ENABLED` | `0` switches job search off; the app reads this from `/v1/config` and hides the feature |
+| `SEERATI_PLAY_SERVICE_ACCOUNT` | Path to the Google service-account JSON (chmod 600). Unset ⇒ `/v1/purchase/verify` returns 503 and Premium cannot be bought |
+| `SEERATI_PLAY_PACKAGE` | Android package name to verify against. Default `com.abdulmajeedx.seerati` |
+
+## Purchase verification (Google Play)
+
+The app sends the purchase token to `POST /v1/purchase/verify`; the server asks
+Google (`purchases.products.get`) and only then marks the device premium.
+Nothing unlocks on the store's word alone, and the token is stored only as a
+SHA-256 hash.
+
+One-time setup (verify current names in the Play Console / Cloud docs):
+
+1. Google Cloud: create a service account, enable the **Google Play Android
+   Developer API**, download its JSON key.
+2. Play Console → Users and permissions: invite the service-account email and
+   grant it access to the app with permission to view financial data and orders.
+3. Install the key and point the service at it:
+
+```bash
+install -m 600 ~/Downloads/play-key.json ~/seerati-keys/play-service-account.json
+echo 'SEERATI_PLAY_SERVICE_ACCOUNT=/home/qlb/seerati-keys/play-service-account.json' >> ~/seerati-keys/backend.env
+systemctl --user restart seerati-backend
+```
+
+Test with a license-tester account: buy in the app, then
+`journalctl --user -u seerati-backend | grep 'purchase bound'`.
+
+Rules the server enforces: only the `seerati_premium` product; one purchase may
+serve 3 devices at once (a 4th evicts the oldest, so reinstalls keep working);
+10 verifications per IP per 10 minutes; Google unreachable ⇒ 503 and nothing is
+granted or rejected.
+
+### Refunds
+
+Once at startup and then hourly the server reads `voidedpurchases.list` (the
+service account needs the same order/financial permission) and records each
+voided token's hash in `voided_purchases`. A voided purchase stops counting
+toward Premium immediately; codes are unaffected. A failed run keeps its cursor
+(`meta.voided_synced_at`) and each run re-reads a day of overlap, so nothing is
+lost to an outage shorter than 29 days — Google only reports 30.
+
+```bash
+journalctl --user -u seerati-backend | grep -E 'purchase voided|refund sync failed'
+```
+
+The app calls `POST /v1/entitlement` at launch and mirrors the result: a
+refunded buyer loses the local unlock, and a device already recorded as premium
+regains it.
 
 ## Turning job search on or off
 

@@ -103,6 +103,7 @@
   "restorePurchases": "Restore purchases",
   "storeUnavailable": "The store is not available on this device.",
   "purchaseSuccess": "Purchase successful — enjoy!",
+  "purchaseNotVerified": "We couldn't confirm your purchase yet. Check your connection, then tap Restore purchases.",
   "alreadyPremium": "You already own Premium.",
   "retry": "Retry",
   "haveActivationCode": "Have an activation code?",

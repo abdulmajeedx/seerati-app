@@ -320,6 +320,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get purchaseSuccess => 'Purchase successful — enjoy!';
 
   @override
+  String get purchaseNotVerified =>
+      'We couldn\'t confirm your purchase yet. Check your connection, then tap Restore purchases.';
+
+  @override
   String get alreadyPremium => 'You already own Premium.';
 
   @override
