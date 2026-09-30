@@ -8,6 +8,11 @@ class ResumeStrings {
     required this.skills,
     required this.languages,
     required this.courses,
+    required this.contact,
+    required this.projects,
+    required this.certifications,
+    required this.nationality,
+    required this.birthDate,
     required this.present,
     required this.months,
     required this.levels,
@@ -19,6 +24,11 @@ class ResumeStrings {
   final String skills;
   final String languages;
   final String courses;
+  final String contact;
+  final String projects;
+  final String certifications;
+  final String nationality;
+  final String birthDate;
   final String present;
   final List<String> months;
   final Map<String, String> levels;
@@ -26,6 +36,9 @@ class ResumeStrings {
   static ResumeStrings of(String language) => language == 'ar' ? _ar : _en;
 
   String formatDate(DateTime d) => '${months[d.month - 1]} ${d.year}';
+
+  String formatFullDate(DateTime d) =>
+      '${d.day} ${months[d.month - 1]} ${d.year}';
 
   String levelLabel(String key) => levels[key] ?? key;
 
@@ -36,6 +49,11 @@ class ResumeStrings {
     skills: 'Skills',
     languages: 'Languages',
     courses: 'Courses',
+    contact: 'Contact',
+    projects: 'Projects',
+    certifications: 'Certifications',
+    nationality: 'Nationality',
+    birthDate: 'Date of birth',
     present: 'Present',
     months: [
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -56,6 +74,11 @@ class ResumeStrings {
     skills: 'المهارات',
     languages: 'اللغات',
     courses: 'الدورات',
+    contact: 'التواصل',
+    projects: 'المشاريع',
+    certifications: 'الشهادات المهنية',
+    nationality: 'الجنسية',
+    birthDate: 'تاريخ الميلاد',
     present: 'حتى الآن',
     months: [
       'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',

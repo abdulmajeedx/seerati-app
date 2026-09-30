@@ -6,6 +6,7 @@ import 'core/providers/locale_provider.dart';
 import 'core/providers/theme_provider.dart';
 import 'core/services/entitlement_sync.dart';
 import 'core/theme/app_theme.dart';
+import 'features/home/presentation/home_screen.dart';
 import 'features/welcome/presentation/welcome_screen.dart';
 import 'l10n/app_localizations.dart';
 
@@ -31,7 +32,7 @@ class SeeratiApp extends ConsumerWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: themeMode,
-      home: const WelcomeScreen(),
+      home: WelcomeScreen.seen ? const HomeScreen() : const WelcomeScreen(),
     );
   }
 }

@@ -28,19 +28,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get newResume => 'سيرة ذاتية جديدة';
 
   @override
-  String get newResumeSubtitle => 'أنشئ سيرة ذاتية احترافية خطوة بخطوة';
-
-  @override
   String get coverLetter => 'خطاب تقديم';
 
   @override
-  String get coverLetterSubtitle => 'أنشئ خطاب تقديم جاهزاً للإرسال';
-
-  @override
   String get myResumes => 'سيري الذاتية';
-
-  @override
-  String get noResumesYet => 'لا توجد سير ذاتية بعد. أنشئ سيرتك الأولى!';
 
   @override
   String get settings => 'الإعدادات';
@@ -226,7 +217,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorGeneric => 'حدث خطأ ما. حاول مرة أخرى.';
 
   @override
-  String get extrasStep => 'اللغات والدورات';
+  String get extrasStep => 'اللغات والشهادات والمشاريع';
 
   @override
   String get resumeTitle => 'عنوان السيرة الذاتية';
@@ -287,9 +278,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get myCoverLetters => 'خطاباتي';
-
-  @override
-  String get noCoverLettersYet => 'لا توجد خطابات بعد. أنشئ خطابك الأول!';
 
   @override
   String get newCoverLetter => 'خطاب تقديم جديد';
@@ -480,4 +468,126 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get importEmpty => 'النسخة الاحتياطية فارغة.';
+
+  @override
+  String get skip => 'تخطّي';
+
+  @override
+  String get onboardTemplatesTitle => 'قوالب تلفت الانتباه';
+
+  @override
+  String get onboardTemplatesSubtitle =>
+      'اختر قالباً وشاهد سيرتك فيه مباشرة، ثم صدّرها PDF جاهزاً للمشاركة.';
+
+  @override
+  String get onboardPrivacyTitle => 'بياناتك تبقى معك';
+
+  @override
+  String get onboardPrivacySubtitle =>
+      'كل شيء محفوظ ومشفّر على جهازك — بدون حساب — مع ملف نسخة احتياطية تنقله أينما شئت.';
+
+  @override
+  String get discardChangesTitle => 'تجاهل التعديلات؟';
+
+  @override
+  String get discardChangesMsg =>
+      'لم تُحفظ تعديلاتك بعد. إن خرجت الآن فستفقدها.';
+
+  @override
+  String get keepEditing => 'متابعة التعديل';
+
+  @override
+  String get discard => 'تجاهل';
+
+  @override
+  String get emptyResumesTitle => 'ابدأ سيرتك الذاتية الأولى';
+
+  @override
+  String get emptyResumesMsg =>
+      'أجب عن بضعة أسئلة، واختر قالباً، وصدّرها PDF في دقائق.';
+
+  @override
+  String get emptyLettersTitle => 'لا توجد خطابات بعد';
+
+  @override
+  String get emptyLettersMsg =>
+      'أنشئ خطاب تقديم من قالب جاهز، ثم عدّله كما تشاء.';
+
+  @override
+  String get changeTemplate => 'تغيير القالب';
+
+  @override
+  String resumeProgress(String percent) {
+    return 'مكتملة $percent';
+  }
+
+  @override
+  String stepOf(int current, int total) {
+    return 'الخطوة $current من $total';
+  }
+
+  @override
+  String get lockedTemplate => 'قالب مميز، مقفل';
+
+  @override
+  String updateAvailableTitle(String version) {
+    return 'يتوفر الإصدار $version';
+  }
+
+  @override
+  String get updateAvailableMsg =>
+      'نزّله وثبّته فوق النسخة الحالية، وتبقى سيرك وخطاباتك كما هي.';
+
+  @override
+  String get updateDownload => 'تنزيل';
+
+  @override
+  String get updateLater => 'لاحقاً';
+
+  @override
+  String get linkedin => 'لينكدإن';
+
+  @override
+  String get website => 'الموقع أو معرض الأعمال';
+
+  @override
+  String get nationality => 'الجنسية';
+
+  @override
+  String get birthDate => 'تاريخ الميلاد';
+
+  @override
+  String get moreDetails => 'تفاصيل إضافية (اختياري)';
+
+  @override
+  String get projects => 'المشاريع';
+
+  @override
+  String get addProject => 'إضافة مشروع';
+
+  @override
+  String get projectName => 'اسم المشروع';
+
+  @override
+  String get projectLink => 'الرابط';
+
+  @override
+  String get certifications => 'الشهادات المهنية';
+
+  @override
+  String get addCertification => 'إضافة شهادة';
+
+  @override
+  String get certificationName => 'الشهادة';
+
+  @override
+  String get duplicate => 'نسخ';
+
+  @override
+  String copyOf(String title) {
+    return '$title (نسخة)';
+  }
+
+  @override
+  String get resumeDuplicated => 'أُنشئت نسخة. عدّلها لتناسب الوظيفة التالية.';
 }

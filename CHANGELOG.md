@@ -1,13 +1,12 @@
 # Changelog
 
-## [2.4.0] - 2026-08-31
+## [2.7.0] - 2026-09-30
 
 ### Security
 - Purchases are now verified server-side. The app sends the Play purchase token to the backend, which checks it with Google before Premium is granted; a forged, canceled or still-pending purchase unlocks nothing, and an unreachable server leaves the purchase pending so it is retried instead of granted or lost.
 - The server is now the source of truth for Premium AI quota: a verified purchase raises the device's daily allowance the same way a redeemed code does.
 - One purchase serves up to three devices at a time (reinstalls and a second device work); a fourth evicts the oldest binding, so a leaked token cannot be shared widely. Tokens are stored only as SHA-256 hashes.
 - Builds without a backend stay fully offline and still grant on the store's word alone.
-
 - Refunds and chargebacks now take effect: the backend pulls Google's voided-purchases list hourly and stops granting Premium for those purchases. A voided token is refused on the spot without asking Google, and a refund landing mid-verification is not granted. Premium from a redeemed code is never affected. If Google can't be reached the sync keeps its position and retries, so nothing is revoked on a guess.
 - The app reconciles with the server at launch (`POST /v1/entitlement`): a refunded buyer loses the local unlock, and a device the server has recorded as premium regains it. A server that can't be reached changes nothing.
 - Users who bought before this release are recovered automatically: local Premium the server has never seen triggers a silent Play restore (at most once a day) that re-delivers the purchase for verification, with no "purchase successful" popup.
@@ -16,6 +15,49 @@
 - Google reports voided purchases for 30 days only; a backend that is down longer than that misses the refunds in the gap.
 - The local Premium flag is still a plain on-device value; the server enforces AI quota, but features gated only on the local flag can be unlocked by a rooted device.
 - Only Google Play receipts are verified; App Store purchases stay unverified.
+
+## [2.6.0] - 2026-09-27
+
+### Added
+- **Update notice**: on Android the app checks GitHub for a newer release once per launch and offers it in a card (Download / Later). Offline or failed checks stay silent.
+- **More resume details**: LinkedIn, website/portfolio, nationality and date of birth (under "More details" on the first step), plus **Projects** and **Certifications** sections. All four templates render them; resumes saved by earlier versions open unchanged.
+- **Duplicate** a resume from its card menu to tailor a copy for another job (the photo is copied, not shared).
+- **Reorder** experience, education, languages, certifications, courses and projects by dragging.
+
+### Fixed
+- Dialog confirm buttons no longer stretch full-width under Cancel.
+- The date picker could fail to open when the latest allowed date was today.
+
+## [2.5.0] - 2026-09-23
+
+### Changed
+- **Home**: bottom navigation between My resumes and My cover letters; the floating button creates whatever the current tab lists. Job search (when enabled) tops the resumes tab, the AI letter-from-ad card the letters tab.
+- **Settings** live in one sheet behind a single icon: appearance (system/light/dark), language, backup export/restore and AI credits left.
+- **Resume cards** show a miniature of their template, the job and date, and how complete the resume is (name, job title, contact, summary, experience, education, skills), with Change template in the menu.
+- **Resume form**: one step per page under tappable progress segments ("Step 2 of 6"), Back/Next above the keyboard, and a Preview button that shows the draft's PDF from any step.
+- **Theme**: outlined cards, filled inputs, consistent radii, floating snackbars, rounded sheets; tabs and form steps fade when switched.
+- **Tablets**: lists and the form centre at a readable width; the template grid adds columns.
+
+### Added
+- Leaving the resume form or the cover letter editor with unsaved edits asks before discarding them.
+- Illustrated empty states with the action that fills the list.
+- Screen-reader labels for template cards (including locked state), resume completeness and feature cards.
+
+## [2.4.0] - 2026-09-23
+
+### Added
+- App icon: a resume page on the brand teal, replacing the default Flutter icon. Android gets an adaptive icon (with a monochrome layer for themed icons); iOS gets every required size. Regenerate with `python3 tool/generate_icons.py`.
+- Branded launch screen on Android (including the Android 12+ system splash) and iOS, instead of a blank white screen.
+- Three-page onboarding (welcome, templates, privacy) with Skip, shown on first launch only; returning users open straight to the home screen.
+- The three Premium templates are now distinct layouts, not recolours of the free one:
+  - **Modern**: tinted full-height sidebar (photo or initials, contact, skills, languages) beside the main column; continues on every page.
+  - **Minimal**: section labels in a narrow side column, hairline rules, photo as a small rounded square.
+  - **Colorful**: full-bleed banner with a decorative disc, timeline rule joining entries, filled skill chips.
+  - All layouts mirror correctly for Arabic; when there is no photo, the sidebar and banner show the name's initials.
+- Template picker shows each template's real first page rendered from the user's own resume, falling back to the schematic sketch while it renders.
+
+### Fixed
+- Arabic PDFs: words ending in «ر» (and other letters whose glyph overhangs) no longer run into the next word or number — «يناير2020» and «ديسمبرالماضي» now read «يناير 2020» and «ديسمبر الماضي». The cause is a bug in the `pdf` package's right-to-left word placement; the app now uses a patched copy (`third_party/pdf`, see `PATCHES.md`) until it is fixed upstream.
 
 ## [2.3.0] - 2026-08-31
 

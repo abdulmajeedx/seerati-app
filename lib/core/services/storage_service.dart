@@ -40,6 +40,7 @@ abstract final class StorageService {
         ..registerAdapter(EducationItemAdapter())
         ..registerAdapter(LanguageItemAdapter())
         ..registerAdapter(CourseItemAdapter())
+        ..registerAdapter(ProjectItemAdapter())
         ..registerAdapter(CoverLetterAdapter());
     }
     final cipher = HiveAesCipher(key);

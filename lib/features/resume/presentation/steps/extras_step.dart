@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../core/utils/language_levels.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/models/resume.dart';
+import '../../../../shared/widgets/dialog_action_style.dart';
+import '../../../../shared/widgets/reorderable_entries.dart';
 
 class ExtrasStep extends StatefulWidget {
   const ExtrasStep({super.key, required this.draft});
@@ -22,61 +24,137 @@ class _ExtrasStepState extends State<ExtrasStep> {
     if (result != null) setState(() => widget.draft.languages.add(result));
   }
 
-  Future<void> _addCourse() async {
+  Future<void> _addCourse({bool certification = false}) async {
+    final l10n = AppLocalizations.of(context);
     final result = await showDialog<CourseItem>(
       context: context,
-      builder: (_) => const _CourseDialog(),
+      builder: (_) => certification
+          ? _CourseDialog(
+              title: l10n.addCertification,
+              nameLabel: l10n.certificationName,
+            )
+          : _CourseDialog(title: l10n.addCourse, nameLabel: l10n.courses),
     );
-    if (result != null) setState(() => widget.draft.courses.add(result));
+    if (result == null) return;
+    setState(
+      () => (certification ? widget.draft.certifications : widget.draft.courses)
+          .add(result),
+    );
   }
+
+  Future<void> _addProject() async {
+    final result = await showDialog<ProjectItem>(
+      context: context,
+      builder: (_) => const _ProjectDialog(),
+    );
+    if (result != null) setState(() => widget.draft.projects.add(result));
+  }
+
+  Widget _credentials(List<CourseItem> list, AppLocalizations l10n) =>
+      ReorderableEntries(
+        items: list,
+        onChanged: () => setState(() {}),
+        itemBuilder: (context, c, i, handle) => ListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(c.name),
+          subtitle: Text(
+            [c.issuer, c.year].where((s) => s.isNotEmpty).join(' · '),
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.delete_outline),
+                tooltip: l10n.delete,
+                onPressed: () => setState(() => list.removeAt(i)),
+              ),
+              handle ?? const SizedBox.shrink(),
+            ],
+          ),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final titleStyle = Theme.of(context)
-        .textTheme
-        .titleSmall
-        ?.copyWith(fontWeight: FontWeight.bold);
+    final titleStyle = Theme.of(
+      context,
+    ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(l10n.languagesSection, style: titleStyle),
-        for (final (i, lang) in widget.draft.languages.indexed)
-          ListTile(
+        ReorderableEntries(
+          items: widget.draft.languages,
+          onChanged: () => setState(() {}),
+          itemBuilder: (context, lang, i, handle) => ListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(lang.name),
             subtitle: Text(LanguageLevels.label(lang.level, l10n)),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete_outline),
-              tooltip: l10n.delete,
-              onPressed: () =>
-                  setState(() => widget.draft.languages.removeAt(i)),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.delete_outline),
+                  tooltip: l10n.delete,
+                  onPressed: () =>
+                      setState(() => widget.draft.languages.removeAt(i)),
+                ),
+                handle ?? const SizedBox.shrink(),
+              ],
             ),
           ),
+        ),
         OutlinedButton.icon(
           icon: const Icon(Icons.add),
           label: Text(l10n.addLanguage),
           onPressed: _addLanguage,
         ),
         const SizedBox(height: 24),
+        Text(l10n.certifications, style: titleStyle),
+        _credentials(widget.draft.certifications, l10n),
+        OutlinedButton.icon(
+          icon: const Icon(Icons.add),
+          label: Text(l10n.addCertification),
+          onPressed: () => _addCourse(certification: true),
+        ),
+        const SizedBox(height: 24),
         Text(l10n.courses, style: titleStyle),
-        for (final (i, course) in widget.draft.courses.indexed)
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(course.name),
-            subtitle: Text([course.issuer, course.year]
-                .where((s) => s.isNotEmpty)
-                .join(' · ')),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete_outline),
-              tooltip: l10n.delete,
-              onPressed: () => setState(() => widget.draft.courses.removeAt(i)),
-            ),
-          ),
+        _credentials(widget.draft.courses, l10n),
         OutlinedButton.icon(
           icon: const Icon(Icons.add),
           label: Text(l10n.addCourse),
           onPressed: _addCourse,
+        ),
+        const SizedBox(height: 24),
+        Text(l10n.projects, style: titleStyle),
+        ReorderableEntries(
+          items: widget.draft.projects,
+          onChanged: () => setState(() {}),
+          itemBuilder: (context, project, i, handle) => ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(project.name),
+            subtitle: project.link.isEmpty
+                ? null
+                : Text(project.link, textDirection: TextDirection.ltr),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.delete_outline),
+                  tooltip: l10n.delete,
+                  onPressed: () =>
+                      setState(() => widget.draft.projects.removeAt(i)),
+                ),
+                handle ?? const SizedBox.shrink(),
+              ],
+            ),
+          ),
+        ),
+        OutlinedButton.icon(
+          icon: const Icon(Icons.add),
+          label: Text(l10n.addProject),
+          onPressed: _addProject,
         ),
       ],
     );
@@ -126,8 +204,9 @@ class _LanguageDialogState extends State<_LanguageDialog> {
             items: [
               for (final level in LanguageLevels.all)
                 DropdownMenuItem(
-                    value: level,
-                    child: Text(LanguageLevels.label(level, l10n))),
+                  value: level,
+                  child: Text(LanguageLevels.label(level, l10n)),
+                ),
             ],
             onChanged: (v) =>
                 setState(() => _level = v ?? LanguageLevels.intermediate),
@@ -136,16 +215,24 @@ class _LanguageDialogState extends State<_LanguageDialog> {
       ),
       actions: [
         TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.cancel)),
-        FilledButton(onPressed: _submit, child: Text(l10n.save)),
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(l10n.cancel),
+        ),
+        FilledButton(
+          style: dialogActionStyle,
+          onPressed: _submit,
+          child: Text(l10n.save),
+        ),
       ],
     );
   }
 }
 
 class _CourseDialog extends StatefulWidget {
-  const _CourseDialog();
+  const _CourseDialog({required this.title, required this.nameLabel});
+
+  final String title;
+  final String nameLabel;
 
   @override
   State<_CourseDialog> createState() => _CourseDialogState();
@@ -167,25 +254,27 @@ class _CourseDialogState extends State<_CourseDialog> {
   void _submit() {
     final name = _name.text.trim();
     if (name.isEmpty) return;
-    Navigator.of(context).pop(CourseItem(
-      name: name,
-      issuer: _issuer.text.trim(),
-      year: _year.text.trim(),
-    ));
+    Navigator.of(context).pop(
+      CourseItem(
+        name: name,
+        issuer: _issuer.text.trim(),
+        year: _year.text.trim(),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return AlertDialog(
-      title: Text(l10n.addCourse),
+      title: Text(widget.title),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
             controller: _name,
             autofocus: true,
-            decoration: InputDecoration(labelText: l10n.courses),
+            decoration: InputDecoration(labelText: widget.nameLabel),
           ),
           const SizedBox(height: 12),
           TextField(
@@ -202,9 +291,94 @@ class _CourseDialogState extends State<_CourseDialog> {
       ),
       actions: [
         TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.cancel)),
-        FilledButton(onPressed: _submit, child: Text(l10n.save)),
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(l10n.cancel),
+        ),
+        FilledButton(
+          style: dialogActionStyle,
+          onPressed: _submit,
+          child: Text(l10n.save),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProjectDialog extends StatefulWidget {
+  const _ProjectDialog();
+
+  @override
+  State<_ProjectDialog> createState() => _ProjectDialogState();
+}
+
+class _ProjectDialogState extends State<_ProjectDialog> {
+  final _name = TextEditingController();
+  final _link = TextEditingController();
+  final _description = TextEditingController();
+
+  @override
+  void dispose() {
+    _name.dispose();
+    _link.dispose();
+    _description.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    final name = _name.text.trim();
+    if (name.isEmpty) return;
+    Navigator.of(context).pop(
+      ProjectItem(
+        name: name,
+        link: _link.text.trim(),
+        description: _description.text.trim(),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return AlertDialog(
+      title: Text(l10n.addProject),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: _name,
+              autofocus: true,
+              decoration: InputDecoration(labelText: l10n.projectName),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _link,
+              keyboardType: TextInputType.url,
+              textDirection: TextDirection.ltr,
+              decoration: InputDecoration(labelText: l10n.projectLink),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _description,
+              maxLines: 3,
+              decoration: InputDecoration(
+                labelText: l10n.description,
+                alignLabelWithHint: true,
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(l10n.cancel),
+        ),
+        FilledButton(
+          style: dialogActionStyle,
+          onPressed: _submit,
+          child: Text(l10n.save),
+        ),
       ],
     );
   }

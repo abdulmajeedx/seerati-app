@@ -1,7 +1,7 @@
 name: seerati
 description: "Seerati (سيرتي) — bilingual resume & cover letter builder."
 publish_to: 'none'
-version: 2.4.0+9
+version: 2.7.0+12
 
 environment:
   sdk: ^3.12.2
@@ -28,6 +28,12 @@ dependencies:
   cupertino_icons: ^1.0.8
   share_plus: ^12.0.2
   file_selector: ^1.1.0
+
+# Patched copy of pdf: fixes word spacing in right-to-left (Arabic) text.
+# See third_party/pdf/PATCHES.md.
+dependency_overrides:
+  pdf:
+    path: third_party/pdf
 
 dev_dependencies:
   flutter_test:

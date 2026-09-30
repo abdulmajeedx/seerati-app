@@ -28,19 +28,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newResume => 'New Resume';
 
   @override
-  String get newResumeSubtitle => 'Create a professional resume step by step';
-
-  @override
   String get coverLetter => 'Cover Letter';
 
   @override
-  String get coverLetterSubtitle => 'Generate a ready-to-send cover letter';
-
-  @override
   String get myResumes => 'My Resumes';
-
-  @override
-  String get noResumesYet => 'No resumes yet. Create your first one!';
 
   @override
   String get settings => 'Settings';
@@ -226,7 +217,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorGeneric => 'Something went wrong. Please try again.';
 
   @override
-  String get extrasStep => 'Languages & Courses';
+  String get extrasStep => 'Languages, certifications & projects';
 
   @override
   String get resumeTitle => 'Resume Title';
@@ -288,10 +279,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get myCoverLetters => 'My Cover Letters';
-
-  @override
-  String get noCoverLettersYet =>
-      'No cover letters yet. Create your first one!';
 
   @override
   String get newCoverLetter => 'New Cover Letter';
@@ -487,4 +474,126 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get importEmpty => 'This backup is empty.';
+
+  @override
+  String get skip => 'Skip';
+
+  @override
+  String get onboardTemplatesTitle => 'Templates that stand out';
+
+  @override
+  String get onboardTemplatesSubtitle =>
+      'Pick a template, see your resume in it right away, and export a PDF ready to share.';
+
+  @override
+  String get onboardPrivacyTitle => 'Your data stays with you';
+
+  @override
+  String get onboardPrivacySubtitle =>
+      'Everything is saved encrypted on your device — no account needed — with a backup file you can move anywhere.';
+
+  @override
+  String get discardChangesTitle => 'Discard changes?';
+
+  @override
+  String get discardChangesMsg =>
+      'Your edits haven\'t been saved. If you leave now, they\'ll be lost.';
+
+  @override
+  String get keepEditing => 'Keep editing';
+
+  @override
+  String get discard => 'Discard';
+
+  @override
+  String get emptyResumesTitle => 'Start your first resume';
+
+  @override
+  String get emptyResumesMsg =>
+      'Answer a few questions, pick a template and export a PDF in minutes.';
+
+  @override
+  String get emptyLettersTitle => 'No cover letters yet';
+
+  @override
+  String get emptyLettersMsg =>
+      'Create a cover letter from a ready template, then edit it however you like.';
+
+  @override
+  String get changeTemplate => 'Change template';
+
+  @override
+  String resumeProgress(String percent) {
+    return '$percent complete';
+  }
+
+  @override
+  String stepOf(int current, int total) {
+    return 'Step $current of $total';
+  }
+
+  @override
+  String get lockedTemplate => 'Premium, locked';
+
+  @override
+  String updateAvailableTitle(String version) {
+    return 'Version $version is available';
+  }
+
+  @override
+  String get updateAvailableMsg =>
+      'Download it and install over this one. Your resumes and letters stay.';
+
+  @override
+  String get updateDownload => 'Download';
+
+  @override
+  String get updateLater => 'Later';
+
+  @override
+  String get linkedin => 'LinkedIn';
+
+  @override
+  String get website => 'Website or portfolio';
+
+  @override
+  String get nationality => 'Nationality';
+
+  @override
+  String get birthDate => 'Date of birth';
+
+  @override
+  String get moreDetails => 'More details (optional)';
+
+  @override
+  String get projects => 'Projects';
+
+  @override
+  String get addProject => 'Add project';
+
+  @override
+  String get projectName => 'Project name';
+
+  @override
+  String get projectLink => 'Link';
+
+  @override
+  String get certifications => 'Certifications';
+
+  @override
+  String get addCertification => 'Add certification';
+
+  @override
+  String get certificationName => 'Certification';
+
+  @override
+  String get duplicate => 'Duplicate';
+
+  @override
+  String copyOf(String title) {
+    return '$title (copy)';
+  }
+
+  @override
+  String get resumeDuplicated => 'Copy created. Tailor it for the next job.';
 }

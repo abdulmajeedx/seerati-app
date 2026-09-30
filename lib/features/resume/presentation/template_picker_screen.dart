@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:printing/printing.dart';
 
 import '../../../core/constants/app_constants.dart';
 import '../../../core/providers/premium_provider.dart';
@@ -46,15 +47,17 @@ class TemplatePickerScreen extends ConsumerWidget {
     final premium = ref.watch(premiumProvider);
     return Scaffold(
       appBar: AppBar(title: Text(l10n.chooseTemplate)),
-      body: GridView.count(
+      // Two columns on a phone, more on tablets.
+      body: GridView.extent(
         padding: const EdgeInsets.all(16),
-        crossAxisCount: 2,
+        maxCrossAxisExtent: 240,
         mainAxisSpacing: 12,
         crossAxisSpacing: 12,
         childAspectRatio: .72,
         children: [
           for (final spec in TemplateSpec.specs)
             _TemplateCard(
+              resume: resume,
               name: _name(spec.id, l10n),
               spec: spec,
               locked: !spec.free && !premium,
@@ -69,6 +72,7 @@ class TemplatePickerScreen extends ConsumerWidget {
 
 class _TemplateCard extends StatelessWidget {
   const _TemplateCard({
+    required this.resume,
     required this.name,
     required this.spec,
     required this.locked,
@@ -76,6 +80,7 @@ class _TemplateCard extends StatelessWidget {
     required this.onTap,
   });
 
+  final Resume resume;
   final String name;
   final TemplateSpec spec;
   final bool locked;
@@ -86,7 +91,6 @@ class _TemplateCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
-    final accent = Color(spec.accent.toInt() | 0xFF000000);
     return Card(
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
@@ -95,7 +99,13 @@ class _TemplateCard extends StatelessWidget {
             ? BorderSide(color: scheme.primary, width: 2)
             : BorderSide.none,
       ),
-      child: InkWell(
+      // One announcement per card: name, and whether it's locked.
+      child: Semantics(
+        button: true,
+        selected: selected,
+        label: locked ? '$name, ${l10n.lockedTemplate}' : name,
+        excludeSemantics: true,
+        child: InkWell(
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(12),
@@ -103,39 +113,9 @@ class _TemplateCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: scheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 22,
-                        decoration: BoxDecoration(
-                          color: spec.filledHeader
-                              ? accent
-                              : accent.withValues(alpha: .25),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      for (var i = 0; i < 5; i++)
-                        Container(
-                          height: 5,
-                          width: double.infinity,
-                          margin: const EdgeInsets.only(bottom: 5),
-                          decoration: BoxDecoration(
-                            color: scheme.outlineVariant,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                      Container(width: 36, height: 3, color: accent),
-                    ],
-                  ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: _TemplateThumbnail(resume: resume, spec: spec),
                 ),
               ),
               const SizedBox(height: 8),
@@ -171,6 +151,145 @@ class _TemplateCard extends StatelessWidget {
           ),
         ),
       ),
+      ),
+    );
+  }
+}
+
+/// First page of the user's own resume rendered in [spec]. The schematic
+/// sketch stands in while it renders, or if rasterizing isn't available.
+class _TemplateThumbnail extends StatefulWidget {
+  const _TemplateThumbnail({required this.resume, required this.spec});
+
+  final Resume resume;
+  final TemplateSpec spec;
+
+  @override
+  State<_TemplateThumbnail> createState() => _TemplateThumbnailState();
+}
+
+class _TemplateThumbnailState extends State<_TemplateThumbnail> {
+  late final Future<PdfRaster> _page = _render();
+
+  Future<PdfRaster> _render() async {
+    final bytes =
+        await buildResumePdf(widget.resume, widget.spec, watermark: false);
+    // ~500px wide for an A4 page: sharp on a half-width card at 3x.
+    return Printing.raster(bytes, pages: const [0], dpi: 60).first;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<PdfRaster>(
+      future: _page,
+      builder: (context, snapshot) => AnimatedSwitcher(
+        duration: const Duration(milliseconds: 250),
+        child: snapshot.hasData
+            ? Image(
+                key: const ValueKey('page'),
+                image: PdfRasterImage(snapshot.data!),
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
+                filterQuality: FilterQuality.medium,
+              )
+            : _TemplateSketch(spec: widget.spec),
+      ),
+    );
+  }
+}
+
+class _TemplateSketch extends StatelessWidget {
+  const _TemplateSketch({required this.spec});
+
+  final TemplateSpec spec;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final accent = Color(spec.accent.toInt() | 0xFF000000);
+    Widget bar(double height, Color color, {double? width}) => Container(
+          height: height,
+          width: width ?? double.infinity,
+          margin: const EdgeInsets.only(bottom: 5),
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        );
+    final lines = [
+      for (var i = 0; i < 5; i++) bar(5, scheme.outlineVariant),
+    ];
+    final body = switch (spec.layout) {
+      TemplateLayout.sidebar => Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              width: 30,
+              color: accent.withValues(alpha: .15),
+              padding: const EdgeInsets.all(5),
+              child: Column(children: [
+                CircleAvatar(radius: 10, backgroundColor: accent),
+              ]),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Column(children: [
+                  bar(8, accent, width: 50),
+                  const SizedBox(height: 4),
+                  ...lines,
+                ]),
+              ),
+            ),
+          ],
+        ),
+      TemplateLayout.minimal => Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              bar(9, scheme.onSurfaceVariant, width: 60),
+              bar(1, scheme.outline),
+              const SizedBox(height: 4),
+              for (var i = 0; i < 4; i++)
+                Row(children: [
+                  SizedBox(width: 20, child: i.isEven ? bar(4, accent) : null),
+                  const SizedBox(width: 6),
+                  Expanded(child: bar(5, scheme.outlineVariant)),
+                ]),
+            ],
+          ),
+        ),
+      TemplateLayout.banner => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(height: 28, color: accent),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(children: lines),
+            ),
+          ],
+        ),
+      TemplateLayout.classic => Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              bar(8, accent, width: 60),
+              bar(1.5, accent),
+              const SizedBox(height: 4),
+              ...lines,
+            ],
+          ),
+        ),
+    };
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: scheme.surfaceContainerHighest,
+      child: body,
     );
   }
 }

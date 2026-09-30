@@ -134,35 +134,17 @@ abstract class AppLocalizations {
   /// **'New Resume'**
   String get newResume;
 
-  /// No description provided for @newResumeSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Create a professional resume step by step'**
-  String get newResumeSubtitle;
-
   /// No description provided for @coverLetter.
   ///
   /// In en, this message translates to:
   /// **'Cover Letter'**
   String get coverLetter;
 
-  /// No description provided for @coverLetterSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Generate a ready-to-send cover letter'**
-  String get coverLetterSubtitle;
-
   /// No description provided for @myResumes.
   ///
   /// In en, this message translates to:
   /// **'My Resumes'**
   String get myResumes;
-
-  /// No description provided for @noResumesYet.
-  ///
-  /// In en, this message translates to:
-  /// **'No resumes yet. Create your first one!'**
-  String get noResumesYet;
 
   /// No description provided for @settings.
   ///
@@ -533,7 +515,7 @@ abstract class AppLocalizations {
   /// No description provided for @extrasStep.
   ///
   /// In en, this message translates to:
-  /// **'Languages & Courses'**
+  /// **'Languages, certifications & projects'**
   String get extrasStep;
 
   /// No description provided for @resumeTitle.
@@ -655,12 +637,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'My Cover Letters'**
   String get myCoverLetters;
-
-  /// No description provided for @noCoverLettersYet.
-  ///
-  /// In en, this message translates to:
-  /// **'No cover letters yet. Create your first one!'**
-  String get noCoverLettersYet;
 
   /// No description provided for @newCoverLetter.
   ///
@@ -1021,6 +997,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This backup is empty.'**
   String get importEmpty;
+
+  /// No description provided for @skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skip;
+
+  /// No description provided for @onboardTemplatesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Templates that stand out'**
+  String get onboardTemplatesTitle;
+
+  /// No description provided for @onboardTemplatesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a template, see your resume in it right away, and export a PDF ready to share.'**
+  String get onboardTemplatesSubtitle;
+
+  /// No description provided for @onboardPrivacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data stays with you'**
+  String get onboardPrivacyTitle;
+
+  /// No description provided for @onboardPrivacySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything is saved encrypted on your device — no account needed — with a backup file you can move anywhere.'**
+  String get onboardPrivacySubtitle;
+
+  /// No description provided for @discardChangesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard changes?'**
+  String get discardChangesTitle;
+
+  /// No description provided for @discardChangesMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Your edits haven\'t been saved. If you leave now, they\'ll be lost.'**
+  String get discardChangesMsg;
+
+  /// No description provided for @keepEditing.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep editing'**
+  String get keepEditing;
+
+  /// No description provided for @discard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get discard;
+
+  /// No description provided for @emptyResumesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start your first resume'**
+  String get emptyResumesTitle;
+
+  /// No description provided for @emptyResumesMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer a few questions, pick a template and export a PDF in minutes.'**
+  String get emptyResumesMsg;
+
+  /// No description provided for @emptyLettersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No cover letters yet'**
+  String get emptyLettersTitle;
+
+  /// No description provided for @emptyLettersMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a cover letter from a ready template, then edit it however you like.'**
+  String get emptyLettersMsg;
+
+  /// No description provided for @changeTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Change template'**
+  String get changeTemplate;
+
+  /// No description provided for @resumeProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent} complete'**
+  String resumeProgress(String percent);
+
+  /// No description provided for @stepOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {current} of {total}'**
+  String stepOf(int current, int total);
+
+  /// No description provided for @lockedTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium, locked'**
+  String get lockedTemplate;
+
+  /// No description provided for @updateAvailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} is available'**
+  String updateAvailableTitle(String version);
+
+  /// No description provided for @updateAvailableMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Download it and install over this one. Your resumes and letters stay.'**
+  String get updateAvailableMsg;
+
+  /// No description provided for @updateDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get updateDownload;
+
+  /// No description provided for @updateLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get updateLater;
+
+  /// No description provided for @linkedin.
+  ///
+  /// In en, this message translates to:
+  /// **'LinkedIn'**
+  String get linkedin;
+
+  /// No description provided for @website.
+  ///
+  /// In en, this message translates to:
+  /// **'Website or portfolio'**
+  String get website;
+
+  /// No description provided for @nationality.
+  ///
+  /// In en, this message translates to:
+  /// **'Nationality'**
+  String get nationality;
+
+  /// No description provided for @birthDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of birth'**
+  String get birthDate;
+
+  /// No description provided for @moreDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'More details (optional)'**
+  String get moreDetails;
+
+  /// No description provided for @projects.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects'**
+  String get projects;
+
+  /// No description provided for @addProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Add project'**
+  String get addProject;
+
+  /// No description provided for @projectName.
+  ///
+  /// In en, this message translates to:
+  /// **'Project name'**
+  String get projectName;
+
+  /// No description provided for @projectLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Link'**
+  String get projectLink;
+
+  /// No description provided for @certifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Certifications'**
+  String get certifications;
+
+  /// No description provided for @addCertification.
+  ///
+  /// In en, this message translates to:
+  /// **'Add certification'**
+  String get addCertification;
+
+  /// No description provided for @certificationName.
+  ///
+  /// In en, this message translates to:
+  /// **'Certification'**
+  String get certificationName;
+
+  /// No description provided for @duplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get duplicate;
+
+  /// No description provided for @copyOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} (copy)'**
+  String copyOf(String title);
+
+  /// No description provided for @resumeDuplicated.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy created. Tailor it for the next job.'**
+  String get resumeDuplicated;
 }
 
 class _AppLocalizationsDelegate
