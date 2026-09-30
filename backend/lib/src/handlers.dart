@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:crypto/crypto.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
 import 'claude.dart';
 import 'db.dart';
+import 'play.dart';
 import 'prompts.dart' as prompts;
 
 /// One credit ≈ US$0.01 of Claude spend, from measured per-endpoint cost.
@@ -20,6 +23,8 @@ class ApiConfig {
     this.globalDailyQuota = 300,
     this.jobsModel,
     this.jobsEnabled = true,
+    this.premiumProductId = 'seerati_premium',
+    this.maxDevicesPerPurchase = 3,
   });
 
   final String appKey;
@@ -47,6 +52,14 @@ class ApiConfig {
   /// release.
   final bool jobsEnabled;
 
+  /// The only Play product a purchase may unlock; anything else is refused
+  /// before Google is asked.
+  final String premiumProductId;
+
+  /// Devices one purchase may serve at once (phone + tablet + a reinstall).
+  /// Binding another evicts the oldest.
+  final int maxDevicesPerPurchase;
+
   static const costText = 1;
   static const costCoverLetter = 2;
 
@@ -63,15 +76,28 @@ class ApiConfig {
 }
 
 class Api {
-  Api({required this.db, required this.claude, required this.config});
+  Api({
+    required this.db,
+    required this.claude,
+    required this.config,
+    this.play,
+  });
 
   final Db db;
   final ClaudeClient claude;
   final ApiConfig config;
 
+  /// Null ⇒ purchase verification is not configured and fails closed.
+  final PlayVerifier? play;
+
   // Per-IP burst limiter: sliding one-minute window.
   final Map<String, List<int>> _ipHits = {};
   static const _ipLimitPerMinute = 30;
+
+  // Verification calls reach Google, so they get a tighter per-IP budget.
+  final Map<String, List<int>> _verifyHits = {};
+  static const _verifyLimit = 10;
+  static const _verifyWindowMs = 10 * 60 * 1000;
 
   Handler get handler {
     final router = Router()
@@ -79,6 +105,8 @@ class Api {
       ..get('/v1/config',
           (Request r) => _json(200, {'jobs_enabled': config.jobsEnabled}))
       ..post('/v1/redeem', _redeem)
+      ..post('/v1/purchase/verify', _verifyPurchase)
+      ..post('/v1/entitlement', _entitlement)
       ..post('/v1/ai/summary', _aiSummary)
       ..post('/v1/ai/experience', _aiExperience)
       ..post('/v1/ai/cover-letter', _aiCoverLetter)
@@ -123,6 +151,86 @@ class Api {
     final ok = db.redeemCode(code, deviceId);
     if (!ok) return _json(404, {'error': 'invalid_code'});
     return _json(200, {'premium': true});
+  }
+
+  Future<Response> _verifyPurchase(Request request) async {
+    final body = await _body(request);
+    if (body == null) return _json(400, {'error': 'bad_request'});
+    final deviceId = _str(body, 'device_id', 64);
+    final token = body['purchase_token'];
+    if (deviceId.isEmpty ||
+        body['product_id'] != config.premiumProductId ||
+        token is! String ||
+        token.length < 16 ||
+        token.length > 1024) {
+      return _json(400, {'error': 'bad_request'});
+    }
+    final tokenHash = sha256.convert(utf8.encode(token)).toString();
+    if (db.isVoided(tokenHash)) {
+      return _json(404, {'error': 'invalid_purchase'});
+    }
+    final verifier = play;
+    if (verifier == null) {
+      return _json(503, {'error': 'purchases_unavailable'});
+    }
+    if (!_allowVerify(_clientIp(request))) {
+      return _json(429, {'error': 'rate_limited'});
+    }
+
+    final PlayPurchase? purchase;
+    try {
+      purchase = await verifier.verify(config.premiumProductId, token);
+    } on PlayException catch (e) {
+      stderr.writeln('purchase verify unavailable: ${e.message}');
+      return _json(503, {'error': 'purchases_unavailable'});
+    }
+    if (purchase == null || purchase.state == PlayPurchaseState.canceled) {
+      return _json(404, {'error': 'invalid_purchase'});
+    }
+    if (purchase.state == PlayPurchaseState.pending) {
+      return _json(200, {'premium': false, 'pending': true});
+    }
+
+    // A refund can land while Google was being asked.
+    if (db.isVoided(tokenHash)) {
+      return _json(404, {'error': 'invalid_purchase'});
+    }
+    final evicted = db.bindPurchase(
+      tokenHash,
+      deviceId,
+      purchase.orderId,
+      maxDevices: config.maxDevicesPerPurchase,
+    );
+    stdout.writeln('purchase bound order=${purchase.orderId} '
+        'token=${tokenHash.substring(0, 8)} evicted=$evicted');
+    return _json(200, {'premium': true});
+  }
+
+  Future<Response> _entitlement(Request request) async {
+    final body = await _body(request);
+    if (body == null) return _json(400, {'error': 'bad_request'});
+    final deviceId = _str(body, 'device_id', 64);
+    if (deviceId.isEmpty) return _json(400, {'error': 'bad_request'});
+    final premium = db.isPremium(deviceId);
+    return _json(200, {
+      'premium': premium,
+      'revoked': !premium && db.hasVoidedPurchase(deviceId),
+    });
+  }
+
+  bool _allowVerify(String ip) {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    if (_verifyHits.length > 4096) {
+      _verifyHits.removeWhere((_, hits) => now - hits.last > _verifyWindowMs);
+    }
+    final hits = (_verifyHits[ip] ?? [])
+      ..removeWhere((t) => now - t > _verifyWindowMs);
+    if (hits.length >= _verifyLimit) {
+      _verifyHits[ip] = hits;
+      return false;
+    }
+    _verifyHits[ip] = hits..add(now);
+    return true;
   }
 
   Future<Response> _aiSummary(Request request) => _aiCall(request, (body) {
