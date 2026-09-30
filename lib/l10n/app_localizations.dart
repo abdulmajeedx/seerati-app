@@ -740,6 +740,12 @@ abstract class AppLocalizations {
   /// **'Purchase successful — enjoy!'**
   String get purchaseSuccess;
 
+  /// No description provided for @purchaseNotVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t confirm your purchase yet. Check your connection, then tap Restore purchases.'**
+  String get purchaseNotVerified;
+
   /// No description provided for @alreadyPremium.
   ///
   /// In en, this message translates to:

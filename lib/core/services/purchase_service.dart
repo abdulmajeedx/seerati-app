@@ -1,12 +1,23 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
 import '../constants/app_constants.dart';
 import '../providers/premium_provider.dart';
+import 'api_client.dart';
 
-enum PaywallStatus { loading, ready, purchasing, unavailable, error }
+/// [unverified]: the store took payment but the server has not confirmed it
+/// yet, so nothing is unlocked and the purchase stays pending for a retry.
+enum PaywallStatus {
+  loading,
+  ready,
+  purchasing,
+  unavailable,
+  error,
+  unverified,
+}
 
 class PaywallState {
   const PaywallState({
@@ -33,18 +44,20 @@ class PaywallState {
 
 /// Single entry point for all purchase logic. The premium flag itself is
 /// persisted by [premiumProvider].
-/// Note: with no backend, delivery is device-side only; server receipt
-/// validation is out of scope for this offline app.
+/// With a backend configured, a purchase unlocks nothing until the server has
+/// checked it with Google. Builds without a backend are offline-only and grant
+/// on the store's word alone.
 final purchaseServiceProvider =
     NotifierProvider<PurchaseService, PaywallState>(PurchaseService.new);
 
 class PurchaseService extends Notifier<PaywallState> {
   StreamSubscription<List<PurchaseDetails>>? _sub;
+  Future<void>? _initFuture;
 
   @override
   PaywallState build() {
     ref.onDispose(() => _sub?.cancel());
-    Future.microtask(_init);
+    _initFuture = Future.microtask(_init);
     return const PaywallState();
   }
 
@@ -52,7 +65,7 @@ class PurchaseService extends Notifier<PaywallState> {
     try {
       final iap = InAppPurchase.instance;
       _sub ??= iap.purchaseStream.listen(
-        _onPurchases,
+        onPurchases,
         onError: (Object _) =>
             state = state.copyWith(status: PaywallStatus.error),
       );
@@ -76,15 +89,28 @@ class PurchaseService extends Notifier<PaywallState> {
 
   Future<void> retry() => _init();
 
-  Future<void> _onPurchases(List<PurchaseDetails> purchases) async {
+  /// Store integration point; overridden in tests.
+  @protected
+  Future<void> completePurchase(PurchaseDetails purchase) =>
+      InAppPurchase.instance.completePurchase(purchase);
+
+  @protected
+  bool get verifyOnServer => ApiClient.isConfigured;
+
+  @visibleForTesting
+  Future<void> onPurchases(List<PurchaseDetails> purchases) async {
     for (final purchase in purchases) {
       if (purchase.productID != AppConstants.premiumProductId) continue;
       switch (purchase.status) {
         case PurchaseStatus.purchased:
         case PurchaseStatus.restored:
+          // Left unacknowledged on failure: the store redelivers it on the
+          // next launch or restore, and refunds it if it never completes.
+          if (!await _confirmed(purchase)) continue;
+          final wasPremium = ref.read(premiumProvider);
           await ref.read(premiumProvider.notifier).setPremium(true);
-          state =
-              state.copyWith(status: PaywallStatus.ready, justPurchased: true);
+          state = state.copyWith(
+              status: PaywallStatus.ready, justPurchased: !wasPremium);
         case PurchaseStatus.error:
           state = state.copyWith(status: PaywallStatus.error);
         case PurchaseStatus.canceled:
@@ -92,10 +118,27 @@ class PurchaseService extends Notifier<PaywallState> {
         case PurchaseStatus.pending:
           state = state.copyWith(status: PaywallStatus.purchasing);
       }
-      if (purchase.pendingCompletePurchase) {
-        await InAppPurchase.instance.completePurchase(purchase);
-      }
+      if (purchase.pendingCompletePurchase) await completePurchase(purchase);
     }
+  }
+
+  Future<bool> _confirmed(PurchaseDetails purchase) async {
+    if (!verifyOnServer) return true;
+    if (purchase.verificationData.source != 'google_play') {
+      state = state.copyWith(status: PaywallStatus.unverified);
+      return false;
+    }
+    try {
+      final verdict = await ref.read(apiClientProvider).verifyPurchase(
+            productId: purchase.productID,
+            purchaseToken: purchase.verificationData.serverVerificationData,
+          );
+      if (verdict == PurchaseVerdict.verified) return true;
+      state = state.copyWith(status: PaywallStatus.purchasing);
+    } on ApiException {
+      state = state.copyWith(status: PaywallStatus.unverified);
+    }
+    return false;
   }
 
   Future<void> buy() async {
@@ -110,11 +153,15 @@ class PurchaseService extends Notifier<PaywallState> {
     }
   }
 
-  Future<void> restore() async {
+  /// [silent] is for background recovery: no error state, and a purchase that
+  /// was already unlocked locally does not celebrate again.
+  Future<void> restore({bool silent = false}) async {
     try {
+      // The stream must be attached before the store re-delivers purchases.
+      await (_initFuture ?? Future<void>.value());
       await InAppPurchase.instance.restorePurchases();
     } catch (_) {
-      state = state.copyWith(status: PaywallStatus.error);
+      if (!silent) state = state.copyWith(status: PaywallStatus.error);
     }
   }
 

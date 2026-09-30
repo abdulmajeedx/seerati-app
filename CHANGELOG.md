@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.4.0] - 2026-08-31
+
+### Security
+- Purchases are now verified server-side. The app sends the Play purchase token to the backend, which checks it with Google before Premium is granted; a forged, canceled or still-pending purchase unlocks nothing, and an unreachable server leaves the purchase pending so it is retried instead of granted or lost.
+- The server is now the source of truth for Premium AI quota: a verified purchase raises the device's daily allowance the same way a redeemed code does.
+- One purchase serves up to three devices at a time (reinstalls and a second device work); a fourth evicts the oldest binding, so a leaked token cannot be shared widely. Tokens are stored only as SHA-256 hashes.
+- Builds without a backend stay fully offline and still grant on the store's word alone.
+
+- Refunds and chargebacks now take effect: the backend pulls Google's voided-purchases list hourly and stops granting Premium for those purchases. A voided token is refused on the spot without asking Google, and a refund landing mid-verification is not granted. Premium from a redeemed code is never affected. If Google can't be reached the sync keeps its position and retries, so nothing is revoked on a guess.
+- The app reconciles with the server at launch (`POST /v1/entitlement`): a refunded buyer loses the local unlock, and a device the server has recorded as premium regains it. A server that can't be reached changes nothing.
+- Users who bought before this release are recovered automatically: local Premium the server has never seen triggers a silent Play restore (at most once a day) that re-delivers the purchase for verification, with no "purchase successful" popup.
+
+### Known gaps
+- Google reports voided purchases for 30 days only; a backend that is down longer than that misses the refunds in the gap.
+- The local Premium flag is still a plain on-device value; the server enforces AI quota, but features gated only on the local flag can be unlocked by a rooted device.
+- Only Google Play receipts are verified; App Store purchases stay unverified.
+
 ## [2.3.0] - 2026-08-31
 
 ### Added

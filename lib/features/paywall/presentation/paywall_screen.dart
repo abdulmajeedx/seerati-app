@@ -29,6 +29,11 @@ class PaywallScreen extends ConsumerWidget {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(SnackBar(content: Text(l10n.errorGeneric)));
+      } else if (next.status == PaywallStatus.unverified &&
+          previous?.status != PaywallStatus.unverified) {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(content: Text(l10n.purchaseNotVerified)));
       }
     });
 
@@ -121,7 +126,7 @@ class _PaywallBody extends ConsumerWidget {
                     : '${l10n.buyNow} — ${paywall.product!.price}'),
           ),
           TextButton(
-            onPressed: service.restore,
+            onPressed: () => service.restore(),
             child: Text(l10n.restorePurchases),
           ),
         ],
